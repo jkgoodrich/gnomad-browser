@@ -50,6 +50,7 @@ import GeneFlags from './GeneFlags'
 import GeneInfo from './GeneInfo'
 import GeneTranscriptsTrack from './GeneTranscriptsTrack'
 import MitochondrialGeneCoverageTrack from './MitochondrialGeneCoverageTrack'
+import NmdAnnotationTrack from './NmdAnnotationTrack'
 import MitochondrialVariantsInGene from './MitochondrialVariantsInGene'
 import { getPreferredTranscript } from './preferredTranscript'
 import StructuralVariantsInGene from './StructuralVariantsInGene'
@@ -604,6 +605,28 @@ const GenePage = ({ datasetId, gene, geneId }: Props) => {
             topLevelDataset={getTopLevelDataset(datasetId)}
           />
         )}
+
+        {hasCodingExons &&
+          gene.chrom !== 'M' &&
+          preferredTranscriptId &&
+          (() => {
+            const preferredTranscript = gene.transcripts.find(
+              (t) => t.transcript_id === preferredTranscriptId
+            )
+            if (!preferredTranscript) return null
+            return (
+              <TrackWrapper>
+                <NmdAnnotationTrack
+                  transcript={{
+                    transcript_id: preferredTranscript.transcript_id,
+                    strand: gene.strand,
+                    exons: preferredTranscript.exons,
+                  }}
+                  trackTitle={preferredTranscript.transcript_id}
+                />
+              </TrackWrapper>
+            )
+          })()}
 
         {isExac(datasetId) && gene.exac_regional_missense_constraint_regions && (
           <RegionalConstraintTrack
