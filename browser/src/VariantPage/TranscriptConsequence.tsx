@@ -4,6 +4,8 @@ import styled from 'styled-components'
 
 import InlineList from '../InlineList'
 import { getCategoryFromConsequence } from '../vepConsequences'
+import { NMD_ESCAPE_REASON_INFO } from '../GenePage/nmdRegion'
+import InfoButton from '../help/InfoButton'
 import { LofteeFilter, LofteeFlag } from './Loftee'
 import TranscriptConsequencePropType from './TranscriptConsequencePropType'
 
@@ -224,6 +226,28 @@ const TranscriptConsequence = ({ consequence }: TranscriptConsequenceProps) => {
         </Attribute>
       )}
       {consequenceSpecificAttributes}
+      {consequence.nmd && (
+        <Attribute name="NMD">
+          {consequence.nmd.escape ? (
+            <span
+              title={
+                consequence.nmd.reason
+                  ? NMD_ESCAPE_REASON_INFO[consequence.nmd.reason].description
+                  : undefined
+              }
+            >
+              <Marker color={colors.green} /> Predicted escape
+              {consequence.nmd.reason &&
+                ` (${NMD_ESCAPE_REASON_INFO[consequence.nmd.reason].label})`}
+            </span>
+          ) : (
+            <span title="The premature termination codon is predicted to trigger nonsense-mediated decay.">
+              <Marker color={colors.red} /> Sensitive
+            </span>
+          )}
+          <InfoButton topic="nmd-escape-prediction" />
+        </Attribute>
+      )}
     </AttributeList>
   )
 }

@@ -1,8 +1,13 @@
 import PropTypes from 'prop-types'
 
+import { NmdEscapeReason } from '../GenePage/nmdRegion'
+
 type TranscriptConsequencePropType = {
   consequence_terms?: string[]
   domains?: string[]
+  // Added client-side on the variant page (see VariantTranscriptConsequences):
+  // present only for PTC-introducing consequences whose transcript exons are known.
+  nmd?: { escape: boolean; reason?: NmdEscapeReason }
   gene_id: string
   gene_version: string
   gene_symbol: string

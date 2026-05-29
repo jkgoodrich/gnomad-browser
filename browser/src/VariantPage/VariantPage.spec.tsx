@@ -50,6 +50,7 @@ forDatasetsMatching(/gnomad_r3/, 'VariantPage with the dataset "%s"', (datasetId
 
     setMockApiResponses({
       GnomadVariant: () => ({ variant }),
+      VariantNmdGeneTranscripts: () => ({}),
       ReadData: () => ({
         variant_0: { exome: null, genome: [] },
       }),
@@ -69,6 +70,7 @@ forDatasetsMatching(/gnomad_r2/, 'VariantPage with the dataset %s', (datasetId) 
 
     setMockApiResponses({
       GnomadVariant: () => ({ variant }),
+      VariantNmdGeneTranscripts: () => ({}),
       ReadData: () => ({
         variant_0: { exome: null, genome: [] },
       }),
@@ -88,6 +90,7 @@ describe('VariantPage with the dataset exac', () => {
 
     setMockApiResponses({
       GnomadVariant: () => ({ variant }),
+      VariantNmdGeneTranscripts: () => ({}),
       ReadData: () => ({
         variant_0: { exome: null, genome: [] },
       }),
