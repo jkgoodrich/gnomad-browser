@@ -6,7 +6,12 @@ import { TooltipAnchor } from '@gnomad/ui'
 
 import { regionsInExons } from '../ConstraintTrack'
 import { Strand } from './GenePage'
-import { predictNmdRegion, NmdRationale } from './nmdRegion'
+import {
+  predictNmdRegion,
+  NmdRationale,
+  NmdEscapeReason,
+  NMD_ESCAPE_REASON_INFO,
+} from './nmdRegion'
 
 const Wrapper = styled.div`
   display: flex;
@@ -68,25 +73,41 @@ const TooltipBody = styled.dl`
 `
 
 const SENSITIVE_COLOR = '#f4a6a6'
-const ESCAPE_COLOR = '#a6d4a6'
 
-type NmdRegionKind = 'sensitive' | 'escape'
+// Per-reason fill colors. Labels/descriptions live in NMD_ESCAPE_REASON_INFO so
+// the track and the variant-table flag share one source of truth. Colors avoid
+// red/pink so they don't read as NMD-sensitive.
+const ESCAPE_REASON_COLORS: Record<NmdEscapeReason, string> = {
+  'last-junction-50bp': '#6fbf73',
+  'start-proximal': '#5b9bd5',
+  'long-exon': '#e0b84c',
+  'single-coding-exon': '#3fb6a8',
+}
+
+type SensitiveRegion = { kind: 'sensitive' }
+type EscapeRegion = { kind: 'escape'; reason: NmdEscapeReason }
+type NmdRegionKind = SensitiveRegion | EscapeRegion
 
 type TooltipProps = {
-  region: {
-    kind: NmdRegionKind
-    rationale: NmdRationale
-  }
+  region: NmdRegionKind
 }
 
 const NmdRegionTooltip = ({ region }: TooltipProps) => (
   <TooltipBody>
-    <dt>{region.kind === 'sensitive' ? 'NMD-sensitive region' : 'Predicted NMD-escape region'}</dt>
-    <dd>
-      {region.kind === 'sensitive'
-        ? 'Premature termination codons in this region are predicted to trigger nonsense-mediated decay (>50 bp upstream of the last exon-exon junction).'
-        : 'Premature termination codons in this region are predicted to escape nonsense-mediated decay (final coding exon, or within 50 bp upstream of the last exon-exon junction).'}
-    </dd>
+    {region.kind === 'sensitive' ? (
+      <>
+        <dt>NMD-sensitive region</dt>
+        <dd>
+          Premature termination codons in this region are predicted to trigger nonsense-mediated
+          decay.
+        </dd>
+      </>
+    ) : (
+      <>
+        <dt>Predicted NMD-escape &mdash; {NMD_ESCAPE_REASON_INFO[region.reason].label}</dt>
+        <dd>{NMD_ESCAPE_REASON_INFO[region.reason].description}</dd>
+      </>
+    )}
   </TooltipBody>
 )
 
@@ -119,12 +140,20 @@ const NmdAnnotationTrack = ({ transcript, trackTitle }: Props) => {
   const cdsExons = transcript.exons.filter((e) => e.feature_type === 'CDS')
 
   const sensitiveClipped = regionsInExons(
-    nmdSensitiveRegions.map((r) => ({ ...r, kind: 'sensitive' as const, rationale })),
+    nmdSensitiveRegions.map((r) => ({ ...r, kind: 'sensitive' as const })),
     cdsExons
   )
   const escapeClipped = regionsInExons(
-    nmdEscapeRegions.map((r) => ({ ...r, kind: 'escape' as const, rationale })),
+    nmdEscapeRegions.map((r) => ({ ...r, kind: 'escape' as const })),
     cdsExons
+  )
+
+  const allRegions = [...sensitiveClipped, ...escapeClipped]
+
+  // Only show legend entries for categories actually present in this transcript.
+  const hasSensitive = sensitiveClipped.length > 0
+  const presentReasons = (Object.keys(ESCAPE_REASON_COLORS) as NmdEscapeReason[]).filter((reason) =>
+    escapeClipped.some((r) => r.reason === reason)
   )
 
   const message = rationaleMessage(rationale)
@@ -142,23 +171,30 @@ const NmdAnnotationTrack = ({ transcript, trackTitle }: Props) => {
           <>
             <TopPanel>
               <LegendWrapper>
-                <LegendItem>
-                  <LegendSwatch $color={SENSITIVE_COLOR} />
-                  NMD-sensitive
-                </LegendItem>
-                <LegendItem>
-                  <LegendSwatch $color={ESCAPE_COLOR} />
-                  Predicted NMD-escape
-                </LegendItem>
+                {hasSensitive && (
+                  <LegendItem>
+                    <LegendSwatch $color={SENSITIVE_COLOR} />
+                    NMD-sensitive
+                  </LegendItem>
+                )}
+                {presentReasons.map((reason) => (
+                  <LegendItem key={reason}>
+                    <LegendSwatch $color={ESCAPE_REASON_COLORS[reason]} />
+                    {NMD_ESCAPE_REASON_INFO[reason].label}
+                  </LegendItem>
+                ))}
               </LegendWrapper>
             </TopPanel>
             <PlotWrapper>
               <svg height={HEIGHT + 4} width={width}>
-                {[...sensitiveClipped, ...escapeClipped].map((region) => {
+                {allRegions.map((region) => {
                   const startX = scalePosition(region.start)
                   const stopX = scalePosition(region.stop)
                   const regionWidth = Math.max(1, stopX - startX)
-                  const fill = region.kind === 'sensitive' ? SENSITIVE_COLOR : ESCAPE_COLOR
+                  const fill =
+                    region.kind === 'sensitive'
+                      ? SENSITIVE_COLOR
+                      : ESCAPE_REASON_COLORS[region.reason]
 
                   return (
                     <TooltipAnchor
