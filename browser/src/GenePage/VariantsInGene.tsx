@@ -12,6 +12,7 @@ import { TrackPageSection } from '../TrackPage'
 import annotateVariantsWithClinvar from '../VariantList/annotateVariantsWithClinvar'
 import Variants from '../VariantList/Variants'
 import { Gene } from './GenePage'
+import { nmdEscapeReasonAtPosition, NMD_PTC_CONSEQUENCES } from './nmdRegion'
 
 type TranscriptsModalProps = {
   gene: {
@@ -326,6 +327,32 @@ const annotateVariantsWithPext = (variants: any, pext: any) => {
   })
 }
 
+const annotateVariantsWithNmdEscape = (variants: any[], gene: Gene) => {
+  const transcriptsById = new Map(gene.transcripts.map((t) => [t.transcript_id, t]))
+
+  return variants.map((variant: any) => {
+    if (!NMD_PTC_CONSEQUENCES.has(variant.consequence)) {
+      return variant
+    }
+    const transcript = transcriptsById.get(variant.transcript_id)
+    if (!transcript) {
+      return variant
+    }
+    const reason = nmdEscapeReasonAtPosition(
+      { strand: gene.strand, exons: transcript.exons },
+      variant.pos
+    )
+    if (!reason) {
+      return variant
+    }
+    return {
+      ...variant,
+      nmd_escape_reason: reason,
+      flags: [...(variant.flags || []), 'nmd_escape'],
+    }
+  })
+}
+
 type ConnectedVariantsInGeneProps = {
   datasetId: DatasetId
   gene: Gene
@@ -354,6 +381,7 @@ const ConnectedVariantsInGene = ({
         if (gene.pext) {
           variants = annotateVariantsWithPext(variants, gene.pext)
         }
+        variants = annotateVariantsWithNmdEscape(variants, gene)
 
         return (
           <VariantsInGene

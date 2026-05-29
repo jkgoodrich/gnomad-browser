@@ -177,6 +177,31 @@ exports[`Variant flag correctly formats with key of 'nc_transcript' 1`] = `
 </span>
 `;
 
+exports[`Variant flag correctly formats with key of 'nmd_escape' 1`] = `
+.c0 {
+  position: relative;
+  top: -0.1em;
+  display: inline-block;
+  padding: 0.25em 0.4em 0.2em;
+  border: 1px solid #000;
+  border-radius: 0.3em;
+  background: #424242;
+  color: #fff;
+  font-size: 0.75em;
+  font-weight: bold;
+  line-height: 1;
+}
+
+<span
+  className="c0"
+  level="info"
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}
+>
+  NMD escape
+</span>
+`;
+
 exports[`Variant flag correctly formats with key of 'os_lof' 1`] = `
 .c0 {
   position: relative;

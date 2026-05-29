@@ -2,6 +2,8 @@ import React from 'react'
 
 import { Badge } from '@gnomad/ui'
 
+import { NMD_ESCAPE_REASON_INFO } from '../GenePage/nmdRegion'
+
 type Flag = {
   label: string
   level: 'info' | 'warning' | 'error' | 'success' | undefined
@@ -47,6 +49,18 @@ export const FLAGS_CONFIG: Record<string, Flag> = {
     level: 'info',
     formatTooltip: () =>
       'Other Splice Predicted Loss-of-Function: this variant is predicted to create or disrupt a splice site outside the canonical splice site (beta)',
+  },
+  nmd_escape: {
+    label: 'NMD escape',
+    level: 'info',
+    formatTooltip: (variant: any) => {
+      const info = variant.nmd_escape_reason
+        ? NMD_ESCAPE_REASON_INFO[variant.nmd_escape_reason as keyof typeof NMD_ESCAPE_REASON_INFO]
+        : null
+      return info
+        ? `Predicted to escape nonsense-mediated decay — ${info.label}\n${info.description}`
+        : 'The premature termination codon is predicted to escape nonsense-mediated decay'
+    },
   },
   mnv: {
     label: 'MNV',
