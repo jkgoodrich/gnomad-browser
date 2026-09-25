@@ -193,6 +193,13 @@ export const VEP_CONSEQUENCE_CATEGORY_LABELS = {
   other: 'Other',
 }
 
+export const VEP_CONSEQUENCE_CATEGORY_COLORS = {
+  lof: '#FF583F',
+  missense: '#F0C94D',
+  synonymous: 'green',
+  other: '#757575',
+}
+
 export const getCategoryFromConsequence = (consequenceTerm: any) => categoryByTerm[consequenceTerm]
 
 export const getLabelForConsequenceTerm = (consequenceTerm: any) =>

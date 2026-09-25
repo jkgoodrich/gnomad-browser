@@ -63,6 +63,14 @@ export const RegionAttributeList = styled.dl`
   }
 `
 
+const SidePanelWithControl = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  height: 100%;
+`
+
 export interface GenericRegion {
   start: number
   stop: number
@@ -84,6 +92,8 @@ type Props<R extends GenericRegion> = {
   tooltipComponent: React.ElementType
   colorFn: (region: R) => string
   valueFn: (region: R) => string
+  leftPanelControl?: ReactNode
+  onHoverRegion?: (region: RegionWithUnclamped<R> | null) => void
 }
 
 export const regionsInExons = <R extends GenericRegion>(
@@ -134,15 +144,27 @@ const ConstraintTrack = <R extends GenericRegion>({
   tooltipComponent,
   colorFn,
   valueFn,
+  leftPanelControl,
+  onHoverRegion,
 }: Props<R>) => (
   <Wrapper>
     <Track
-      renderLeftPanel={() => (
-        <SidePanel>
-          <span>{trackTitle}</span>
-          <InfoButton topic={infobuttonTopic} />
-        </SidePanel>
-      )}
+      renderLeftPanel={() =>
+        leftPanelControl ? (
+          <SidePanelWithControl>
+            <SidePanel>
+              <span>{trackTitle}</span>
+              <InfoButton topic={infobuttonTopic} />
+            </SidePanel>
+            {leftPanelControl}
+          </SidePanelWithControl>
+        ) : (
+          <SidePanel>
+            <span>{trackTitle}</span>
+            <InfoButton topic={infobuttonTopic} />
+          </SidePanel>
+        )
+      }
     >
       {({ scalePosition, width }: TrackProps) => (
         <>
@@ -166,6 +188,7 @@ const ConstraintTrack = <R extends GenericRegion>({
                     tooltipComponent={tooltipComponent}
                   >
                     <g>
+                      {/* Hover handlers go on the rect because TooltipAnchor replaces its child's */}
                       <rect
                         x={startX}
                         y={1}
@@ -173,6 +196,8 @@ const ConstraintTrack = <R extends GenericRegion>({
                         height={15}
                         fill={colorFn(region)}
                         stroke="black"
+                        onMouseEnter={onHoverRegion && (() => onHoverRegion(region))}
+                        onMouseLeave={onHoverRegion && (() => onHoverRegion(null))}
                       />
                     </g>
                   </TooltipAnchor>

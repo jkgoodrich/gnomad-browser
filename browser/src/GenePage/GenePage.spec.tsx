@@ -310,3 +310,33 @@ describe('gene page for a mitochondrial gene', () => {
     expect(tree).toMatchSnapshot()
   })
 })
+
+describe('3D missense constraint on the gene page', () => {
+  const gene = {
+    ...geneFactory.build({ reference_genome: 'GRCh38' }),
+    exons: [{ feature_type: 'CDS', start: 123, stop: 321 }],
+  }
+
+  beforeEach(() =>
+    setMockApiResponses({
+      VariantsInGene: () => ({ gene, meta: { clinvar_release_date: '2022-10-31' } }),
+      GeneCoverage: () => ({ gene: { coverage: {} } }),
+      MissenseConstraint3d: () => ({ gene: { missense_constraint_3d: null } }),
+    })
+  )
+
+  test.each([
+    ['gnomad_r4' as DatasetId, true],
+    ['gnomad_r3' as DatasetId, false],
+    ['gnomad_r2_1' as DatasetId, false],
+  ])('is requested for %s: %s', (datasetId, isRequested) => {
+    render(
+      <MemoryRouter>
+        <GenePage datasetId={datasetId} gene={gene} geneId={gene.gene_id} />
+      </MemoryRouter>
+    )
+    expect(mockApiCalls().some((call) => call.operationName === 'MissenseConstraint3d')).toBe(
+      isRequested
+    )
+  })
+})

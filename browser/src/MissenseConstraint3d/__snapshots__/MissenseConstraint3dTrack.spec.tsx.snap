@@ -1,0 +1,256 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MissenseConstraint3dTrack has no unexpected changes 1`] = `
+<div
+  className="ConstraintTrack__Wrapper-sc-113yvfg-1 hywYpw"
+>
+  <div
+    className="sc-ggWZvA faMivF"
+  >
+    <div
+      className="sc-dTvVRJ ejoLSV"
+    >
+      <div
+        className="sc-hjsuWn ccbdKG"
+        style={
+          {
+            "width": 100,
+          }
+        }
+      >
+        <div
+          className="ConstraintTrack__SidePanelWithControl-sc-113yvfg-6 cDEONH"
+        >
+          <div
+            className="ConstraintTrack__SidePanel-sc-113yvfg-2 hZWMNP"
+          >
+            <span>
+              3D missense constraint
+            </span>
+            <button
+              className="InfoButton__Button-sc-13t5e82-0 faZoWY"
+              onClick={[Function]}
+              type="button"
+            >
+              <img
+                alt=""
+                aria-hidden="true"
+                src="test-file-stub"
+              />
+              <span
+                style={
+                  {
+                    "border": "0",
+                    "clip": "rect(0 0 0 0)",
+                    "height": "1px",
+                    "margin": "-1px",
+                    "overflow": "hidden",
+                    "padding": "0",
+                    "position": "absolute",
+                    "whiteSpace": "nowrap",
+                    "width": "1px",
+                  }
+                }
+              >
+                More information
+              </span>
+            </button>
+          </div>
+          <button
+            backgroundColor="#f8f9fa"
+            borderColor="#6c757d"
+            className="Button__BaseButton-sc-1eobygi-0 Button-sc-1eobygi-1 MissenseConstraint3dTrack__ToggleStructureButton-sc-hpdmfj-1 VaScf kBqIOY"
+            onClick={[Function]}
+            type="button"
+          >
+            Show
+             structure
+          </button>
+        </div>
+      </div>
+      <div
+        className="sc-jJLAfE KfhrV"
+        style={
+          {
+            "width": 500,
+          }
+        }
+      >
+        <div
+          className="ConstraintTrack__TopPanel-sc-113yvfg-3 hWKyuF"
+        >
+          <div
+            className="ConstraintTrack__LegendWrapper-sc-113yvfg-4 gzMZWg"
+          >
+            <span>
+              Missense observed/expected
+            </span>
+            <svg
+              height={25}
+              width={170}
+            >
+              <rect
+                fill="#9b001f"
+                height={10}
+                stroke="#000"
+                width={30}
+                x={10}
+                y={1}
+              />
+              <rect
+                fill="#de351b"
+                height={10}
+                stroke="#000"
+                width={30}
+                x={40}
+                y={1}
+              />
+              <rect
+                fill="#fd8d3c"
+                height={10}
+                stroke="#000"
+                width={30}
+                x={70}
+                y={1}
+              />
+              <rect
+                fill="#fecc5c"
+                height={10}
+                stroke="#000"
+                width={30}
+                x={100}
+                y={1}
+              />
+              <rect
+                fill="#ffffb2"
+                height={10}
+                stroke="#000"
+                width={30}
+                x={130}
+                y={1}
+              />
+              <text
+                dy="1.2em"
+                fontSize="10"
+                textAnchor="middle"
+                x={10}
+                y={10}
+              >
+                0.0
+              </text>
+              <text
+                dy="1.2em"
+                fontSize="10"
+                textAnchor="middle"
+                x={40}
+                y={10}
+              >
+                0.2
+              </text>
+              <text
+                dy="1.2em"
+                fontSize="10"
+                textAnchor="middle"
+                x={70}
+                y={10}
+              >
+                0.4
+              </text>
+              <text
+                dy="1.2em"
+                fontSize="10"
+                textAnchor="middle"
+                x={100}
+                y={10}
+              >
+                0.6
+              </text>
+              <text
+                dy="1.2em"
+                fontSize="10"
+                textAnchor="middle"
+                x={130}
+                y={10}
+              >
+                0.8
+              </text>
+              <text
+                dy="1.2em"
+                fontSize="10"
+                textAnchor="middle"
+                x={160}
+                y={10}
+              >
+                1.0+
+              </text>
+            </svg>
+            <svg
+              height={25}
+              width={170}
+            >
+              <rect
+                fill="#e2e2e2"
+                height={10}
+                stroke="#000"
+                width={20}
+                x={10}
+                y={1}
+              />
+              <text
+                dy="1em"
+                fontSize="10"
+                textAnchor="start"
+                x={35}
+                y={1}
+              >
+                Catch-all region
+              </text>
+            </svg>
+          </div>
+        </div>
+        <div
+          className="ConstraintTrack__PlotWrapper-sc-113yvfg-0 bpKJSQ"
+        >
+          <svg
+            height={55}
+            width={500}
+          >
+            <rect
+              height={1}
+              width={500}
+              x={0}
+              y={7.5}
+            />
+            <g
+              onMouseEnter={[Function]}
+              onMouseLeave={[Function]}
+            >
+              <rect
+                fill="#9b001f"
+                height={15}
+                stroke="black"
+                width={19.841269841269835}
+                x={39.682539682539684}
+                y={1}
+              />
+            </g>
+            <g
+              onMouseEnter={[Function]}
+              onMouseLeave={[Function]}
+            >
+              <rect
+                fill="#e2e2e2"
+                height={15}
+                stroke="black"
+                width={19.84126984126982}
+                x={436.5079365079365}
+                y={1}
+              />
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

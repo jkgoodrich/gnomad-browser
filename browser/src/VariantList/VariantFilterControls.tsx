@@ -4,15 +4,12 @@ import styled from 'styled-components'
 import { Checkbox, KeyboardShortcut, SearchInput } from '@gnomad/ui'
 
 import CategoryFilterControl from '../CategoryFilterControl'
-import { VEP_CONSEQUENCE_CATEGORIES, VEP_CONSEQUENCE_CATEGORY_LABELS } from '../vepConsequences'
+import {
+  VEP_CONSEQUENCE_CATEGORIES,
+  VEP_CONSEQUENCE_CATEGORY_COLORS,
+  VEP_CONSEQUENCE_CATEGORY_LABELS,
+} from '../vepConsequences'
 import InfoButton from '../help/InfoButton'
-
-const consequenceCategoryColors = {
-  lof: '#FF583F',
-  missense: '#F0C94D',
-  synonymous: 'green',
-  other: '#757575',
-}
 
 const SettingsWrapper = styled.div`
   display: flex;
@@ -89,7 +86,7 @@ const VariantFilterControls = ({ onChange, value, jumpToRow, position }: Props) 
             // @ts-expect-error TS(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
             label: VEP_CONSEQUENCE_CATEGORY_LABELS[category],
             // @ts-expect-error TS(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
-            color: consequenceCategoryColors[category],
+            color: VEP_CONSEQUENCE_CATEGORY_COLORS[category],
           }))}
           categorySelections={value.includeCategories}
           id="variant-consequence-category-filter"

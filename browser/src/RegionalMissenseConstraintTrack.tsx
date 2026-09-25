@@ -62,10 +62,18 @@ function regionColor(region: RegionalMissenseConstraintRegion) {
   return colorScale.not_significant
 }
 
-const Legend = () => {
+type LegendProps = {
+  title?: string
+  notSignificantLabel?: string
+}
+
+const Legend = ({
+  title = 'Missense observed/expected',
+  notSignificantLabel = 'Not significant (p > 1e-3)',
+}: LegendProps) => {
   return (
     <>
-      <span>Missense observed/expected</span>
+      <span>{title}</span>
       <svg width={170} height={25}>
         <rect x={10} y={1} width={30} height={10} stroke="#000" fill={colorScale.darkest} />
         <rect x={40} y={1} width={30} height={10} stroke="#000" fill={colorScale.darker} />
@@ -94,7 +102,7 @@ const Legend = () => {
       <svg width={170} height={25}>
         <rect x={10} y={1} width={20} height={10} stroke="#000" fill={colorScale.not_significant} />
         <text x={35} y={1} fontSize="10" dy="1em" textAnchor="start">
-          Not significant (p &gt; 1e-3)
+          {notSignificantLabel}
         </text>
       </svg>
     </>
@@ -264,6 +272,12 @@ const RegionalMissenseConstraintTrack = ({ regionalMissenseConstraint, gene }: P
 
 RegionalMissenseConstraintTrack.defaultProps = {
   height: 15,
+}
+
+export {
+  colorScale as missenseObsExpColorScale,
+  Legend as MissenseObsExpLegend,
+  regionColor as regionalMissenseConstraintRegionColor,
 }
 
 export default RegionalMissenseConstraintTrack

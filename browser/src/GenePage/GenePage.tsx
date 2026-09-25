@@ -23,7 +23,9 @@ import {
   hasExons,
   isExac,
   hasCopyNumberVariants,
+  hasShortVariants,
   isV2,
+  isV4,
   getTopLevelDataset,
 } from '@gnomad/dataset-metadata/metadata'
 import ConstraintTable from '../ConstraintTable/ConstraintTable'
@@ -36,6 +38,7 @@ import DocumentTitle from '../DocumentTitle'
 import GnomadPageHeading from '../GnomadPageHeading'
 import InfoButton from '../help/InfoButton'
 import Link from '../Link'
+import MissenseConstraint3dTrack from '../MissenseConstraint3d/MissenseConstraint3dTrack'
 import RegionalConstraintTrack from '../RegionalConstraintTrack'
 import RegionalMissenseConstraintTrack, {
   RegionalMissenseConstraint,
@@ -617,6 +620,10 @@ const GenePage = ({ datasetId, gene, geneId }: Props) => {
             regionalMissenseConstraint={gene.gnomad_v2_regional_missense_constraint}
             gene={gene}
           />
+        )}
+
+        {isV4(datasetId) && hasShortVariants(datasetId) && hasCodingExons && gene.chrom !== 'M' && (
+          <MissenseConstraint3dTrack datasetId={datasetId} gene={gene} />
         )}
 
         {/* eslint-disable-next-line no-nested-ternary */}

@@ -82,7 +82,7 @@ interface Interval {
   stop: number
 }
 
-const advanceOverIntervals = (
+export const advanceOverIntervals = (
   intervals: Interval[],
   distance: number,
   strand: Strand

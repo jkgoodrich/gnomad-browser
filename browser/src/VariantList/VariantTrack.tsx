@@ -4,13 +4,13 @@ import React, { PureComponent } from 'react'
 // @ts-expect-error TS(7016) FIXME: Could not find a declaration file for module '@gno... Remove this comment to see the full error message
 import BaseVariantTrack from '@gnomad/track-variants'
 
-import { getCategoryFromConsequence } from '../vepConsequences'
+import { getCategoryFromConsequence, VEP_CONSEQUENCE_CATEGORY_COLORS } from '../vepConsequences'
 
 const consequenceCategoryColors = {
-  lof: transparentize(0.3, '#FF583F'),
-  missense: transparentize(0.3, '#F0C94D'),
-  synonymous: transparentize(0.3, 'green'),
-  other: transparentize(0.3, '#757575'),
+  lof: transparentize(0.3, VEP_CONSEQUENCE_CATEGORY_COLORS.lof),
+  missense: transparentize(0.3, VEP_CONSEQUENCE_CATEGORY_COLORS.missense),
+  synonymous: transparentize(0.3, VEP_CONSEQUENCE_CATEGORY_COLORS.synonymous),
+  other: transparentize(0.3, VEP_CONSEQUENCE_CATEGORY_COLORS.other),
 }
 
 const variantColor = (variant: any) => {
