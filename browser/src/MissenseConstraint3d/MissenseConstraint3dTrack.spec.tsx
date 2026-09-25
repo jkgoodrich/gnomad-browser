@@ -375,6 +375,34 @@ describe('MissenseConstraint3dTrack', () => {
     ).toEqual([['clinvar-track-pathogenic', [[3, 3]]]])
   })
 
+  test('filters the variant table variants on the structure by consequence', async () => {
+    render(<TrackInRegionViewer variantIdsInTable={new Set(['12-103-C-T'])} />)
+    await showStructure()
+    await userEvent.click(screen.getByLabelText('Current selection (1 of 1)'))
+
+    await userEvent.click(screen.getByLabelText('Missense / Inframe indel'))
+    expect(lastViewerProps(StructureViewer3Dmol).overlays).toEqual([])
+
+    await userEvent.click(screen.getByRole('button', { name: 'all' }))
+    expect(lastViewerProps(StructureViewer3Dmol).overlays.map(({ id }) => id)).toEqual([
+      'gnomad-table-missense',
+    ])
+  })
+
+  test('filters the ClinVar track variants on the structure by clinical significance', async () => {
+    render(<TrackInRegionViewer clinvarVariantIdsInTrack={new Set(['12-104-A-G'])} />)
+    await showStructure()
+    await userEvent.click(screen.getByLabelText('Current selection (1 of 1)'))
+
+    await userEvent.click(screen.getByLabelText('Pathogenic / likely pathogenic'))
+    expect(lastViewerProps(StructureViewer3Dmol).overlays).toEqual([])
+
+    await userEvent.click(screen.getByRole('button', { name: 'all' }))
+    expect(lastViewerProps(StructureViewer3Dmol).overlays.map(({ id }) => id)).toEqual([
+      'clinvar-track-pathogenic',
+    ])
+  })
+
   test('sets the transparency and size of variants and features on the structure', async () => {
     render(<TrackInRegionViewer />)
     await showStructure()

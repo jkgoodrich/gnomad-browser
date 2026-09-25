@@ -1,5 +1,6 @@
 import { advanceOverIntervals } from '../ClinvarVariantsTrack/ClinvarAllVariantsPlot'
 import {
+  CLINICAL_SIGNIFICANCE_CATEGORY_COLORS,
   CLINICAL_SIGNIFICANCE_CATEGORY_LABELS,
   clinvarVariantClinicalSignificanceCategory,
 } from '../ClinvarVariantsTrack/clinvarVariantCategories'
@@ -8,7 +9,11 @@ import {
   RegionalMissenseConstraintRegion,
   missenseObsExpColorScale,
 } from '../RegionalMissenseConstraintTrack'
-import { VEP_CONSEQUENCE_CATEGORY_LABELS, getCategoryFromConsequence } from '../vepConsequences'
+import {
+  VEP_CONSEQUENCE_CATEGORY_COLORS,
+  VEP_CONSEQUENCE_CATEGORY_LABELS,
+  getCategoryFromConsequence,
+} from '../vepConsequences'
 
 export type MissenseConstraint3dSegment = {
   aa_start: number
@@ -644,17 +649,34 @@ export const variantOverlay = (
   style: 'variant',
 })
 
-// Unlike the browser's usual variant colors, overlay colors don't blend into the missense o/e colors
 export const GNOMAD_MISSENSE_OVERLAY = {
   id: 'gnomad-missense',
   label: 'gnomAD',
-  color: '#2166ac',
+  color: VEP_CONSEQUENCE_CATEGORY_COLORS.missense,
 }
 
 type OverlayCategory = { id: string; label: string; color: string }
 
 // One overlay per category. Residues with variants in several categories take the first of those
 // categories.
+// The variants in the selected categories, by residue
+export const variantsInCategories = <V>(
+  variantsByResidue: Map<number, V[]>,
+  categoryOf: (variant: V) => string,
+  categorySelections: Record<string, boolean>
+) => {
+  const selectedVariantsByResidue = new Map<number, V[]>()
+  variantsByResidue.forEach((variantsAtResidue, residue) => {
+    const selectedVariants = variantsAtResidue.filter(
+      (variant) => categorySelections[categoryOf(variant)]
+    )
+    if (selectedVariants.length > 0) {
+      selectedVariantsByResidue.set(residue, selectedVariants)
+    }
+  })
+  return selectedVariantsByResidue
+}
+
 const categoryOverlays = <V>(
   overlayId: string,
   categories: OverlayCategory[],
@@ -690,15 +712,30 @@ const categoryOverlays = <V>(
 export const TABLE_VARIANTS_OVERLAY_ID = 'gnomad-table'
 
 export const CONSEQUENCE_CATEGORY_OVERLAYS: OverlayCategory[] = [
-  { id: 'lof', label: VEP_CONSEQUENCE_CATEGORY_LABELS.lof, color: '#000000' },
+  {
+    id: 'lof',
+    label: VEP_CONSEQUENCE_CATEGORY_LABELS.lof,
+    color: VEP_CONSEQUENCE_CATEGORY_COLORS.lof,
+  },
   {
     id: 'missense',
     label: VEP_CONSEQUENCE_CATEGORY_LABELS.missense,
-    color: GNOMAD_MISSENSE_OVERLAY.color,
+    color: VEP_CONSEQUENCE_CATEGORY_COLORS.missense,
   },
-  { id: 'synonymous', label: VEP_CONSEQUENCE_CATEGORY_LABELS.synonymous, color: '#1b7837' },
-  { id: 'other', label: VEP_CONSEQUENCE_CATEGORY_LABELS.other, color: '#878787' },
+  {
+    id: 'synonymous',
+    label: VEP_CONSEQUENCE_CATEGORY_LABELS.synonymous,
+    color: VEP_CONSEQUENCE_CATEGORY_COLORS.synonymous,
+  },
+  {
+    id: 'other',
+    label: VEP_CONSEQUENCE_CATEGORY_LABELS.other,
+    color: VEP_CONSEQUENCE_CATEGORY_COLORS.other,
+  },
 ]
+
+export const variantConsequenceCategory = (variant: { consequence: string | null }) =>
+  getCategoryFromConsequence(variant.consequence) || 'other'
 
 export const consequenceCategoryOverlays = (
   variantsByResidue: Map<number, { consequence: string | null }[]>
@@ -706,7 +743,7 @@ export const consequenceCategoryOverlays = (
   categoryOverlays(
     TABLE_VARIANTS_OVERLAY_ID,
     CONSEQUENCE_CATEGORY_OVERLAYS,
-    (variant) => getCategoryFromConsequence(variant.consequence) || 'other',
+    variantConsequenceCategory,
     variantsByResidue
   )
 
@@ -718,11 +755,23 @@ export const CLINICAL_SIGNIFICANCE_CATEGORY_OVERLAYS: OverlayCategory[] = [
   {
     id: 'pathogenic',
     label: CLINICAL_SIGNIFICANCE_CATEGORY_LABELS.pathogenic,
-    color: '#762a83',
+    color: CLINICAL_SIGNIFICANCE_CATEGORY_COLORS.pathogenic,
   },
-  { id: 'uncertain', label: CLINICAL_SIGNIFICANCE_CATEGORY_LABELS.uncertain, color: '#c2a5cf' },
-  { id: 'benign', label: CLINICAL_SIGNIFICANCE_CATEGORY_LABELS.benign, color: '#5aae61' },
-  { id: 'other', label: CLINICAL_SIGNIFICANCE_CATEGORY_LABELS.other, color: '#bababa' },
+  {
+    id: 'uncertain',
+    label: CLINICAL_SIGNIFICANCE_CATEGORY_LABELS.uncertain,
+    color: CLINICAL_SIGNIFICANCE_CATEGORY_COLORS.uncertain,
+  },
+  {
+    id: 'benign',
+    label: CLINICAL_SIGNIFICANCE_CATEGORY_LABELS.benign,
+    color: CLINICAL_SIGNIFICANCE_CATEGORY_COLORS.benign,
+  },
+  {
+    id: 'other',
+    label: CLINICAL_SIGNIFICANCE_CATEGORY_LABELS.other,
+    color: CLINICAL_SIGNIFICANCE_CATEGORY_COLORS.other,
+  },
 ]
 
 export const clinicalSignificanceCategoryOverlays = (

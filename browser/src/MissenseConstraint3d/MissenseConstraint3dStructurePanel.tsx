@@ -4,7 +4,9 @@ import styled from 'styled-components'
 import { Button, Checkbox, ExternalLink, SegmentedControl } from '@gnomad/ui'
 import { DatasetId, referenceGenome } from '@gnomad/dataset-metadata/metadata'
 
+import CategoryFilterControl from '../CategoryFilterControl'
 import { CheckboxInput, Label, LegendItemWrapper, LegendSwatch } from '../ChartStyles'
+import { clinvarVariantClinicalSignificanceCategory } from '../ClinvarVariantsTrack/clinvarVariantCategories'
 import { RegionAttributeList } from '../ConstraintTrack'
 import Delayed from '../Delayed'
 import InfoButton from '../help/InfoButton'
@@ -18,7 +20,9 @@ import {
 } from '../RegionalMissenseConstraintTrack'
 import StatusMessage from '../StatusMessage'
 import {
+  CLINICAL_SIGNIFICANCE_CATEGORY_OVERLAYS,
   CLINVAR_TRACK_VARIANTS_OVERLAY_ID,
+  CONSEQUENCE_CATEGORY_OVERLAYS,
   GNOMAD_MISSENSE_OVERLAY,
   HoveredResidue,
   MissenseConstraint3d,
@@ -49,7 +53,9 @@ import {
   uniprotEntryUrl,
   uniprotFeatureOverlayId,
   uniprotFeatureOverlays,
+  variantConsequenceCategory,
   variantOverlay,
+  variantsInCategories,
 } from './missenseConstraint3d'
 import MissenseConstraint3dRegionAttributes from './MissenseConstraint3dRegionAttributes'
 
@@ -146,7 +152,7 @@ const ViewerLayout = styled.div`
 `
 
 const OverlayPanel = styled.div`
-  flex: 0 0 18em;
+  flex: 0 0 32em;
   overflow-y: auto;
   box-sizing: border-box;
   max-height: ${VIEWER_HEIGHT}px;
@@ -200,19 +206,10 @@ const OverlaySwatch = styled(LegendSwatch)`
   margin: 0 0.5em 0 0;
 `
 
-const CategoryKey = styled.ul`
-  display: flex;
-  flex-wrap: wrap;
-  padding: 0 0 0 1.5em;
-  margin: 0;
-  font-size: 0.85em;
-  list-style-type: none;
-
-  li {
-    display: flex;
-    align-items: center;
-    margin: 0 0.75em 0.25em 0;
-  }
+// The same category filters as the ClinVar and gnomAD variant tracks. Pass a breakpoint that always
+// applies to stack their categories in the narrow overlay panel.
+const OverlayCategoryFilter = styled(CategoryFilterControl)`
+  padding-left: 1.5em;
 `
 
 const UnplacedVariantsNote = styled.p`
@@ -396,6 +393,12 @@ const StructurePanel = ({
 }: StructurePanelProps) => {
   const [overlayTransparency, setOverlayTransparency] = useState(0)
   const [overlaySize, setOverlaySize] = useState(1)
+  const [clinicalSignificanceSelections, setClinicalSignificanceSelections] = useState<
+    Record<string, boolean>
+  >(() => Object.fromEntries(CLINICAL_SIGNIFICANCE_CATEGORY_OVERLAYS.map(({ id }) => [id, true])))
+  const [consequenceSelections, setConsequenceSelections] = useState<Record<string, boolean>>(() =>
+    Object.fromEntries(CONSEQUENCE_CATEGORY_OVERLAYS.map(({ id }) => [id, true]))
+  )
   const [hoveredResidue, setHoveredResidue] = useState<HoveredResidue | null>(null)
   const [resetViewCount, setResetViewCount] = useState(0)
   const [structureViewer, setStructureViewer] = useState(initialStructureViewer)
@@ -466,9 +469,21 @@ const StructurePanel = ({
       ),
     [variants, variantIdsInTable, sequence]
   )
+  // The table's variants in the consequence categories selected for the structure
+  const selectedTableVariantsByResidue = useMemo(
+    () =>
+      variantsInCategories(
+        tableVariants
+          ? tableVariants.variantsByResidue
+          : new Map<number, MissenseConstraint3dVariant[]>(),
+        variantConsequenceCategory,
+        consequenceSelections
+      ),
+    [tableVariants, consequenceSelections]
+  )
   const tableOverlays = useMemo(
-    () => (tableVariants ? consequenceCategoryOverlays(tableVariants.variantsByResidue) : []),
-    [tableVariants]
+    () => consequenceCategoryOverlays(selectedTableVariantsByResidue),
+    [selectedTableVariantsByResidue]
   )
   const clinvarTrackVariants = useMemo(
     () =>
@@ -480,12 +495,21 @@ const StructurePanel = ({
       ),
     [clinvarVariants, clinvarVariantIdsInTrack, sequence]
   )
-  const clinvarTrackOverlays = useMemo(
+  // The ClinVar track's variants in the clinical significance categories selected for the structure
+  const selectedClinvarTrackVariantsByResidue = useMemo(
     () =>
-      clinvarTrackVariants
-        ? clinicalSignificanceCategoryOverlays(clinvarTrackVariants.variantsByResidue)
-        : [],
-    [clinvarTrackVariants]
+      variantsInCategories(
+        clinvarTrackVariants
+          ? clinvarTrackVariants.variantsByResidue
+          : new Map<number, MissenseConstraint3dClinvarVariant[]>(),
+        clinvarVariantClinicalSignificanceCategory,
+        clinicalSignificanceSelections
+      ),
+    [clinvarTrackVariants, clinicalSignificanceSelections]
+  )
+  const clinvarTrackOverlays = useMemo(
+    () => clinicalSignificanceCategoryOverlays(selectedClinvarTrackVariantsByResidue),
+    [selectedClinvarTrackVariantsByResidue]
   )
 
   // 3Dmol colors a residue in several variant overlays like the last of them, so ClinVar goes last
@@ -530,7 +554,7 @@ const StructurePanel = ({
     overlayId: string,
     listedVariantIds: Set<string>,
     placedVariants: { variantsByResidue: Map<number, unknown[]> },
-    categoryOverlays: StructureOverlay[]
+    categoryControl: React.ReactNode
   ) => {
     const placedVariantCount = Array.from(placedVariants.variantsByResidue.values()).reduce(
       (count, variantsAtResidue) => count + variantsAtResidue.length,
@@ -551,18 +575,7 @@ const StructurePanel = ({
             </Label>
           </LegendItemWrapper>
         </OverlayList>
-        <CategoryKey>
-          {categoryOverlays.map((overlay) => (
-            <li key={overlay.id}>
-              <OverlaySwatch
-                color={overlay.color}
-                // @ts-expect-error TS(2769) FIXME: No overload matches this call.
-                height={16}
-              />
-              {overlay.label}
-            </li>
-          ))}
-        </CategoryKey>
+        {categoryControl}
       </>
     )
   }
@@ -596,13 +609,13 @@ const StructurePanel = ({
               : []
           }
           clinvarVariants={
-            clinvarTrackVariants && isVisible(CLINVAR_TRACK_VARIANTS_OVERLAY_ID)
-              ? clinvarTrackVariants.variantsByResidue.get(residue.residueNumber) || []
+            isVisible(CLINVAR_TRACK_VARIANTS_OVERLAY_ID)
+              ? selectedClinvarTrackVariantsByResidue.get(residue.residueNumber) || []
               : []
           }
           tableVariants={
-            tableVariants && isVisible(TABLE_VARIANTS_OVERLAY_ID)
-              ? tableVariants.variantsByResidue.get(residue.residueNumber) || []
+            isVisible(TABLE_VARIANTS_OVERLAY_ID)
+              ? selectedTableVariantsByResidue.get(residue.residueNumber) || []
               : []
           }
           uniprotFeatureDescriptions={constraint.uniprot_features
@@ -741,7 +754,13 @@ const StructurePanel = ({
                 CLINVAR_TRACK_VARIANTS_OVERLAY_ID,
                 clinvarVariantIdsInTrack,
                 clinvarTrackVariants,
-                clinvarTrackOverlays
+                <OverlayCategoryFilter
+                  breakpoint={Number.MAX_SAFE_INTEGER}
+                  categories={CLINICAL_SIGNIFICANCE_CATEGORY_OVERLAYS}
+                  categorySelections={clinicalSignificanceSelections}
+                  id="missense-constraint-3d-clinvar-track-included-categories"
+                  onChange={setClinicalSignificanceSelections}
+                />
               )}
             </>
           )}
@@ -752,7 +771,13 @@ const StructurePanel = ({
                 TABLE_VARIANTS_OVERLAY_ID,
                 variantIdsInTable,
                 tableVariants,
-                tableOverlays
+                <OverlayCategoryFilter
+                  breakpoint={Number.MAX_SAFE_INTEGER}
+                  categories={CONSEQUENCE_CATEGORY_OVERLAYS}
+                  categorySelections={consequenceSelections}
+                  id="missense-constraint-3d-gnomad-table-included-categories"
+                  onChange={setConsequenceSelections}
+                />
               )}
             </>
           )}
