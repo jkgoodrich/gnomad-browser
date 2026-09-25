@@ -16,6 +16,7 @@ import {
   codingSequenceLength,
   clinicalSignificanceCategoryOverlays,
   consequenceCategoryOverlays,
+  fadeUnselectedResidues,
   formatResidue,
   isPassingGnomadMissenseVariant,
   obsExpBinColor,
@@ -30,7 +31,9 @@ import {
   regionsByResidue,
   residueColors,
   residueNamesMatchSequence,
+  residuesOnGenome,
   segmentsOnGenome,
+  toggleResidues,
   uniprotFeatureOverlays,
   uniprotFeaturesOnGenome,
   variantOverlay,
@@ -116,6 +119,36 @@ test('UniProt features are placed on the genome like region segments', () => {
       '1'
     ).map(({ start, stop, feature }) => [feature.start, feature.stop, start, stop])
   ).toEqual([[2, 3, 103, 202]])
+})
+
+describe('residuesOnGenome', () => {
+  test('places the coding bases of residues, split at introns', () => {
+    expect(residuesOnGenome(new Set([3, 1, 2]), { strand: '+', exons: codingExons })).toEqual([
+      { start: 100, stop: 105 },
+      { start: 200, stop: 202 },
+    ])
+  })
+
+  test('numbers residues from the 3′ end of the - strand', () => {
+    expect(residuesOnGenome([1], { strand: '-', exons: codingExons })).toEqual([
+      { start: 203, stop: 205 },
+    ])
+  })
+})
+
+test('toggling residues adds them, or removes them if they are all selected', () => {
+  expect(toggleResidues(null, [1, 2])).toEqual(new Set([1, 2]))
+  expect(toggleResidues(new Set([1]), [1, 2])).toEqual(new Set([1, 2]))
+  expect(toggleResidues(new Set([1, 2, 3]), [1, 2])).toEqual(new Set([3]))
+  expect(toggleResidues(new Set([1]), [1])).toBeNull()
+})
+
+test('residues outside a selection are faded', () => {
+  expect(fadeUnselectedResidues(['#000000', '#ff0000', '#000000'], new Set([1]))).toEqual([
+    '#bfbfbf',
+    '#ff0000',
+    '#bfbfbf',
+  ])
 })
 
 test('codingSequenceLength counts only coding bases', () => {

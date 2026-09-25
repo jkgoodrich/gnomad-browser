@@ -43,6 +43,16 @@ Select "Show structure" to view the AlphaFold structure colored the same way as 
 
 Variants are placed using their HGVSp annotation on the constraint transcript, and only when its reference amino acid matches the protein sequence, so variants in the ClinVar and table selections that don't change the protein, such as intronic variants, aren't shown. Variant and feature colors are chosen to stand out against the missense o/e colors, and the panel's sliders set their transparency and size.
 
+### Selecting residues
+
+Use "Select" above the structure to select residues:
+
+- **Residue**: click residues to select or deselect them.
+- **Box**: drag a box to select the residues whose alpha carbon is inside it, including residues behind others.
+- **3D region**: click a residue to select or deselect all the residues of its 3D missense constraint region.
+
+Residues outside the selection are faded, and the ClinVar variants track and gnomAD variants table below show only the variants whose positions are in the coding bases of the selected residues. Select "Clear selection", or "Show all variants" in those sections, to show all variants again.
+
 ### Data sources and licenses
 
 Predicted structures are from the AlphaFold Protein Structure Database ([Jumper _et al._ Nature 2021](https://www.nature.com/articles/s41586-021-03819-2); [Varadi _et al._ Nucleic Acids Research 2024](https://academic.oup.com/nar/article/52/D1/D368/7337620)), available under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Protein features are from [UniProtKB](https://www.uniprot.org/), available under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).

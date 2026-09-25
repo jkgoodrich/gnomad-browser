@@ -136,25 +136,21 @@ describe('Variants', () => {
     scalePosition: regionViewerScale(viewerRegions, [0, 500]),
   }
 
-  it('reports the variants that the table lists', async () => {
-    const variants = [
-      variantTableVariantFactory.build({
-        variant_id: '1-100-A-C',
-        pos: 100,
-        consequence: 'missense_variant',
-      }),
-      variantTableVariantFactory.build({
-        variant_id: '1-200-A-C',
-        pos: 200,
-        consequence: 'synonymous_variant',
-      }),
-    ] as unknown as Variant[]
-    const onChangeFilteredVariants = jest.fn<(variants: Variant[]) => void>()
-    const reportedVariantIds = () => {
-      const { calls } = onChangeFilteredVariants.mock
-      return calls[calls.length - 1][0].map((variant) => variant.variant_id)
-    }
+  const variants = [
+    variantTableVariantFactory.build({
+      variant_id: '1-100-A-C',
+      pos: 100,
+      consequence: 'missense_variant',
+    }),
+    variantTableVariantFactory.build({
+      variant_id: '1-200-A-C',
+      pos: 200,
+      consequence: 'synonymous_variant',
+    }),
+  ] as unknown as Variant[]
 
+  const renderVariants = (props: Partial<React.ComponentProps<typeof Variants>> = {}) => {
+    const onChangeFilteredVariants = jest.fn<(variants: Variant[]) => void>()
     render(
       <RegionViewerContext.Provider value={regionViewer}>
         <Variants
@@ -163,12 +159,37 @@ describe('Variants', () => {
           datasetId="gnomad_r4"
           variants={variants}
           onChangeFilteredVariants={onChangeFilteredVariants}
+          {...props}
         />
       </RegionViewerContext.Provider>
     )
+    return () => {
+      const { calls } = onChangeFilteredVariants.mock
+      return calls[calls.length - 1][0].map((variant) => variant.variant_id)
+    }
+  }
+
+  it('reports the variants that the table lists', async () => {
+    const reportedVariantIds = renderVariants()
     expect(reportedVariantIds()).toEqual(['1-100-A-C', '1-200-A-C'])
 
     await userEvent.click(screen.getByLabelText(/^Synonymous/))
     expect(reportedVariantIds()).toEqual(['1-100-A-C'])
+  })
+
+  it('shows only the variants at the positions of its position filter', async () => {
+    const onClear = jest.fn()
+    const reportedVariantIds = renderVariants({
+      positionFilter: {
+        intervals: [{ start: 150, stop: 250 }],
+        description: 'the selected residues',
+        onClear,
+      },
+    })
+    expect(reportedVariantIds()).toEqual(['1-200-A-C'])
+    expect(screen.getByText(/Showing only variants in the selected residues/)).not.toBeNull()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Show all variants' }))
+    expect(onClear).toHaveBeenCalled()
   })
 })

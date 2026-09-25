@@ -1,5 +1,7 @@
 import React, { ReactNode, createContext, useCallback, useContext, useMemo, useState } from 'react'
 
+import { StructureSelection } from '../MissenseConstraint3d/missenseConstraint3d'
+
 type ListedVariantIds = Set<string> | null
 
 type OnChangeListedVariants = (variants: { variant_id: string }[]) => void
@@ -39,12 +41,20 @@ const ListedVariantsContext = createContext<ListedVariants>({
 
 const ListedVariantsCallbacksContext = createContext<ListedVariantsCallbacks>({})
 
-// Shares the variants that the gene page's variant table and ClinVar track list with other parts of
-// the page, like the 3D missense constraint structure. When they change, only the components using
-// them render again, not the whole page.
-export const ListedVariantsProvider = ({ children }: { children: ReactNode }) => {
+const StructureSelectionContext = createContext<StructureSelection | null>(null)
+
+const SetStructureSelectionContext = createContext<(selection: StructureSelection | null) => void>(
+  () => {}
+)
+
+// Shares selections between sections of the gene page: the variants that the variant table and
+// ClinVar track list, which the 3D missense constraint structure can show, and the residues selected
+// on the structure, which those sections then show only the variants of. When a selection changes,
+// only the components using it render again, not the whole page.
+export const GenePageSelectionsProvider = ({ children }: { children: ReactNode }) => {
   const [variantIdsInTable, onChangeVariantsInTable] = useListedVariantIds()
   const [clinvarVariantIdsInTrack, onChangeClinvarVariantsInTrack] = useListedVariantIds()
+  const [structureSelection, setStructureSelection] = useState<StructureSelection | null>(null)
   const listedVariants = useMemo(
     () => ({ variantIdsInTable, clinvarVariantIdsInTrack }),
     [variantIdsInTable, clinvarVariantIdsInTrack]
@@ -54,14 +64,22 @@ export const ListedVariantsProvider = ({ children }: { children: ReactNode }) =>
     [onChangeVariantsInTable, onChangeClinvarVariantsInTrack]
   )
   return (
-    <ListedVariantsCallbacksContext.Provider value={callbacks}>
-      <ListedVariantsContext.Provider value={listedVariants}>
-        {children}
-      </ListedVariantsContext.Provider>
-    </ListedVariantsCallbacksContext.Provider>
+    <SetStructureSelectionContext.Provider value={setStructureSelection}>
+      <StructureSelectionContext.Provider value={structureSelection}>
+        <ListedVariantsCallbacksContext.Provider value={callbacks}>
+          <ListedVariantsContext.Provider value={listedVariants}>
+            {children}
+          </ListedVariantsContext.Provider>
+        </ListedVariantsCallbacksContext.Provider>
+      </StructureSelectionContext.Provider>
+    </SetStructureSelectionContext.Provider>
   )
 }
 
 export const useListedVariants = () => useContext(ListedVariantsContext)
 
 export const useListedVariantsCallbacks = () => useContext(ListedVariantsCallbacksContext)
+
+export const useStructureSelection = () => useContext(StructureSelectionContext)
+
+export const useSetStructureSelection = () => useContext(SetStructureSelectionContext)

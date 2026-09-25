@@ -113,6 +113,25 @@ export type HoveredResidue = {
   y: number
 }
 
+// In pixels, relative to the viewer
+export type ViewerRectangle = {
+  left: number
+  top: number
+  right: number
+  bottom: number
+}
+
+export type GenomicInterval = {
+  start: number
+  stop: number
+}
+
+// Residues selected on the structure, and the coding bases that encode them
+export type StructureSelection = {
+  residues: ReadonlySet<number>
+  intervals: GenomicInterval[]
+}
+
 export type StructureViewerProps = {
   structureUrl: string
   expectedSequence: string
@@ -126,8 +145,16 @@ export type StructureViewerProps = {
   overlaySize: number
   resetViewCount: number
   onHoverResidue: (residue: HoveredResidue | null) => void
+  // Called for clicks, not drags, on a residue
+  onClickResidue: (residueNumber: number) => void
   // pLDDT of each residue in the loaded structure, indexed by residue number
   onLoadStructure: (plddtByResidue: number[]) => void
+}
+
+// Methods of the structure viewers that the structure panel calls
+export interface StructureViewerHandle {
+  // Residues whose alpha carbon is drawn within the rectangle, at any depth
+  residuesInRectangle(rectangle: ViewerRectangle): number[]
 }
 
 export type StructureViewerStatus =
@@ -473,6 +500,69 @@ export const uniprotFeaturesOnGenome = (
   }))
 }
 
+// Consecutive residues, as ranges
+const residueRanges = (residues: Iterable<number>): ResidueRange[] =>
+  Array.from(residues)
+    .sort((a, b) => a - b)
+    .reduce((ranges: ResidueRange[], residue) => {
+      const lastRange = ranges[ranges.length - 1]
+      if (lastRange && residue === lastRange[1] + 1) {
+        lastRange[1] = residue
+      } else {
+        ranges.push([residue, residue])
+      }
+      return ranges
+    }, [])
+
+// The coding bases that encode a set of residues, as genomic intervals within coding exons
+export const residuesOnGenome = (
+  residues: Iterable<number>,
+  transcript: TranscriptOnGenome
+): GenomicInterval[] => {
+  const onGenome = residueRangesOnGenome(transcript)
+  const codingExons = transcript.exons.filter((exon) => exon.feature_type === 'CDS')
+  return residueRanges(residues).flatMap((range) => {
+    const span = onGenome(range)
+    return codingExons.flatMap((exon) => {
+      const start = Math.max(span.start, exon.start)
+      const stop = Math.min(span.stop, exon.stop)
+      return start <= stop ? [{ start, stop }] : []
+    })
+  })
+}
+
+// Adds the residues to the selection, or removes them if they're all selected already
+export const toggleResidues = (
+  selection: ReadonlySet<number> | null,
+  residues: number[]
+): ReadonlySet<number> | null => {
+  const nextSelection = new Set(selection)
+  if (residues.every((residue) => nextSelection.has(residue))) {
+    residues.forEach((residue) => nextSelection.delete(residue))
+  } else {
+    residues.forEach((residue) => nextSelection.add(residue))
+  }
+  return nextSelection.size > 0 ? nextSelection : null
+}
+
+const SELECTION_FADE = 0.75
+
+// Mixes a hex color with white
+const fadedColor = (color: string) => {
+  const channels = [1, 3, 5].map((index) => parseInt(color.slice(index, index + 2), 16))
+  return `#${channels
+    .map((channel) =>
+      Math.round(channel + (255 - channel) * SELECTION_FADE)
+        .toString(16)
+        .padStart(2, '0')
+    )
+    .join('')}`
+}
+
+// Fades residues outside a selection, so the selected residues stand out
+export const fadeUnselectedResidues = (colors: string[], selectedResidues: ReadonlySet<number>) =>
+  colors.map((color, residue) => (selectedResidues.has(residue) ? color : fadedColor(color)))
+
 // Rank (from 0) of the most constrained significant regions, keyed by region index
 export const rankConstrainedRegions = (regions: MissenseConstraint3dRegion[]) =>
   new Map(
@@ -578,6 +668,11 @@ export const residueColors = <R extends object>(
 
 export const regionResidueRanges = (region: MissenseConstraint3dRegion): ResidueRange[] =>
   region.segments.map((segment) => [segment.aa_start, segment.aa_stop])
+
+export const regionResidues = (region: MissenseConstraint3dRegion) =>
+  region.segments.flatMap(({ aa_start: start, aa_stop: stop }) =>
+    Array.from({ length: stop - start + 1 }, (_, i) => start + i)
+  )
 
 export const parseMissenseHgvsp = (hgvsp: string | null) => {
   const match = hgvsp ? /^p\.([A-Z][a-z]{2})(\d+)([A-Z][a-z]{2})$/.exec(hgvsp) : null

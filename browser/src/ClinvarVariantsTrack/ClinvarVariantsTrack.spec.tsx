@@ -253,6 +253,31 @@ describe('Clinvar Variants Track selection', () => {
     )
     expect(reportedVariants()).toEqual([mockClinvarVariants[4]])
   })
+
+  test('shows only the variants at the positions of its position filter', async () => {
+    const onClear = jest.fn()
+    render(
+      <BrowserRouter>
+        <RegionViewerContext.Provider value={childProps}>
+          <ClinvarVariantTrack
+            referenceGenome="GRCh38"
+            transcripts={mockTranscripts}
+            variants={mockClinvarVariantsOfEachCategory}
+            positionFilter={{
+              intervals: [{ start: 100, stop: 200 }],
+              description: 'the selected residues',
+              onClear,
+            }}
+          />
+        </RegionViewerContext.Provider>
+      </BrowserRouter>
+    )
+    expect(screen.getByText('ClinVar variants (2)')).not.toBeNull()
+    expect(screen.getByText(/Showing only variants in the selected residues/)).not.toBeNull()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Show all variants' }))
+    expect(onClear).toHaveBeenCalled()
+  })
 })
 
 describe('ClinvarVariants', () => {

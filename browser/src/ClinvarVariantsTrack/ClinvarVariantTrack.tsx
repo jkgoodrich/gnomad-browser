@@ -6,6 +6,11 @@ import { Button, Checkbox, Modal, ExternalLink } from '@gnomad/ui'
 import CategoryFilterControl from '../CategoryFilterControl'
 import InfoButton from '../help/InfoButton'
 import filterVariantsInZoomRegion from '../RegionViewer/filterVariantsInZoomRegion'
+import {
+  PositionFilter,
+  PositionFilterNotice,
+  variantsInPositionFilter,
+} from '../VariantList/PositionFilter'
 import { PageType, TrackPageSection } from '../TrackPage'
 import {
   VEP_CONSEQUENCE_CATEGORIES,
@@ -101,6 +106,7 @@ type Props = {
   variants: ClinvarVariant[]
   // Lets other parts of the page show the variants that the track shows
   onChangeFilteredVariants?: (variants: ClinvarVariant[]) => void
+  positionFilter?: PositionFilter | null
 }
 
 const UnmemoizedClinvarVariantTrack = ({
@@ -108,6 +114,7 @@ const UnmemoizedClinvarVariantTrack = ({
   transcripts,
   variants,
   onChangeFilteredVariants,
+  positionFilter,
 }: Props) => {
   const [selectedVariant, setSelectedVariant] = useState(null)
 
@@ -138,7 +145,7 @@ const UnmemoizedClinvarVariantTrack = ({
 
   const filteredVariants = useMemo(
     () =>
-      variants.filter(
+      variantsInPositionFilter(variants, positionFilter).filter(
         (v) =>
           // @ts-expect-error TS(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
           includedClinicalSignificanceCategories[clinvarVariantClinicalSignificanceCategory(v)] &&
@@ -149,6 +156,7 @@ const UnmemoizedClinvarVariantTrack = ({
       ),
     [
       variants,
+      positionFilter,
       includedClinicalSignificanceCategories,
       includedConsequenceCategories,
       showOnlyGnomad,
@@ -165,6 +173,7 @@ const UnmemoizedClinvarVariantTrack = ({
   return (
     <>
       <TrackPageSection>
+        {positionFilter && <PositionFilterNotice positionFilter={positionFilter} />}
         <TopPanel>
           <ControlRow>
             <div>
@@ -325,6 +334,7 @@ type ClinvarVariantsProps = {
   zoomRegion?: { start: number; stop: number } | null
   pageType: PageType
   onChangeFilteredVariants?: (variants: ClinvarVariant[]) => void
+  positionFilter?: PositionFilter | null
 }
 
 const ClinvarVariants = ({
@@ -335,6 +345,7 @@ const ClinvarVariants = ({
   zoomRegion = null,
   pageType,
   onChangeFilteredVariants,
+  positionFilter,
 }: ClinvarVariantsProps) => {
   const heading = (
     <TrackPageSection>
@@ -364,6 +375,7 @@ const ClinvarVariants = ({
         transcripts={transcripts}
         variants={filterVariantsInZoomRegion(clinvarVariants, zoomRegion)}
         onChangeFilteredVariants={onChangeFilteredVariants}
+        positionFilter={positionFilter}
       />
       <TrackPageSection as="p">
         Data displayed here is from ClinVar&apos;s {formatClinvarDate(clinvarReleaseDate)} release.

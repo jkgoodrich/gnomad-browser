@@ -7,9 +7,11 @@ import {
   StructureProperties,
   StructureSelection,
 } from 'molstar/lib/mol-model/structure'
+import { Vec3, Vec4 } from 'molstar/lib/mol-math/linear-algebra'
 import { InteractivityManager } from 'molstar/lib/mol-plugin-state/manager/interactivity'
 import { PluginStateObject } from 'molstar/lib/mol-plugin-state/objects'
 import { StateTransforms } from 'molstar/lib/mol-plugin-state/transforms'
+import { PluginBehaviors } from 'molstar/lib/mol-plugin/behavior'
 import { setSubtreeVisibility } from 'molstar/lib/mol-plugin/behavior/static/state'
 import { PluginConfig } from 'molstar/lib/mol-plugin/config'
 import { PluginContext } from 'molstar/lib/mol-plugin/context'
@@ -31,8 +33,10 @@ import {
   STRUCTURE_HIGHLIGHT_COLOR,
   STRUCTURE_VIEWER_STATUS_MESSAGES,
   StructureOverlay,
+  StructureViewerHandle,
   StructureViewerProps,
   StructureViewerStatus,
+  ViewerRectangle,
   residueNamesMatchSequence,
 } from './missenseConstraint3d'
 
@@ -105,7 +109,10 @@ type State = {
   status: StructureViewerStatus
 }
 
-class StructureViewerMolstar extends Component<StructureViewerProps, State> {
+class StructureViewerMolstar
+  extends Component<StructureViewerProps, State>
+  implements StructureViewerHandle
+{
   container: HTMLDivElement | null = null
 
   plugin: PluginContext | null = null
@@ -125,6 +132,10 @@ class StructureViewerMolstar extends Component<StructureViewerProps, State> {
   >()
 
   hoverSubscription: { unsubscribe: () => void } | null = null
+
+  clickSubscription: { unsubscribe: () => void } | null = null
+
+  alphaCarbons: { residue: number; position: Vec3 }[] = []
 
   // Mol* state updates are asynchronous, so apply prop changes one at a time
   updates: Promise<void> = Promise.resolve()
@@ -184,6 +195,9 @@ class StructureViewerMolstar extends Component<StructureViewerProps, State> {
     if (this.hoverSubscription) {
       this.hoverSubscription.unsubscribe()
     }
+    if (this.clickSubscription) {
+      this.clickSubscription.unsubscribe()
+    }
     if (this.plugin) {
       this.plugin.dispose()
     }
@@ -214,6 +228,37 @@ class StructureViewerMolstar extends Component<StructureViewerProps, State> {
     })
   }
 
+  onClick = ({ current }: InteractivityManager.ClickEvent) => {
+    const { onClickResidue } = this.props
+    const location = StructureElement.Loci.is(current.loci)
+      ? StructureElement.Loci.getFirstLocation(current.loci)
+      : undefined
+    if (location) {
+      onClickResidue(StructureProperties.residue.auth_seq_id(location))
+    }
+  }
+
+  // eslint-disable-next-line react/no-unused-class-component-methods -- the panel calls it through a ref
+  residuesInRectangle({ left, top, right, bottom }: ViewerRectangle) {
+    const canvas3d = this.plugin?.canvas3d
+    if (!canvas3d) {
+      return []
+    }
+    const { camera } = canvas3d
+    const { x: viewportX, y: viewportY, height } = camera.viewport
+    const { pixelRatio } = canvas3d.webgl
+    const projected = Vec4()
+    return this.alphaCarbons
+      .filter(({ position }) => {
+        // Mol* projects to device pixels, counted up from the bottom of the viewport
+        camera.project(projected, position)
+        const x = (projected[0] - viewportX) / pixelRatio
+        const y = (height - (projected[1] - viewportY)) / pixelRatio
+        return left <= x && x <= right && top <= y && y <= bottom
+      })
+      .map(({ residue }) => residue)
+  }
+
   enqueueUpdate(update: () => Promise<void>) {
     this.updates = this.updates
       .then(() => (this.isUnmounted ? undefined : update()))
@@ -223,8 +268,15 @@ class StructureViewerMolstar extends Component<StructureViewerProps, State> {
   async loadStructure() {
     const { structureUrl, expectedSequence, residueColors, onLoadStructure } = this.props
 
+    const spec = DefaultPluginSpec()
     const plugin = new PluginContext({
-      ...DefaultPluginSpec(),
+      ...spec,
+      // Clicks select residues, rather than focusing on them
+      behaviors: spec.behaviors.filter(
+        ({ transformer }) =>
+          transformer !== PluginBehaviors.Camera.FocusLoci &&
+          transformer !== PluginBehaviors.Representation.FocusLoci
+      ),
       config: [[PluginConfig.VolumeStreaming.Enabled, false]],
     })
     this.plugin = plugin
@@ -262,6 +314,18 @@ class StructureViewerMolstar extends Component<StructureViewerProps, State> {
         residues.push([residueNumber, StructureProperties.atom.label_comp_id(location)])
         plddtByResidue[residueNumber] = StructureProperties.atom.B_iso_or_equiv(location)
       },
+      atom: (location) => {
+        if (StructureProperties.atom.label_atom_id(location) === 'CA') {
+          this.alphaCarbons.push({
+            residue: StructureProperties.residue.auth_seq_id(location),
+            position: Vec3.create(
+              StructureProperties.atom.x(location),
+              StructureProperties.atom.y(location),
+              StructureProperties.atom.z(location)
+            ),
+          })
+        }
+      },
     })
     if (!residueNamesMatchSequence(residues, expectedSequence)) {
       this.setState({ status: 'sequence-mismatch' })
@@ -278,6 +342,7 @@ class StructureViewerMolstar extends Component<StructureViewerProps, State> {
       colorParams: { colors: residueColors.map((color) => Color.fromHexStyle(color)) },
     })
     this.hoverSubscription = plugin.behaviors.interaction.hover.subscribe(this.onHover)
+    this.clickSubscription = plugin.behaviors.interaction.click.subscribe(this.onClick)
     await this.showOverlays()
     this.highlightResidues()
     this.frameConfidentResidues()

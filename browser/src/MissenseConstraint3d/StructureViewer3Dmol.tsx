@@ -9,8 +9,10 @@ import {
   ResidueRange,
   STRUCTURE_HIGHLIGHT_COLOR,
   STRUCTURE_VIEWER_STATUS_MESSAGES,
+  StructureViewerHandle,
   StructureViewerProps,
   StructureViewerStatus,
+  ViewerRectangle,
   residueNamesMatchSequence,
 } from './missenseConstraint3d'
 
@@ -65,7 +67,10 @@ type State = {
   status: StructureViewerStatus
 }
 
-class StructureViewer3Dmol extends Component<StructureViewerProps, State> {
+class StructureViewer3Dmol
+  extends Component<StructureViewerProps, State>
+  implements StructureViewerHandle
+{
   container: HTMLDivElement | null = null
 
   viewer: GLViewer | null = null
@@ -75,6 +80,8 @@ class StructureViewer3Dmol extends Component<StructureViewerProps, State> {
   cartoonModel: GLModel | null = null
 
   overlayModel: GLModel | null = null
+
+  alphaCarbons: { residue: number; x: number; y: number; z: number }[] = []
 
   isUnmounted = false
 
@@ -156,6 +163,29 @@ class StructureViewer3Dmol extends Component<StructureViewerProps, State> {
     onHoverResidue(null)
   }
 
+  onClickAtom = (atom: Atom) => {
+    const { onClickResidue } = this.props
+    onClickResidue(atom.resi)
+  }
+
+  // eslint-disable-next-line react/no-unused-class-component-methods -- the panel calls it through a ref
+  residuesInRectangle({ left, top, right, bottom }: ViewerRectangle) {
+    const { viewer, container, alphaCarbons } = this
+    if (!viewer || !container) {
+      return []
+    }
+    // 3Dmol gives positions on the page
+    const bounds = container.getBoundingClientRect()
+    const positions = viewer.modelToScreen(alphaCarbons.map(({ x, y, z }) => ({ x, y, z })))
+    return alphaCarbons
+      .filter((_, index) => {
+        const x = positions[index].x - bounds.left - window.scrollX
+        const y = positions[index].y - bounds.top - window.scrollY
+        return left <= x && x <= right && top <= y && y <= bottom
+      })
+      .map(({ residue }) => residue)
+  }
+
   async loadStructure() {
     const { structureUrl, expectedSequence, onLoadStructure } = this.props
 
@@ -199,9 +229,16 @@ class StructureViewer3Dmol extends Component<StructureViewerProps, State> {
 
     this.cartoonModel = cartoonModel
     this.overlayModel = viewer.addModel(structureData, 'cif')
+    this.alphaCarbons = alphaCarbons.map((atom) => ({
+      residue: atom.resi!,
+      x: atom.x!,
+      y: atom.y!,
+      z: atom.z!,
+    }))
 
     viewer.setHoverDuration(HOVER_DELAY_MS)
     viewer.setHoverable({}, true, this.onHoverAtom, this.onUnhoverAtom)
+    viewer.setClickable({}, true, this.onClickAtom)
     this.styleCartoon(viewer)
     this.styleOverlays(viewer)
     frameConfidentResidues(viewer)

@@ -19,6 +19,7 @@ import VariantTable from './VariantTable'
 import variantTableColumns, { getColumnsForContext } from './variantTableColumns'
 import VariantTableConfigurationModal from './VariantTableConfigurationModal'
 import VariantTrack from './VariantTrack'
+import { PositionFilter, PositionFilterNotice, variantsInPositionFilter } from './PositionFilter'
 import { Variant } from '../VariantPage/VariantPage'
 import { Gene } from '../GenePage/GenePage'
 
@@ -52,6 +53,7 @@ type OwnVariantsProps = {
   variants: Variant[]
   // Lets other parts of the page show the variants that the table lists
   onChangeFilteredVariants?: (variants: Variant[]) => void
+  positionFilter?: PositionFilter | null
 }
 
 const variantsDefaultProps = {
@@ -90,6 +92,7 @@ const Variants = ({
   exportFileName,
   variants,
   onChangeFilteredVariants,
+  positionFilter,
 }: VariantsProps) => {
   const table = useRef(null)
 
@@ -165,10 +168,14 @@ const Variants = ({
   const filteredVariants = useMemo(() => {
     return mergeExomeAndGenomeData({
       datasetId,
-      variants: filterVariants(variants, filter, renderedTableColumns),
+      variants: filterVariants(
+        variantsInPositionFilter(variants, positionFilter),
+        filter,
+        renderedTableColumns
+      ),
       preferJointData: filter.includeExomes && filter.includeGenomes,
     })
-  }, [datasetId, variants, filter, renderedTableColumns])
+  }, [datasetId, variants, positionFilter, filter, renderedTableColumns])
 
   useEffect(() => {
     if (onChangeFilteredVariants) {
@@ -285,6 +292,7 @@ const Variants = ({
     <div>
       <TrackPageSection>
         <h2 style={{ margin: '2em 0 0.25em' }}>gnomAD variants</h2>
+        {positionFilter && <PositionFilterNotice positionFilter={positionFilter} />}
       </TrackPageSection>
       <Cursor onClick={onNavigatorClick}>
         <VariantTrack

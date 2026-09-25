@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 
 import { Badge, List, ListItem, Modal, TextButton } from '@gnomad/ui'
 
@@ -11,7 +11,11 @@ import annotateVariantsWithClinvar from '../VariantList/annotateVariantsWithClin
 import Variants from '../VariantList/Variants'
 import { ClinvarVariant } from '../VariantPage/VariantPage'
 import { Gene } from './GenePage'
-import { useListedVariantsCallbacks } from './ListedVariants'
+import {
+  useListedVariantsCallbacks,
+  useSetStructureSelection,
+  useStructureSelection,
+} from './GenePageSelections'
 
 type TranscriptsModalProps = {
   gene: {
@@ -99,6 +103,20 @@ const VariantsInGene = ({
   hasOnlyNonCodingTranscripts,
 }: VariantsInGeneProps) => {
   const { onChangeVariantsInTable, onChangeClinvarVariantsInTrack } = useListedVariantsCallbacks()
+  const structureSelection = useStructureSelection()
+  const setStructureSelection = useSetStructureSelection()
+  // Residues selected on the 3D missense constraint structure
+  const positionFilter = useMemo(
+    () =>
+      structureSelection && {
+        intervals: structureSelection.intervals,
+        description: `the ${structureSelection.residues.size} residue${
+          structureSelection.residues.size === 1 ? '' : 's'
+        } selected on the 3D missense constraint structure`,
+        onClear: () => setStructureSelection(null),
+      },
+    [structureSelection, setStructureSelection]
+  )
   const datasetLabel = labelForDataset(datasetId)
 
   const [isTranscriptsModalOpen, setIsTranscriptsModalOpen] = useState(false)
@@ -113,6 +131,7 @@ const VariantsInGene = ({
         zoomRegion={zoomRegion}
         pageType="gene"
         onChangeFilteredVariants={onChangeClinvarVariantsInTrack}
+        positionFilter={positionFilter}
       />
 
       <Variants
@@ -122,6 +141,7 @@ const VariantsInGene = ({
         exportFileName={`${datasetLabel}_${gene.gene_id}`}
         variants={filterVariantsInZoomRegion(variants, zoomRegion)}
         onChangeFilteredVariants={onChangeVariantsInTable}
+        positionFilter={positionFilter}
       >
         <p>
           <Badge level={includeNonCodingTranscripts || includeUTRs ? 'warning' : 'info'}>

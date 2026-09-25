@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import renderer from 'react-test-renderer'
 import { jest, describe, expect, test, beforeEach, afterEach } from '@jest/globals'
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
@@ -20,6 +20,8 @@ import {
   MissenseConstraint3d,
   NO_REGION_COLOR,
   PLDDT_BANDS,
+  StructureSelection,
+  StructureViewerHandle,
   StructureViewerProps,
   UNIPROT_FEATURE_OVERLAY_STYLES,
   alphafoldStructureUrl,
@@ -41,9 +43,34 @@ jest.mock('../Query', () => {
 
 jest.mock('../analytics', () => ({ logButtonClick: jest.fn() }))
 
-// jsdom has no WebGL
-jest.mock('./StructureViewer3Dmol', () => ({ __esModule: true, default: jest.fn(() => null) }))
-jest.mock('./StructureViewerMolstar', () => ({ __esModule: true, default: jest.fn(() => null) }))
+// jsdom has no WebGL, so the viewers are replaced by components that record their props, and whose
+// boxes always hold residues 1 and 2
+// A declaration, so that it exists when the mocked modules are first imported
+function mockStructureViewer() {
+  const { forwardRef, useImperativeHandle } = jest.requireActual<typeof React>('react')
+  const renderViewer = jest.fn(
+    (_props: StructureViewerProps, ref: React.ForwardedRef<StructureViewerHandle>) => {
+      useImperativeHandle(ref, () => ({ residuesInRectangle: () => [1, 2] }))
+      return null
+    }
+  )
+  // forwardRef exposes renderViewer as the component's render property
+  return { __esModule: true, default: forwardRef(renderViewer) }
+}
+jest.mock('./StructureViewer3Dmol', () => mockStructureViewer())
+jest.mock('./StructureViewerMolstar', () => mockStructureViewer())
+
+// jsdom has neither pointer events nor pointer capture
+class MockPointerEvent extends MouseEvent {
+  pointerId: number
+
+  constructor(type: string, init: PointerEventInit = {}) {
+    super(type, init)
+    this.pointerId = init.pointerId ?? 1
+  }
+}
+window.PointerEvent = MockPointerEvent as typeof PointerEvent
+HTMLElement.prototype.setPointerCapture = () => {}
 
 const {
   resetMockApiCalls,
@@ -187,6 +214,8 @@ const TrackInRegionViewer = (props: {
   regionalMissenseConstraint?: RegionalMissenseConstraint
   variantIdsInTable?: Set<string>
   clinvarVariantIdsInTrack?: Set<string>
+  structureSelection?: StructureSelection | null
+  onChangeStructureSelection?: (selection: StructureSelection | null) => void
 }) => (
   <MemoryRouter>
     <RegionViewerContext.Provider value={regionViewer}>
@@ -195,9 +224,36 @@ const TrackInRegionViewer = (props: {
   </MemoryRouter>
 )
 
+// Like the gene page, which keeps the selection so that other sections can show its variants
+const TrackWithStructureSelection = () => {
+  const [structureSelection, setStructureSelection] = useState<StructureSelection | null>(null)
+  return (
+    <>
+      <TrackInRegionViewer
+        structureSelection={structureSelection}
+        onChangeStructureSelection={setStructureSelection}
+      />
+      <output>
+        {structureSelection &&
+          JSON.stringify({
+            residues: Array.from(structureSelection.residues),
+            intervals: structureSelection.intervals,
+          })}
+      </output>
+    </>
+  )
+}
+
+const viewerRender = (viewer: unknown) => (viewer as { render: jest.Mock }).render
+
 const lastViewerProps = (viewer: unknown) => {
-  const { calls } = (viewer as jest.Mock).mock
+  const { calls } = viewerRender(viewer).mock
   return calls[calls.length - 1][0] as StructureViewerProps
+}
+
+const structureSelectionShown = () => {
+  const output = screen.getByRole('status').textContent
+  return output ? JSON.parse(output) : null
 }
 
 const trackRegionFills = (container: HTMLElement) =>
@@ -207,7 +263,7 @@ const trackRegionFills = (container: HTMLElement) =>
 
 const showStructure = async () => {
   await userEvent.click(screen.getByRole('button', { name: 'Show structure' }))
-  await waitFor(() => expect(StructureViewer3Dmol).toHaveBeenCalled())
+  await waitFor(() => expect(viewerRender(StructureViewer3Dmol)).toHaveBeenCalled())
 }
 
 describe('MissenseConstraint3dTrack', () => {
@@ -469,6 +525,71 @@ describe('MissenseConstraint3dTrack', () => {
     await showStructure()
 
     await userEvent.click(screen.getByLabelText('Mol*'))
-    await waitFor(() => expect(StructureViewerMolstar).toHaveBeenCalled())
+    await waitFor(() => expect(viewerRender(StructureViewerMolstar)).toHaveBeenCalled())
+  })
+
+  test('selects residues on the structure by clicking them', async () => {
+    render(<TrackWithStructureSelection />)
+    await showStructure()
+
+    // Clicks only select residues once a way of selecting them is chosen
+    act(() => lastViewerProps(StructureViewer3Dmol).onClickResidue(2))
+    expect(structureSelectionShown()).toBeNull()
+
+    await userEvent.click(screen.getByLabelText('Residue'))
+    act(() => lastViewerProps(StructureViewer3Dmol).onClickResidue(2))
+    expect(structureSelectionShown()).toEqual({
+      residues: [2],
+      intervals: [{ start: 103, stop: 105 }],
+    })
+    expect(screen.getByText('1 residue selected.')).not.toBeNull()
+    // Residues outside the selection are faded
+    const { residueColors } = lastViewerProps(StructureViewer3Dmol)
+    expect(residueColors[2]).toBe(missenseObsExpColorScale.darkest)
+    expect(residueColors[1]).not.toBe(missenseObsExpColorScale.darkest)
+
+    act(() => lastViewerProps(StructureViewer3Dmol).onClickResidue(2))
+    expect(structureSelectionShown()).toBeNull()
+  })
+
+  test('selects the 3D region of a clicked residue', async () => {
+    render(<TrackWithStructureSelection />)
+    await showStructure()
+
+    await userEvent.click(screen.getByLabelText('3D region'))
+    act(() => lastViewerProps(StructureViewer3Dmol).onClickResidue(3))
+    // The region of residues 3 and 4 spans the intron between the two coding exons
+    expect(structureSelectionShown()).toEqual({
+      residues: [3, 4],
+      intervals: [{ start: 200, stop: 205 }],
+    })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Clear selection' }))
+    expect(structureSelectionShown()).toBeNull()
+  })
+
+  test('selects the residues in a box drawn on the structure', async () => {
+    const { container } = render(<TrackWithStructureSelection />)
+    await showStructure()
+
+    await userEvent.click(screen.getByLabelText('Box'))
+    const boxSelectionLayer = container.querySelector('[class*="BoxSelectionLayer"]')!
+    fireEvent.pointerDown(boxSelectionLayer, { clientX: 10, clientY: 10 })
+    fireEvent.pointerMove(boxSelectionLayer, { clientX: 60, clientY: 40 })
+    fireEvent.pointerUp(boxSelectionLayer, { clientX: 60, clientY: 40 })
+    expect(structureSelectionShown()).toEqual({
+      residues: [1, 2],
+      intervals: [{ start: 100, stop: 105 }],
+    })
+  })
+
+  test('clears the selection when the structure is hidden', async () => {
+    render(<TrackWithStructureSelection />)
+    await showStructure()
+
+    await userEvent.click(screen.getByLabelText('Residue'))
+    act(() => lastViewerProps(StructureViewer3Dmol).onClickResidue(2))
+    await userEvent.click(screen.getByRole('button', { name: 'Hide structure' }))
+    expect(structureSelectionShown()).toBeNull()
   })
 })

@@ -58,7 +58,12 @@ import { getPreferredTranscript } from './preferredTranscript'
 import StructuralVariantsInGene from './StructuralVariantsInGene'
 import TissueExpressionTrack, { TranscriptWithTissueExpression } from './TissueExpressionTrack'
 import VariantsInGene from './VariantsInGene'
-import { ListedVariantsProvider, useListedVariants } from './ListedVariants'
+import {
+  GenePageSelectionsProvider,
+  useListedVariants,
+  useSetStructureSelection,
+  useStructureSelection,
+} from './GenePageSelections'
 
 import { GnomadConstraint } from '../ConstraintTable/GnomadConstraintTable'
 import { ExacConstraint } from '../ConstraintTable/ExacConstraintTable'
@@ -323,16 +328,21 @@ type Props = {
   geneId: string
 }
 
-// The structure can show the variants listed in the variant table and the ClinVar track
-const MissenseConstraint3dTrackWithListedVariants = (
+// The structure can show the variants listed in the variant table and the ClinVar track, and those
+// sections show only the variants of residues selected on the structure
+const MissenseConstraint3dTrackWithPageSelections = (
   props: React.ComponentProps<typeof MissenseConstraint3dTrack>
 ) => {
   const { variantIdsInTable, clinvarVariantIdsInTrack } = useListedVariants()
+  const structureSelection = useStructureSelection()
+  const setStructureSelection = useSetStructureSelection()
   return (
     <MissenseConstraint3dTrack
       {...props}
       variantIdsInTable={variantIdsInTable}
       clinvarVariantIdsInTrack={clinvarVariantIdsInTrack}
+      structureSelection={structureSelection}
+      onChangeStructureSelection={setStructureSelection}
     />
   )
 }
@@ -456,7 +466,7 @@ const GenePage = ({ datasetId, gene, geneId }: Props) => {
           </ConstraintOrCooccurrenceColumn>
         </GeneInfoColumnWrapper>
       </TrackPageSection>
-      <ListedVariantsProvider>
+      <GenePageSelectionsProvider>
         <RegionViewer
           contextType="gene"
           leftPanelWidth={115}
@@ -658,7 +668,7 @@ const GenePage = ({ datasetId, gene, geneId }: Props) => {
             hasShortVariants(datasetId) &&
             hasCodingExons &&
             gene.chrom !== 'M' && (
-              <MissenseConstraint3dTrackWithListedVariants
+              <MissenseConstraint3dTrackWithPageSelections
                 datasetId={datasetId}
                 gene={gene}
                 regionalMissenseConstraint={demoRegionalMissenseConstraint}
@@ -688,7 +698,7 @@ const GenePage = ({ datasetId, gene, geneId }: Props) => {
             />
           )}
         </RegionViewer>
-      </ListedVariantsProvider>
+      </GenePageSelectionsProvider>
     </TrackPage>
   )
 }

@@ -34,6 +34,7 @@ import {
   ResidueRange,
   StructureColorBy,
   StructureOverlay,
+  StructureViewerHandle,
   StructureViewerProps,
   TABLE_VARIANTS_OVERLAY_ID,
   UNIPROT_FEATURE_LEVELS,
@@ -43,14 +44,17 @@ import {
   ALPHAFOLD_DB_MODEL_VERSION,
   clinicalSignificanceCategoryOverlays,
   consequenceCategoryOverlays,
+  fadeUnselectedResidues,
   formatResidue,
   isPassingGnomadMissenseVariant,
   parseProteinChangeHgvsp,
   placeVariantsOnSequence,
   plddtResidueColors,
   regionalMissenseConstraintByResidue,
+  regionResidues,
   regionsByResidue,
   residueColors,
+  toggleResidues,
   uniprotEntryUrl,
   uniprotFeatureOverlayId,
   uniprotFeatureOverlays,
@@ -60,20 +64,24 @@ import {
 } from './missenseConstraint3d'
 import MissenseConstraint3dRegionAttributes from './MissenseConstraint3dRegionAttributes'
 
+type StructureViewerComponent = React.ComponentType<
+  StructureViewerProps & React.RefAttributes<StructureViewerHandle>
+>
+
 // Both candidate libraries are kept so they can be compared in demos; keep one before opening a PR
 const STRUCTURE_VIEWERS: Record<
   string,
-  { label: string; url: string; component: React.ComponentType<StructureViewerProps> }
+  { label: string; url: string; component: React.LazyExoticComponent<StructureViewerComponent> }
 > = {
   '3dmol': {
     label: '3Dmol.js',
     url: 'https://3dmol.csb.pitt.edu/',
-    component: lazy(() => import('./StructureViewer3Dmol')),
+    component: lazy<StructureViewerComponent>(() => import('./StructureViewer3Dmol')),
   },
   molstar: {
     label: 'Mol*',
     url: 'https://molstar.org/',
-    component: lazy(() => import('./StructureViewerMolstar')),
+    component: lazy<StructureViewerComponent>(() => import('./StructureViewerMolstar')),
   },
 }
 
@@ -257,6 +265,68 @@ const ViewerWrapper = styled.div`
   border: 1px solid #ccc;
 `
 
+type SelectionMode = 'off' | 'residue' | 'box' | 'region'
+
+const SELECTION_MODES: { value: SelectionMode; label: string; hint: string }[] = [
+  {
+    value: 'off',
+    label: 'Off',
+    hint: 'Select residues to show only their variants in the ClinVar and gnomAD tracks below.',
+  },
+  { value: 'residue', label: 'Residue', hint: 'Click residues to select or deselect them.' },
+  { value: 'box', label: 'Box', hint: 'Drag a box to select the residues in it.' },
+  {
+    value: 'region',
+    label: '3D region',
+    hint: 'Click a residue to select or deselect its 3D region.',
+  },
+]
+
+// A box smaller than this is a click rather than a selection
+const MIN_SELECTION_BOX_SIZE = 3
+
+const SelectionToolbar = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  margin-bottom: 0.5em;
+
+  > * {
+    margin-right: 1em;
+  }
+`
+
+// Covers the structure while selecting with a box, so that dragging draws a box instead of rotating
+const BoxSelectionLayer = styled.div`
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  cursor: crosshair;
+`
+
+const SelectionBox = styled.div`
+  position: absolute;
+  border: 1px dashed #000;
+  background: rgb(0 0 0 / 5%);
+`
+
+type ViewerPoint = { x: number; y: number }
+
+const pointInViewer = (event: React.PointerEvent<HTMLElement>): ViewerPoint => {
+  const bounds = event.currentTarget.getBoundingClientRect()
+  return { x: event.clientX - bounds.left, y: event.clientY - bounds.top }
+}
+
+const boxBetween = (start: ViewerPoint, end: ViewerPoint) => ({
+  left: Math.min(start.x, end.x),
+  top: Math.min(start.y, end.y),
+  right: Math.max(start.x, end.x),
+  bottom: Math.max(start.y, end.y),
+})
+
 // Matches @gnomad/ui tooltips, which can't be anchored to a point on a canvas
 const StructureTooltip = styled.div`
   position: absolute;
@@ -368,6 +438,8 @@ type PanelProps = {
   variantIdsInTable: Set<string> | null
   // Variants listed in the gene page's ClinVar track, or null if it hasn't loaded
   clinvarVariantIdsInTrack: Set<string> | null
+  selectedResidues: ReadonlySet<number> | null
+  onSelectResidues: (residues: ReadonlySet<number> | null) => void
 }
 
 type StructurePanelProps = PanelProps & {
@@ -389,9 +461,17 @@ const StructurePanel = ({
   onToggleOverlay,
   variantIdsInTable,
   clinvarVariantIdsInTrack,
+  selectedResidues,
+  onSelectResidues,
   variants,
   clinvarVariants,
 }: StructurePanelProps) => {
+  const [selectionMode, setSelectionMode] = useState<SelectionMode>('off')
+  const [selectionBox, setSelectionBox] = useState<{
+    start: ViewerPoint
+    end: ViewerPoint
+  } | null>(null)
+  const viewer = useRef<StructureViewerHandle>(null)
   const [overlayTransparency, setOverlayTransparency] = useState(0)
   const [overlaySize, setOverlaySize] = useState(1)
   const [clinicalSignificanceSelections, setClinicalSignificanceSelections] = useState<
@@ -446,6 +526,42 @@ const StructurePanel = ({
     regionByResidue,
     colorRegion,
   ])
+  const displayedColors = useMemo(
+    () => (selectedResidues ? fadeUnselectedResidues(colors, selectedResidues) : colors),
+    [colors, selectedResidues]
+  )
+
+  const onClickResidue = (residueNumber: number) => {
+    if (selectionMode === 'residue') {
+      onSelectResidues(toggleResidues(selectedResidues, [residueNumber]))
+    }
+    if (selectionMode === 'region') {
+      const region = regionByResidue[residueNumber]
+      if (region) {
+        onSelectResidues(toggleResidues(selectedResidues, regionResidues(region)))
+      }
+    }
+  }
+
+  // Ends at where the pointer is released, in case its last move hasn't been rendered yet
+  const finishSelectionBox = (end: ViewerPoint) => {
+    if (!selectionBox) {
+      return
+    }
+    const box = boxBetween(selectionBox.start, end)
+    setSelectionBox(null)
+    if (
+      box.right - box.left < MIN_SELECTION_BOX_SIZE ||
+      box.bottom - box.top < MIN_SELECTION_BOX_SIZE ||
+      !viewer.current
+    ) {
+      return
+    }
+    const residuesInBox = viewer.current.residuesInRectangle(box)
+    if (residuesInBox.length > 0) {
+      onSelectResidues(new Set([...(selectedResidues || []), ...residuesInBox]))
+    }
+  }
 
   const gnomadMissense = useMemo(
     () => placeVariantsOnSequence(variants.filter(isPassingGnomadMissenseVariant), sequence),
@@ -685,6 +801,25 @@ const StructurePanel = ({
         </LabeledControl>
       </Controls>
       <StructureOnlyColorKey colorBy={colorBy} />
+      <SelectionToolbar>
+        <LabeledControl>
+          <span>Select</span>
+          <SegmentedControl<SelectionMode>
+            id="missense-constraint-3d-selection-mode"
+            options={SELECTION_MODES.map(({ value, label }) => ({ value, label }))}
+            value={selectionMode}
+            onChange={setSelectionMode}
+          />
+        </LabeledControl>
+        <Button disabled={!selectedResidues} onClick={() => onSelectResidues(null)}>
+          Clear selection
+        </Button>
+        <span>
+          {selectedResidues
+            ? `${selectedResidues.size} residue${selectedResidues.size === 1 ? '' : 's'} selected.`
+            : SELECTION_MODES.find(({ value }) => value === selectionMode)!.hint}
+        </span>
+      </SelectionToolbar>
       <ViewerLayout>
         <ViewerWrapper ref={viewerWrapper} onMouseLeave={() => setHoveredResidue(null)}>
           <Suspense
@@ -696,18 +831,50 @@ const StructurePanel = ({
           >
             <StructureViewer
               key={structureViewer}
+              ref={viewer}
               structureUrl={alphafoldStructureUrl(constraint.uniprot_id)}
               expectedSequence={sequence}
-              residueColors={colors}
+              residueColors={displayedColors}
               highlightedResidueRanges={highlightedResidueRanges}
               overlays={visibleOverlays}
               overlayOpacity={1 - overlayTransparency}
               overlaySize={overlaySize}
               resetViewCount={resetViewCount}
               onHoverResidue={setHoveredResidue}
+              onClickResidue={onClickResidue}
               onLoadStructure={setPlddtByResidue}
             />
           </Suspense>
+          {selectionMode === 'box' && (
+            <BoxSelectionLayer
+              onPointerDown={(event) => {
+                event.currentTarget.setPointerCapture(event.pointerId)
+                const point = pointInViewer(event)
+                setSelectionBox({ start: point, end: point })
+              }}
+              onPointerMove={(event) => {
+                if (selectionBox) {
+                  setSelectionBox({ ...selectionBox, end: pointInViewer(event) })
+                }
+              }}
+              onPointerUp={(event) => finishSelectionBox(pointInViewer(event))}
+            >
+              {selectionBox &&
+                (() => {
+                  const box = boxBetween(selectionBox.start, selectionBox.end)
+                  return (
+                    <SelectionBox
+                      style={{
+                        left: box.left,
+                        top: box.top,
+                        width: box.right - box.left,
+                        height: box.bottom - box.top,
+                      }}
+                    />
+                  )
+                })()}
+            </BoxSelectionLayer>
+          )}
           {hoveredResidue && renderTooltip(hoveredResidue)}
         </ViewerWrapper>
         <OverlayPanel>

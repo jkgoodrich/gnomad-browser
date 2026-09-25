@@ -31,11 +31,13 @@ import {
   RegionColorBy,
   ResidueRange,
   StructureColorBy,
+  StructureSelection,
   UniprotFeature,
   codingSequenceLength,
   rankConstrainedRegions,
   regionColor,
   regionResidueRanges,
+  residuesOnGenome,
   segmentsOnGenome,
 } from './missenseConstraint3d'
 import MissenseConstraint3dRegionAttributes from './MissenseConstraint3dRegionAttributes'
@@ -150,6 +152,8 @@ type ViewProps = {
   regionalMissenseConstraint: RegionalMissenseConstraint | null
   variantIdsInTable: Set<string> | null
   clinvarVariantIdsInTrack: Set<string> | null
+  structureSelection: StructureSelection | null
+  onChangeStructureSelection?: (selection: StructureSelection | null) => void
 }
 
 const MissenseConstraint3dView = ({
@@ -160,6 +164,8 @@ const MissenseConstraint3dView = ({
   regionalMissenseConstraint,
   variantIdsInTable,
   clinvarVariantIdsInTrack,
+  structureSelection,
+  onChangeStructureSelection,
 }: ViewProps) => {
   const [isStructureShown, setIsStructureShown] = useState(false)
   const [colorBy, setColorBy] = useState<StructureColorBy>('obs_exp')
@@ -205,6 +211,21 @@ const MissenseConstraint3dView = ({
         trackRegion ? regionResidueRanges(trackRegion.region) : NO_HIGHLIGHTED_RESIDUES
       ),
     []
+  )
+
+  // The page shows only variants in the selected residues, so they're placed on the genome here
+  const selectResidues = useCallback(
+    (residues: ReadonlySet<number> | null) => {
+      if (onChangeStructureSelection) {
+        onChangeStructureSelection(
+          residues && {
+            residues,
+            intervals: residuesOnGenome(residues, { strand: gene.strand, exons: transcript.exons }),
+          }
+        )
+      }
+    },
+    [onChangeStructureSelection, gene, transcript]
   )
 
   const onHoverFeature = useCallback(
@@ -258,6 +279,9 @@ const MissenseConstraint3dView = ({
                 logButtonClick('User showed 3D missense constraint structure')
               }
               setHighlightedResidueRanges(NO_HIGHLIGHTED_RESIDUES)
+              if (isStructureShown) {
+                selectResidues(null)
+              }
               setIsStructureShown(!isStructureShown)
             }}
           >
@@ -294,6 +318,8 @@ const MissenseConstraint3dView = ({
               onToggleOverlay={toggleOverlay}
               variantIdsInTable={variantIdsInTable}
               clinvarVariantIdsInTrack={clinvarVariantIdsInTrack}
+              selectedResidues={structureSelection ? structureSelection.residues : null}
+              onSelectResidues={selectResidues}
             />
           </TrackPageSection>
         </>
@@ -310,6 +336,9 @@ type Props = {
   // structure
   variantIdsInTable?: Set<string> | null
   clinvarVariantIdsInTrack?: Set<string> | null
+  // Residues selected on the structure, which the page shows only the variants of
+  structureSelection?: StructureSelection | null
+  onChangeStructureSelection?: (selection: StructureSelection | null) => void
 }
 
 const MissenseConstraint3dTrack = ({
@@ -318,6 +347,8 @@ const MissenseConstraint3dTrack = ({
   regionalMissenseConstraint = null,
   variantIdsInTable = null,
   clinvarVariantIdsInTrack = null,
+  structureSelection = null,
+  onChangeStructureSelection,
 }: Props) => (
   <Query
     operationName={operationName}
@@ -354,6 +385,8 @@ const MissenseConstraint3dTrack = ({
           regionalMissenseConstraint={regionalMissenseConstraint}
           variantIdsInTable={variantIdsInTable}
           clinvarVariantIdsInTrack={clinvarVariantIdsInTrack}
+          structureSelection={structureSelection}
+          onChangeStructureSelection={onChangeStructureSelection}
         />
       )
     }}
