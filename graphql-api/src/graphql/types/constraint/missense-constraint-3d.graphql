@@ -1,0 +1,31 @@
+# Residue positions are numbered from 1 along the protein
+type MissenseConstraint3dSegment {
+  aa_start: Int!
+  aa_stop: Int!
+}
+
+type MissenseConstraint3dRegion {
+  region_index: Int!
+  is_catch_all: Boolean!
+  obs_mis: Int!
+  exp_mis: Float!
+  obs_exp: Float!
+  oe_upper: Float!
+  p_value: Float!
+  segments: [MissenseConstraint3dSegment!]!
+}
+
+type UniprotFeature {
+  feature_type: String!
+  start: Int!
+  stop: Int!
+  note: String
+}
+
+type MissenseConstraint3d {
+  transcript_id: String!
+  uniprot_id: String!
+  protein_sequence: String!
+  regions: [MissenseConstraint3dRegion!]!
+  uniprot_features: [UniprotFeature!]!
+}

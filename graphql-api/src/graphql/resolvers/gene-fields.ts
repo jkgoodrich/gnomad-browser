@@ -21,6 +21,7 @@ const resolvers = {
     exac_constraint: nullifyEmptyObject('exac_constraint'),
     mitochondrial_constraint: resolveMitochondrialGeneConstraint,
     mitochondrial_missense_constraint_regions: resolveMitochondrialRegionConstraint,
+    missense_constraint_3d: nullifyEmptyObject('missense_constraint_3d'),
   },
   TranscriptGene: {
     // Elasticsearch documents may contain an empty object instead of null

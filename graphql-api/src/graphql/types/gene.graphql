@@ -72,6 +72,8 @@ type Gene {
   mitochondrial_constraint: MitochondrialGeneConstraint
   mitochondrial_missense_constraint_regions: [MitochondrialRegionConstraint]
 
+  missense_constraint_3d: MissenseConstraint3d
+
   variants(dataset: DatasetId!): [Variant!]! @cost(value: 10)
   structural_variants(dataset: StructuralVariantDatasetId!): [StructuralVariant!]! @cost(value: 10)
   mitochondrial_variants(dataset: DatasetId!): [MitochondrialVariant!]! @cost(value: 10)
