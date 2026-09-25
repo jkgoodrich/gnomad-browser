@@ -29,7 +29,9 @@ import {
   NO_REGION_COLOR,
   RANKED_REGION_COLORS,
   RegionColorBy,
+  ResidueRange,
   StructureColorBy,
+  UniprotFeature,
   codingSequenceLength,
   rankConstrainedRegions,
   regionColor,
@@ -38,9 +40,11 @@ import {
 } from './missenseConstraint3d'
 import MissenseConstraint3dRegionAttributes from './MissenseConstraint3dRegionAttributes'
 import MissenseConstraint3dStructurePanel from './MissenseConstraint3dStructurePanel'
+import UniprotFeatureTracks from './UniprotFeatureTracks'
 
 const TRACK_TITLE = '3D missense constraint'
 const HELP_TOPIC = 'missense-constraint-3d'
+const NO_HIGHLIGHTED_RESIDUES: ResidueRange[] = []
 
 const operationName = 'MissenseConstraint3d'
 const query = `
@@ -144,6 +148,8 @@ type ViewProps = {
   transcript: GeneTranscript
   constraint: MissenseConstraint3d
   regionalMissenseConstraint: RegionalMissenseConstraint | null
+  variantIdsInTable: Set<string> | null
+  clinvarVariantIdsInTrack: Set<string> | null
 }
 
 const MissenseConstraint3dView = ({
@@ -152,11 +158,16 @@ const MissenseConstraint3dView = ({
   transcript,
   constraint,
   regionalMissenseConstraint,
+  variantIdsInTable,
+  clinvarVariantIdsInTrack,
 }: ViewProps) => {
   const [isStructureShown, setIsStructureShown] = useState(false)
   const [colorBy, setColorBy] = useState<StructureColorBy>('obs_exp')
   const [colorCatchAllRegion, setColorCatchAllRegion] = useState(false)
-  const [hoveredRegion, setHoveredRegion] = useState<MissenseConstraint3dRegion | null>(null)
+  const [highlightedResidueRanges, setHighlightedResidueRanges] =
+    useState<ResidueRange[]>(NO_HIGHLIGHTED_RESIDUES)
+  // Variants and features shown on the structure
+  const [visibleOverlayIds, setVisibleOverlayIds] = useState<Set<string>>(new Set())
 
   // The track shows 3D regions, so it keeps their o/e colors while the structure shows RMC or pLDDT
   const regionColorBy: RegionColorBy =
@@ -185,15 +196,33 @@ const MissenseConstraint3dView = ({
     [regionColorBy, colorCatchAllRegion, regionRanks]
   )
 
-  const highlightedResidueRanges = useMemo(
-    () => (hoveredRegion ? regionResidueRanges(hoveredRegion) : []),
-    [hoveredRegion]
-  )
-
   const onHoverRegion = useCallback(
-    (trackRegion: TrackRegion | null) => setHoveredRegion(trackRegion ? trackRegion.region : null),
+    (trackRegion: TrackRegion | null) =>
+      setHighlightedResidueRanges(
+        trackRegion ? regionResidueRanges(trackRegion.region) : NO_HIGHLIGHTED_RESIDUES
+      ),
     []
   )
+
+  const onHoverFeature = useCallback(
+    (feature: UniprotFeature | null) =>
+      setHighlightedResidueRanges(
+        feature ? [[feature.start, feature.stop]] : NO_HIGHLIGHTED_RESIDUES
+      ),
+    []
+  )
+
+  const toggleOverlay = useCallback((overlayId: string) => {
+    setVisibleOverlayIds((previousOverlayIds) => {
+      const nextOverlayIds = new Set(previousOverlayIds)
+      if (nextOverlayIds.has(overlayId)) {
+        nextOverlayIds.delete(overlayId)
+      } else {
+        nextOverlayIds.add(overlayId)
+      }
+      return nextOverlayIds
+    })
+  }, [])
 
   const legend =
     regionColorBy === 'ranked_regions' ? (
@@ -203,7 +232,7 @@ const MissenseConstraint3dView = ({
         title={
           regionColorBy === 'obs_exp' ? 'Missense observed/expected' : 'Missense o/e upper bound'
         }
-        notSignificantLabel="Catch-all region"
+        notSignificantLabel="Unassigned residue"
       />
     )
 
@@ -225,7 +254,7 @@ const MissenseConstraint3dView = ({
               if (!isStructureShown) {
                 logButtonClick('User showed 3D missense constraint structure')
               }
-              setHoveredRegion(null)
+              setHighlightedResidueRanges(NO_HIGHLIGHTED_RESIDUES)
               setIsStructureShown(!isStructureShown)
             }}
           >
@@ -235,20 +264,36 @@ const MissenseConstraint3dView = ({
         onHoverRegion={isStructureShown ? onHoverRegion : undefined}
       />
       {isStructureShown && (
-        <TrackPageSection>
-          <MissenseConstraint3dStructurePanel
-            datasetId={datasetId}
-            constraint={constraint}
-            regionRanks={regionRanks}
-            colorBy={colorBy}
-            onChangeColorBy={setColorBy}
-            colorCatchAllRegion={colorCatchAllRegion}
-            onChangeColorCatchAllRegion={setColorCatchAllRegion}
-            colorRegion={colorRegion}
-            highlightedResidueRanges={highlightedResidueRanges}
-            regionalMissenseConstraint={regionalMissenseConstraint}
+        <>
+          <UniprotFeatureTracks
+            uniprotId={constraint.uniprot_id}
+            transcriptId={constraint.transcript_id}
+            features={constraint.uniprot_features}
+            chrom={gene.chrom}
+            strand={gene.strand}
+            transcript={transcript}
+            visibleOverlayIds={visibleOverlayIds}
+            onHoverFeature={onHoverFeature}
           />
-        </TrackPageSection>
+          <TrackPageSection>
+            <MissenseConstraint3dStructurePanel
+              datasetId={datasetId}
+              constraint={constraint}
+              regionRanks={regionRanks}
+              colorBy={colorBy}
+              onChangeColorBy={setColorBy}
+              colorCatchAllRegion={colorCatchAllRegion}
+              onChangeColorCatchAllRegion={setColorCatchAllRegion}
+              colorRegion={colorRegion}
+              highlightedResidueRanges={highlightedResidueRanges}
+              regionalMissenseConstraint={regionalMissenseConstraint}
+              visibleOverlayIds={visibleOverlayIds}
+              onToggleOverlay={toggleOverlay}
+              variantIdsInTable={variantIdsInTable}
+              clinvarVariantIdsInTrack={clinvarVariantIdsInTrack}
+            />
+          </TrackPageSection>
+        </>
       )}
     </>
   )
@@ -258,12 +303,18 @@ type Props = {
   datasetId: DatasetId
   gene: Gene
   regionalMissenseConstraint?: RegionalMissenseConstraint | null
+  // Variants listed in the gene page's variant table and ClinVar track, which can be shown on the
+  // structure
+  variantIdsInTable?: Set<string> | null
+  clinvarVariantIdsInTrack?: Set<string> | null
 }
 
 const MissenseConstraint3dTrack = ({
   datasetId,
   gene,
   regionalMissenseConstraint = null,
+  variantIdsInTable = null,
+  clinvarVariantIdsInTrack = null,
 }: Props) => (
   <Query
     operationName={operationName}
@@ -298,6 +349,8 @@ const MissenseConstraint3dTrack = ({
           transcript={transcript}
           constraint={constraint}
           regionalMissenseConstraint={regionalMissenseConstraint}
+          variantIdsInTable={variantIdsInTable}
+          clinvarVariantIdsInTrack={clinvarVariantIdsInTrack}
         />
       )
     }}

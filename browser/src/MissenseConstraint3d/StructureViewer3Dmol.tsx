@@ -1,4 +1,4 @@
-import { createViewer, GLViewer } from '3dmol'
+import { createViewer, GLModel, GLViewer } from '3dmol'
 import React, { Component } from 'react'
 import styled from 'styled-components'
 
@@ -21,6 +21,7 @@ type Atom = {
 }
 
 const HOVER_DELAY_MS = 50
+// At an overlay size of 1
 const VARIANT_SPHERE_RADIUS = 1.5
 const FEATURE_STICK_RADIUS = 0.25
 
@@ -43,8 +44,16 @@ const StatusOverlay = styled.div`
   align-items: center;
 `
 
-const residueSelection = (residueRanges: ResidueRange[]) =>
-  residueRanges.map(([start, stop]): `${number}-${number}` => `${start}-${stop}`)
+// A predicate on a set of residues is much faster than 3Dmol's "start-stop" residue range strings,
+// which it parses again for every atom
+const residueSelection = (residueRanges: ResidueRange[]) => {
+  const residues = new Set(
+    residueRanges.flatMap(([start, stop]) =>
+      Array.from({ length: stop - start + 1 }, (_, i) => start + i)
+    )
+  )
+  return { predicate: (atom: { resi?: number }) => residues.has(atom.resi!) }
+}
 
 const confidentAtoms = { predicate: (atom: { b?: number }) => (atom.b ?? 0) >= CONFIDENT_PLDDT }
 
@@ -60,6 +69,12 @@ class StructureViewer3Dmol extends Component<StructureViewerProps, State> {
   container: HTMLDivElement | null = null
 
   viewer: GLViewer | null = null
+
+  // 3Dmol rebuilds all of a model's geometry when any of its styles change, so overlays are drawn
+  // from a second copy of the structure to restyle them without rebuilding the cartoon
+  cartoonModel: GLModel | null = null
+
+  overlayModel: GLModel | null = null
 
   isUnmounted = false
 
@@ -80,16 +95,29 @@ class StructureViewer3Dmol extends Component<StructureViewerProps, State> {
 
   componentDidUpdate(prevProps: StructureViewerProps) {
     const { viewer } = this
-    const { residueColors, highlightedResidueRanges, overlays, resetViewCount } = this.props
+    const {
+      residueColors,
+      highlightedResidueRanges,
+      overlays,
+      overlayOpacity,
+      overlaySize,
+      resetViewCount,
+    } = this.props
     if (!viewer) {
       return
     }
     if (
       residueColors !== prevProps.residueColors ||
-      highlightedResidueRanges !== prevProps.highlightedResidueRanges ||
-      overlays !== prevProps.overlays
+      highlightedResidueRanges !== prevProps.highlightedResidueRanges
     ) {
-      this.applyStyles(viewer)
+      this.styleCartoon(viewer)
+    }
+    if (
+      overlays !== prevProps.overlays ||
+      overlayOpacity !== prevProps.overlayOpacity ||
+      overlaySize !== prevProps.overlaySize
+    ) {
+      this.styleOverlays(viewer)
     }
     if (resetViewCount !== prevProps.resetViewCount) {
       frameConfidentResidues(viewer)
@@ -153,9 +181,9 @@ class StructureViewer3Dmol extends Component<StructureViewerProps, State> {
     if (this.isUnmounted) {
       return
     }
-    viewer.addModel(structureData, 'cif')
+    const cartoonModel = viewer.addModel(structureData, 'cif')
 
-    const alphaCarbons = viewer.selectedAtoms({ atom: 'CA' })
+    const alphaCarbons = viewer.selectedAtoms({ model: cartoonModel, atom: 'CA' })
     const residues = alphaCarbons.map((atom): [number, string] => [atom.resi!, atom.resn!])
     if (!residueNamesMatchSequence(residues, expectedSequence)) {
       viewer.clear()
@@ -169,9 +197,13 @@ class StructureViewer3Dmol extends Component<StructureViewerProps, State> {
       plddtByResidue[atom.resi!] = atom.b!
     })
 
+    this.cartoonModel = cartoonModel
+    this.overlayModel = viewer.addModel(structureData, 'cif')
+
     viewer.setHoverDuration(HOVER_DELAY_MS)
     viewer.setHoverable({}, true, this.onHoverAtom, this.onUnhoverAtom)
-    this.applyStyles(viewer)
+    this.styleCartoon(viewer)
+    this.styleOverlays(viewer)
     frameConfidentResidues(viewer)
     viewer.render()
     this.viewer = viewer
@@ -179,15 +211,15 @@ class StructureViewer3Dmol extends Component<StructureViewerProps, State> {
     onLoadStructure(plddtByResidue)
   }
 
-  applyStyles(viewer: GLViewer) {
-    const { residueColors, highlightedResidueRanges, overlays } = this.props
+  styleCartoon(viewer: GLViewer) {
+    const { residueColors, highlightedResidueRanges } = this.props
     // A cartoon's colorfunc takes precedence over any color added to it later
     const isHighlighted = (residueNumber: number) =>
       highlightedResidueRanges.some(
         ([start, stop]) => start <= residueNumber && residueNumber <= stop
       )
     viewer.setStyle(
-      {},
+      { model: this.cartoonModel! },
       {
         cartoon: {
           colorfunc: (atom: Atom) =>
@@ -197,16 +229,34 @@ class StructureViewer3Dmol extends Component<StructureViewerProps, State> {
         },
       }
     )
+  }
+
+  styleOverlays(viewer: GLViewer) {
+    const { overlays, overlayOpacity, overlaySize } = this.props
+    const model = this.overlayModel!
+    viewer.setStyle({ model }, {})
     overlays.forEach((overlay) => {
       if (overlay.style === 'variant') {
         viewer.addStyle(
-          { resi: residueSelection(overlay.residueRanges), atom: 'CA' },
-          { sphere: { color: overlay.color, radius: VARIANT_SPHERE_RADIUS } }
+          { model, ...residueSelection(overlay.residueRanges), atom: 'CA' },
+          {
+            sphere: {
+              color: overlay.color,
+              radius: VARIANT_SPHERE_RADIUS * overlaySize,
+              opacity: overlayOpacity,
+            },
+          }
         )
       } else {
         viewer.addStyle(
-          { resi: residueSelection(overlay.residueRanges) },
-          { stick: { color: overlay.color, radius: FEATURE_STICK_RADIUS } }
+          { model, ...residueSelection(overlay.residueRanges) },
+          {
+            stick: {
+              color: overlay.color,
+              radius: FEATURE_STICK_RADIUS * overlaySize,
+              opacity: overlayOpacity,
+            },
+          }
         )
       }
     })

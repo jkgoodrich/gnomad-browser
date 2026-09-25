@@ -203,7 +203,7 @@ exports[`MissenseConstraint3dTrack has no unexpected changes 1`] = `
                 x={35}
                 y={1}
               >
-                Catch-all region
+                Unassigned residue
               </text>
             </svg>
           </div>

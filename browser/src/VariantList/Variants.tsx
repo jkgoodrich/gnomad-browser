@@ -50,6 +50,8 @@ type OwnVariantsProps = {
   datasetId: DatasetId
   exportFileName?: string
   variants: Variant[]
+  // Lets other parts of the page show the variants that the table lists
+  onChangeFilteredVariants?: (variants: Variant[]) => void
 }
 
 const variantsDefaultProps = {
@@ -87,6 +89,7 @@ const Variants = ({
   datasetId,
   exportFileName,
   variants,
+  onChangeFilteredVariants,
 }: VariantsProps) => {
   const table = useRef(null)
 
@@ -166,6 +169,12 @@ const Variants = ({
       preferJointData: filter.includeExomes && filter.includeGenomes,
     })
   }, [datasetId, variants, filter, renderedTableColumns])
+
+  useEffect(() => {
+    if (onChangeFilteredVariants) {
+      onChangeFilteredVariants(filteredVariants)
+    }
+  }, [filteredVariants, onChangeFilteredVariants])
 
   const renderedVariants = useMemo(() => {
     return sortVariants(filteredVariants, sortState)

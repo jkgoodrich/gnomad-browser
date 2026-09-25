@@ -11,6 +11,7 @@ import annotateVariantsWithClinvar from '../VariantList/annotateVariantsWithClin
 import Variants from '../VariantList/Variants'
 import { ClinvarVariant } from '../VariantPage/VariantPage'
 import { Gene } from './GenePage'
+import { useListedVariantsCallbacks } from './ListedVariants'
 
 type TranscriptsModalProps = {
   gene: {
@@ -97,6 +98,7 @@ const VariantsInGene = ({
   zoomRegion,
   hasOnlyNonCodingTranscripts,
 }: VariantsInGeneProps) => {
+  const { onChangeVariantsInTable, onChangeClinvarVariantsInTrack } = useListedVariantsCallbacks()
   const datasetLabel = labelForDataset(datasetId)
 
   const [isTranscriptsModalOpen, setIsTranscriptsModalOpen] = useState(false)
@@ -110,6 +112,7 @@ const VariantsInGene = ({
         transcripts={gene.transcripts}
         zoomRegion={zoomRegion}
         pageType="gene"
+        onChangeFilteredVariants={onChangeClinvarVariantsInTrack}
       />
 
       <Variants
@@ -118,6 +121,7 @@ const VariantsInGene = ({
         datasetId={datasetId}
         exportFileName={`${datasetLabel}_${gene.gene_id}`}
         variants={filterVariantsInZoomRegion(variants, zoomRegion)}
+        onChangeFilteredVariants={onChangeVariantsInTable}
       >
         <p>
           <Badge level={includeNonCodingTranscripts || includeUTRs ? 'warning' : 'info'}>

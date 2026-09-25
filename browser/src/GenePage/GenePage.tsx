@@ -58,6 +58,7 @@ import { getPreferredTranscript } from './preferredTranscript'
 import StructuralVariantsInGene from './StructuralVariantsInGene'
 import TissueExpressionTrack, { TranscriptWithTissueExpression } from './TissueExpressionTrack'
 import VariantsInGene from './VariantsInGene'
+import { ListedVariantsProvider, useListedVariants } from './ListedVariants'
 
 import { GnomadConstraint } from '../ConstraintTable/GnomadConstraintTable'
 import { ExacConstraint } from '../ConstraintTable/ExacConstraintTable'
@@ -322,6 +323,20 @@ type Props = {
   geneId: string
 }
 
+// The structure can show the variants listed in the variant table and the ClinVar track
+const MissenseConstraint3dTrackWithListedVariants = (
+  props: React.ComponentProps<typeof MissenseConstraint3dTrack>
+) => {
+  const { variantIdsInTable, clinvarVariantIdsInTrack } = useListedVariants()
+  return (
+    <MissenseConstraint3dTrack
+      {...props}
+      variantIdsInTable={variantIdsInTable}
+      clinvarVariantIdsInTrack={clinvarVariantIdsInTrack}
+    />
+  )
+}
+
 const GenePage = ({ datasetId, gene, geneId }: Props) => {
   const hasCDS = gene.exons.some((exon) => exon.feature_type === 'CDS')
 
@@ -441,230 +456,239 @@ const GenePage = ({ datasetId, gene, geneId }: Props) => {
           </ConstraintOrCooccurrenceColumn>
         </GeneInfoColumnWrapper>
       </TrackPageSection>
-      <RegionViewer
-        contextType="gene"
-        leftPanelWidth={115}
-        width={regionViewerWidth}
-        regions={regionViewerRegions}
-        rightPanelWidth={isSmallScreen ? 0 : 80}
-        renderOverview={({ scalePosition, width: overviewWidth }: any) => (
-          <TranscriptPlot
-            height={10}
-            scalePosition={scalePosition}
-            showNonCodingExons={includeNonCodingTranscripts}
-            showUTRs={includeUTRs}
-            transcript={{ exons: gene.exons }}
-            width={overviewWidth}
-          />
-        )}
-        zoomDisabled={!hasExons(datasetId)}
-        zoomRegion={zoomRegion}
-        onChangeZoomRegion={setZoomRegion}
-      >
-        {/* eslint-disable-next-line no-nested-ternary */}
-        {!hasExons(datasetId) ? (
-          <RegionCoverageTrack
-            chrom={gene.chrom}
-            datasetId={datasetId}
-            includeExomeCoverage={false}
-            start={gene.start}
-            stop={gene.stop}
-          />
-        ) : gene.chrom === 'M' ? (
-          <MitochondrialGeneCoverageTrack datasetId={datasetId} geneId={geneId} />
-        ) : (
-          <GeneCoverageTrack
-            datasetId={datasetId}
-            geneId={geneId}
-            includeExomeCoverage={genesHaveExomeCoverage(datasetId)}
-            includeGenomeCoverage={genesHaveGenomeCoverage(datasetId)}
-          />
-        )}
-
-        {/* @ts-expect-error TS(2769) FIXME: No overload matches this call. */}
-        <ControlPanel marginLeft={100} width={regionViewerWidth - 100 - (isSmallScreen ? 0 : 80)}>
-          Include:
-          <Legend>
-            <LegendItemWrapper>
-              <Label htmlFor="include-cds-regions">
-                <CheckboxInput
-                  checked={hasCodingExons}
-                  disabled
-                  id="include-cds-regions"
-                  onChange={() => {}}
-                />
-                Coding regions (CDS)
-                <LegendSwatch
-                  color={transcriptFeatureAttributes.CDS.fill}
-                  // @ts-expect-error TS(2769) FIXME: No overload matches this call.
-                  height={transcriptFeatureAttributes.CDS.height}
-                />
-              </Label>
-            </LegendItemWrapper>
-
-            <LegendItemWrapper>
-              <Label htmlFor="include-utr-regions">
-                <CheckboxInput
-                  checked={includeUTRs}
-                  disabled={!hasUTRs}
-                  id="include-utr-regions"
-                  onChange={(e: any) => {
-                    setIncludeUTRs(e.target.checked)
-                  }}
-                />
-                Untranslated regions (UTRs)
-                <LegendSwatch
-                  color={transcriptFeatureAttributes.UTR.fill}
-                  // @ts-expect-error TS(2769) FIXME: No overload matches this call.
-                  height={transcriptFeatureAttributes.UTR.height}
-                />
-              </Label>
-            </LegendItemWrapper>
-
-            <LegendItemWrapper>
-              <Label htmlFor="include-nc-transcripts">
-                <CheckboxInput
-                  checked={includeNonCodingTranscripts}
-                  disabled={!hasNonCodingTranscripts || (!hasCodingExons && !hasUTRs)}
-                  id="include-nc-transcripts"
-                  onChange={(e: any) => {
-                    setIncludeNonCodingTranscripts(e.target.checked)
-                  }}
-                />
-                Non-coding transcripts
-                <LegendSwatch
-                  color={transcriptFeatureAttributes.exon.fill}
-                  // @ts-expect-error TS(2769) FIXME: No overload matches this call.
-                  height={transcriptFeatureAttributes.exon.height}
-                />
-              </Label>
-            </LegendItemWrapper>
-          </Legend>
-        </ControlPanel>
-
-        <TrackWrapper>
-          <Track
-            renderLeftPanel={() => {
-              return (
-                <ToggleTranscriptsPanel>
-                  <img
-                    alt={`${gene.strand === '-' ? 'Negative' : 'Positive'} strand`}
-                    src={gene.strand === '-' ? LeftArrow : RightArrow}
-                    height={20}
-                    width={20}
-                  />
-                  {gene.chrom === 'M' ? (
-                    'Transcript'
-                  ) : (
-                    <Button
-                      onClick={() => {
-                        setShowTranscripts((prevShowTranscripts) => !prevShowTranscripts)
-                      }}
-                    >
-                      {showTranscripts ? 'Hide' : 'Show'} transcripts
-                    </Button>
-                  )}
-                </ToggleTranscriptsPanel>
-              )
-            }}
-          >
-            {({ scalePosition, width: trackWidth }: any) => (
-              <CompositeTranscriptPlotWrapper>
-                <TranscriptPlot
-                  height={20}
-                  scalePosition={scalePosition}
-                  showNonCodingExons={includeNonCodingTranscripts}
-                  showUTRs={includeUTRs}
-                  transcript={{ exons: gene.exons }}
-                  width={trackWidth}
-                />
-              </CompositeTranscriptPlotWrapper>
-            )}
-          </Track>
-        </TrackWrapper>
-
-        {showTranscripts && (
-          <TrackWrapper>
-            <GeneTranscriptsTrack
+      <ListedVariantsProvider>
+        <RegionViewer
+          contextType="gene"
+          leftPanelWidth={115}
+          width={regionViewerWidth}
+          regions={regionViewerRegions}
+          rightPanelWidth={isSmallScreen ? 0 : 80}
+          renderOverview={({ scalePosition, width: overviewWidth }: any) => (
+            <TranscriptPlot
+              height={10}
+              scalePosition={scalePosition}
+              showNonCodingExons={includeNonCodingTranscripts}
+              showUTRs={includeUTRs}
+              transcript={{ exons: gene.exons }}
+              width={overviewWidth}
+            />
+          )}
+          zoomDisabled={!hasExons(datasetId)}
+          zoomRegion={zoomRegion}
+          onChangeZoomRegion={setZoomRegion}
+        >
+          {/* eslint-disable-next-line no-nested-ternary */}
+          {!hasExons(datasetId) ? (
+            <RegionCoverageTrack
+              chrom={gene.chrom}
               datasetId={datasetId}
-              isTissueExpressionAvailable={!!gene.pext}
+              includeExomeCoverage={false}
+              start={gene.start}
+              stop={gene.stop}
+            />
+          ) : gene.chrom === 'M' ? (
+            <MitochondrialGeneCoverageTrack datasetId={datasetId} geneId={geneId} />
+          ) : (
+            <GeneCoverageTrack
+              datasetId={datasetId}
+              geneId={geneId}
+              includeExomeCoverage={genesHaveExomeCoverage(datasetId)}
+              includeGenomeCoverage={genesHaveGenomeCoverage(datasetId)}
+            />
+          )}
+
+          {/* @ts-expect-error TS(2769) FIXME: No overload matches this call. */}
+          <ControlPanel marginLeft={100} width={regionViewerWidth - 100 - (isSmallScreen ? 0 : 80)}>
+            Include:
+            <Legend>
+              <LegendItemWrapper>
+                <Label htmlFor="include-cds-regions">
+                  <CheckboxInput
+                    checked={hasCodingExons}
+                    disabled
+                    id="include-cds-regions"
+                    onChange={() => {}}
+                  />
+                  Coding regions (CDS)
+                  <LegendSwatch
+                    color={transcriptFeatureAttributes.CDS.fill}
+                    // @ts-expect-error TS(2769) FIXME: No overload matches this call.
+                    height={transcriptFeatureAttributes.CDS.height}
+                  />
+                </Label>
+              </LegendItemWrapper>
+
+              <LegendItemWrapper>
+                <Label htmlFor="include-utr-regions">
+                  <CheckboxInput
+                    checked={includeUTRs}
+                    disabled={!hasUTRs}
+                    id="include-utr-regions"
+                    onChange={(e: any) => {
+                      setIncludeUTRs(e.target.checked)
+                    }}
+                  />
+                  Untranslated regions (UTRs)
+                  <LegendSwatch
+                    color={transcriptFeatureAttributes.UTR.fill}
+                    // @ts-expect-error TS(2769) FIXME: No overload matches this call.
+                    height={transcriptFeatureAttributes.UTR.height}
+                  />
+                </Label>
+              </LegendItemWrapper>
+
+              <LegendItemWrapper>
+                <Label htmlFor="include-nc-transcripts">
+                  <CheckboxInput
+                    checked={includeNonCodingTranscripts}
+                    disabled={!hasNonCodingTranscripts || (!hasCodingExons && !hasUTRs)}
+                    id="include-nc-transcripts"
+                    onChange={(e: any) => {
+                      setIncludeNonCodingTranscripts(e.target.checked)
+                    }}
+                  />
+                  Non-coding transcripts
+                  <LegendSwatch
+                    color={transcriptFeatureAttributes.exon.fill}
+                    // @ts-expect-error TS(2769) FIXME: No overload matches this call.
+                    height={transcriptFeatureAttributes.exon.height}
+                  />
+                </Label>
+              </LegendItemWrapper>
+            </Legend>
+          </ControlPanel>
+
+          <TrackWrapper>
+            <Track
+              renderLeftPanel={() => {
+                return (
+                  <ToggleTranscriptsPanel>
+                    <img
+                      alt={`${gene.strand === '-' ? 'Negative' : 'Positive'} strand`}
+                      src={gene.strand === '-' ? LeftArrow : RightArrow}
+                      height={20}
+                      width={20}
+                    />
+                    {gene.chrom === 'M' ? (
+                      'Transcript'
+                    ) : (
+                      <Button
+                        onClick={() => {
+                          setShowTranscripts((prevShowTranscripts) => !prevShowTranscripts)
+                        }}
+                      >
+                        {showTranscripts ? 'Hide' : 'Show'} transcripts
+                      </Button>
+                    )}
+                  </ToggleTranscriptsPanel>
+                )
+              }}
+            >
+              {({ scalePosition, width: trackWidth }: any) => (
+                <CompositeTranscriptPlotWrapper>
+                  <TranscriptPlot
+                    height={20}
+                    scalePosition={scalePosition}
+                    showNonCodingExons={includeNonCodingTranscripts}
+                    showUTRs={includeUTRs}
+                    transcript={{ exons: gene.exons }}
+                    width={trackWidth}
+                  />
+                </CompositeTranscriptPlotWrapper>
+              )}
+            </Track>
+          </TrackWrapper>
+
+          {showTranscripts && (
+            <TrackWrapper>
+              <GeneTranscriptsTrack
+                datasetId={datasetId}
+                isTissueExpressionAvailable={!!gene.pext}
+                gene={gene}
+                includeNonCodingTranscripts={includeNonCodingTranscripts}
+                includeUTRs={includeUTRs}
+                preferredTranscriptId={preferredTranscriptId}
+                preferredTranscriptDescription={preferredTranscriptDescription}
+              />
+            </TrackWrapper>
+          )}
+
+          {gene.chrom.startsWith('M') && (
+            <MitochondrialRegionConstraintTrack
+              constraintRegions={gene.mitochondrial_missense_constraint_regions}
+              exons={gene.exons}
+              geneSymbol={gene.symbol}
+            />
+          )}
+
+          {hasCodingExons && gene.chrom !== 'M' && gene.pext && (
+            <TissueExpressionTrack
+              exons={cdsCompositeExons}
+              expressionRegions={gene.pext.regions}
+              flags={gene.pext.flags}
+              transcripts={gene.transcripts as TranscriptWithTissueExpression[]} // if a gene has pext, it has gtex
+              preferredTranscriptId={preferredTranscriptId}
+              preferredTranscriptDescription={preferredTranscriptDescription}
+              topLevelDataset={getTopLevelDataset(datasetId)}
+            />
+          )}
+
+          {isExac(datasetId) && gene.exac_regional_missense_constraint_regions && (
+            <RegionalConstraintTrack
+              height={15}
+              regions={gene.exac_regional_missense_constraint_regions}
+            />
+          )}
+
+          {isV2(datasetId) && (
+            <RegionalMissenseConstraintTrack
+              regionalMissenseConstraint={gene.gnomad_v2_regional_missense_constraint}
+              gene={gene}
+            />
+          )}
+
+          {demoRegionalMissenseConstraint && (
+            <RegionalMissenseConstraintTrack
+              regionalMissenseConstraint={demoRegionalMissenseConstraint}
+              gene={gene}
+            />
+          )}
+
+          {isV4(datasetId) &&
+            hasShortVariants(datasetId) &&
+            hasCodingExons &&
+            gene.chrom !== 'M' && (
+              <MissenseConstraint3dTrackWithListedVariants
+                datasetId={datasetId}
+                gene={gene}
+                regionalMissenseConstraint={demoRegionalMissenseConstraint}
+              />
+            )}
+
+          {/* eslint-disable-next-line no-nested-ternary */}
+          {hasStructuralVariants(datasetId) ? (
+            <StructuralVariantsInGene datasetId={datasetId} gene={gene} zoomRegion={zoomRegion} />
+          ) : // eslint-disable-next-line no-nested-ternary
+          hasCopyNumberVariants(datasetId) ? (
+            <CopyNumberVariantsInGene datasetId={datasetId} gene={gene} zoomRegion={zoomRegion} />
+          ) : gene.chrom === 'M' ? (
+            <MitochondrialVariantsInGene
+              datasetId={datasetId}
+              gene={gene}
+              zoomRegion={zoomRegion}
+            />
+          ) : (
+            <VariantsInGene
+              datasetId={datasetId}
               gene={gene}
               includeNonCodingTranscripts={includeNonCodingTranscripts}
               includeUTRs={includeUTRs}
-              preferredTranscriptId={preferredTranscriptId}
-              preferredTranscriptDescription={preferredTranscriptDescription}
+              zoomRegion={zoomRegion}
+              hasOnlyNonCodingTranscripts={!hasCodingExons && hasNonCodingTranscripts}
             />
-          </TrackWrapper>
-        )}
-
-        {gene.chrom.startsWith('M') && (
-          <MitochondrialRegionConstraintTrack
-            constraintRegions={gene.mitochondrial_missense_constraint_regions}
-            exons={gene.exons}
-            geneSymbol={gene.symbol}
-          />
-        )}
-
-        {hasCodingExons && gene.chrom !== 'M' && gene.pext && (
-          <TissueExpressionTrack
-            exons={cdsCompositeExons}
-            expressionRegions={gene.pext.regions}
-            flags={gene.pext.flags}
-            transcripts={gene.transcripts as TranscriptWithTissueExpression[]} // if a gene has pext, it has gtex
-            preferredTranscriptId={preferredTranscriptId}
-            preferredTranscriptDescription={preferredTranscriptDescription}
-            topLevelDataset={getTopLevelDataset(datasetId)}
-          />
-        )}
-
-        {isExac(datasetId) && gene.exac_regional_missense_constraint_regions && (
-          <RegionalConstraintTrack
-            height={15}
-            regions={gene.exac_regional_missense_constraint_regions}
-          />
-        )}
-
-        {isV2(datasetId) && (
-          <RegionalMissenseConstraintTrack
-            regionalMissenseConstraint={gene.gnomad_v2_regional_missense_constraint}
-            gene={gene}
-          />
-        )}
-
-        {demoRegionalMissenseConstraint && (
-          <RegionalMissenseConstraintTrack
-            regionalMissenseConstraint={demoRegionalMissenseConstraint}
-            gene={gene}
-          />
-        )}
-
-        {isV4(datasetId) && hasShortVariants(datasetId) && hasCodingExons && gene.chrom !== 'M' && (
-          <MissenseConstraint3dTrack
-            datasetId={datasetId}
-            gene={gene}
-            regionalMissenseConstraint={demoRegionalMissenseConstraint}
-          />
-        )}
-
-        {/* eslint-disable-next-line no-nested-ternary */}
-        {hasStructuralVariants(datasetId) ? (
-          <StructuralVariantsInGene datasetId={datasetId} gene={gene} zoomRegion={zoomRegion} />
-        ) : // eslint-disable-next-line no-nested-ternary
-        hasCopyNumberVariants(datasetId) ? (
-          <CopyNumberVariantsInGene datasetId={datasetId} gene={gene} zoomRegion={zoomRegion} />
-        ) : gene.chrom === 'M' ? (
-          <MitochondrialVariantsInGene datasetId={datasetId} gene={gene} zoomRegion={zoomRegion} />
-        ) : (
-          <VariantsInGene
-            datasetId={datasetId}
-            gene={gene}
-            includeNonCodingTranscripts={includeNonCodingTranscripts}
-            includeUTRs={includeUTRs}
-            zoomRegion={zoomRegion}
-            hasOnlyNonCodingTranscripts={!hasCodingExons && hasNonCodingTranscripts}
-          />
-        )}
-      </RegionViewer>
+          )}
+        </RegionViewer>
+      </ListedVariantsProvider>
     </TrackPage>
   )
 }

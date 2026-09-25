@@ -8,7 +8,7 @@ import {
 
 const regionDescription = (region: MissenseConstraint3dRegion, rank: number | undefined) => {
   if (region.is_catch_all) {
-    return 'Catch-all'
+    return 'Unassigned residue'
   }
   if (rank !== undefined) {
     return `#${rank + 1} most constrained`

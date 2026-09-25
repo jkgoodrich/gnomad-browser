@@ -37,7 +37,9 @@ import {
 } from './missenseConstraint3d'
 
 const RESIDUE_COLOR_THEME_NAME = 'gnomad-residue-colors'
+// At an overlay size of 1. The stick size is Mol*'s default for ball-and-stick representations.
 const VARIANT_SPHERE_SIZE = 1.5
+const FEATURE_STICK_SIZE_FACTOR = 0.15
 const NO_DATA_COLOR = Color.fromHexStyle(NO_REGION_COLOR)
 
 // A dense array rather than a Map: Mol* compares theme params with a deep equality that ignores Maps
@@ -114,6 +116,14 @@ class StructureViewerMolstar extends Component<StructureViewerProps, State> {
 
   overlayComponents = new Map<string, StateObjectSelector>()
 
+  // The overlay each component was made for, to remake it if the overlay's residues change
+  overlaysWithComponents = new Map<string, StructureOverlay>()
+
+  overlayRepresentations = new Map<
+    string,
+    StateObjectSelector<PluginStateObject.Molecule.Structure.Representation3D>
+  >()
+
   hoverSubscription: { unsubscribe: () => void } | null = null
 
   // Mol* state updates are asynchronous, so apply prop changes one at a time
@@ -141,13 +151,23 @@ class StructureViewerMolstar extends Component<StructureViewerProps, State> {
     if (status !== 'ready') {
       return
     }
-    const { residueColors, highlightedResidueRanges, overlays, resetViewCount } = this.props
+    const {
+      residueColors,
+      highlightedResidueRanges,
+      overlays,
+      overlayOpacity,
+      overlaySize,
+      resetViewCount,
+    } = this.props
     this.enqueueUpdate(async () => {
       if (residueColors !== prevProps.residueColors) {
         await this.recolor()
       }
       if (overlays !== prevProps.overlays) {
         await this.showOverlays()
+      }
+      if (overlayOpacity !== prevProps.overlayOpacity || overlaySize !== prevProps.overlaySize) {
+        await this.styleOverlays()
       }
       if (highlightedResidueRanges !== prevProps.highlightedResidueRanges) {
         this.highlightResidues()
@@ -297,6 +317,7 @@ class StructureViewerMolstar extends Component<StructureViewerProps, State> {
   }
 
   async createOverlay(overlay: StructureOverlay) {
+    const { overlayOpacity, overlaySize } = this.props
     const plugin = this.plugin!
     const component = await plugin.builders.structure.tryCreateComponentFromExpression(
       this.structure!,
@@ -308,23 +329,82 @@ class StructureViewerMolstar extends Component<StructureViewerProps, State> {
       return
     }
     const color = Color.fromHexStyle(overlay.color)
-    await plugin.builders.structure.representation.addRepresentation(
+    const representation = await plugin.builders.structure.representation.addRepresentation(
       component,
       overlay.style === 'variant'
         ? {
             type: 'spacefill',
+            typeParams: { alpha: overlayOpacity },
             color: 'uniform',
             colorParams: { value: color },
             size: 'uniform',
-            sizeParams: { value: VARIANT_SPHERE_SIZE },
+            sizeParams: { value: VARIANT_SPHERE_SIZE * overlaySize },
           }
-        : { type: 'ball-and-stick', color: 'uniform', colorParams: { value: color } }
+        : {
+            type: 'ball-and-stick',
+            typeParams: {
+              alpha: overlayOpacity,
+              sizeFactor: FEATURE_STICK_SIZE_FACTOR * overlaySize,
+            },
+            color: 'uniform',
+            colorParams: { value: color },
+          }
     )
     this.overlayComponents.set(overlay.id, component)
+    this.overlaysWithComponents.set(overlay.id, overlay)
+    this.overlayRepresentations.set(overlay.id, representation)
+  }
+
+  async styleOverlays() {
+    const { overlayOpacity, overlaySize } = this.props
+    const update = this.plugin!.build()
+    this.overlayRepresentations.forEach((representation) => {
+      update
+        .to(representation)
+        .update(StateTransforms.Representation.StructureRepresentation3D, (params) => ({
+          ...params,
+          // Variants are drawn as spheres, and features as sticks
+          ...(params.type.name === 'spacefill'
+            ? {
+                type: { ...params.type, params: { ...params.type.params, alpha: overlayOpacity } },
+                sizeTheme: {
+                  ...params.sizeTheme,
+                  params: { value: VARIANT_SPHERE_SIZE * overlaySize },
+                },
+              }
+            : {
+                type: {
+                  ...params.type,
+                  params: {
+                    ...params.type.params,
+                    alpha: overlayOpacity,
+                    sizeFactor: FEATURE_STICK_SIZE_FACTOR * overlaySize,
+                  },
+                },
+              }),
+        }))
+    })
+    await update.commit()
   }
 
   async showOverlays() {
     const { overlays } = this.props
+    // Like the variant table's current selection, when its filters change
+    const changedOverlays = overlays.filter(
+      (overlay) =>
+        this.overlayComponents.has(overlay.id) &&
+        this.overlaysWithComponents.get(overlay.id) !== overlay
+    )
+    if (changedOverlays.length > 0) {
+      const update = this.plugin!.build()
+      changedOverlays.forEach((overlay) => {
+        update.delete(this.overlayComponents.get(overlay.id)!.ref)
+        this.overlayComponents.delete(overlay.id)
+        this.overlayRepresentations.delete(overlay.id)
+        this.overlaysWithComponents.delete(overlay.id)
+      })
+      await update.commit()
+    }
     const newOverlays = overlays.filter((overlay) => !this.overlayComponents.has(overlay.id))
     await newOverlays.reduce(
       (previous, overlay) => previous.then(() => this.createOverlay(overlay)),

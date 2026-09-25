@@ -1,4 +1,4 @@
-import { describe, expect, test } from '@jest/globals'
+import { describe, expect, jest, test } from '@jest/globals'
 import 'jest-styled-components'
 import clinvarVariantFactory from '../__factories__/ClinvarVariant'
 import { ClinvarVariant } from '../VariantPage/VariantPage'
@@ -223,6 +223,35 @@ describe('Clinvar Variants Track', () => {
       screen.getByRole('option', { name: '4 Stars' }) as HTMLOptionElement
     )
     expect(screen.getByText('ClinVar variants (1)')).not.toBeNull()
+  })
+})
+
+describe('Clinvar Variants Track selection', () => {
+  test('reports the variants that the track shows', async () => {
+    const onChangeFilteredVariants = jest.fn<(variants: ClinvarVariant[]) => void>()
+    render(
+      <BrowserRouter>
+        <RegionViewerContext.Provider value={childProps}>
+          <ClinvarVariantTrack
+            referenceGenome="GRCh38"
+            transcripts={mockTranscripts}
+            variants={mockClinvarVariants}
+            onChangeFilteredVariants={onChangeFilteredVariants}
+          />
+        </RegionViewerContext.Provider>
+      </BrowserRouter>
+    )
+    const reportedVariants = () => {
+      const { calls } = onChangeFilteredVariants.mock
+      return calls[calls.length - 1][0]
+    }
+    expect(reportedVariants()).toEqual(mockClinvarVariants)
+
+    await userEvent.selectOptions(
+      screen.getByRole('combobox'),
+      screen.getByRole('option', { name: '4 Stars' }) as HTMLOptionElement
+    )
+    expect(reportedVariants()).toEqual([mockClinvarVariants[4]])
   })
 })
 

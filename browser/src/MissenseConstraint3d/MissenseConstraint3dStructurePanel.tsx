@@ -7,6 +7,7 @@ import { DatasetId, referenceGenome } from '@gnomad/dataset-metadata/metadata'
 import { CheckboxInput, Label, LegendItemWrapper, LegendSwatch } from '../ChartStyles'
 import { RegionAttributeList } from '../ConstraintTrack'
 import Delayed from '../Delayed'
+import InfoButton from '../help/InfoButton'
 import Legend from '../Legend'
 import Query from '../Query'
 import {
@@ -17,7 +18,7 @@ import {
 } from '../RegionalMissenseConstraintTrack'
 import StatusMessage from '../StatusMessage'
 import {
-  CLINVAR_PATHOGENIC_MISSENSE_OVERLAY,
+  CLINVAR_TRACK_VARIANTS_OVERLAY_ID,
   GNOMAD_MISSENSE_OVERLAY,
   HoveredResidue,
   MissenseConstraint3d,
@@ -27,19 +28,26 @@ import {
   PLDDT_BANDS,
   ResidueRange,
   StructureColorBy,
+  StructureOverlay,
   StructureViewerProps,
+  TABLE_VARIANTS_OVERLAY_ID,
+  UNIPROT_FEATURE_LEVELS,
   UNIPROT_FEATURE_OVERLAY_STYLES,
   alphafoldEntryUrl,
   alphafoldStructureUrl,
   ALPHAFOLD_DB_MODEL_VERSION,
+  clinicalSignificanceCategoryOverlays,
+  consequenceCategoryOverlays,
   formatResidue,
   isPassingGnomadMissenseVariant,
-  isPathogenicClinvarMissenseVariant,
+  parseProteinChangeHgvsp,
   placeVariantsOnSequence,
   plddtResidueColors,
   regionalMissenseConstraintByResidue,
   regionsByResidue,
   residueColors,
+  uniprotEntryUrl,
+  uniprotFeatureOverlayId,
   uniprotFeatureOverlays,
   variantOverlay,
 } from './missenseConstraint3d'
@@ -103,6 +111,9 @@ query ${variantsOperationName}($transcriptId: String!, $datasetId: DatasetId!, $
 
 const VIEWER_HEIGHT = 500
 const TOOLTIP_CURSOR_OFFSET = 15
+const MAX_OVERLAY_TRANSPARENCY = 0.9
+const MIN_OVERLAY_SIZE = 0.25
+const MAX_OVERLAY_SIZE = 3
 
 const Controls = styled.div`
   display: flex;
@@ -124,17 +135,89 @@ const LabeledControl = styled.div`
   }
 `
 
-const OverlayControls = styled.ul`
+const ViewerLayout = styled.div`
   display: flex;
-  flex-flow: row wrap;
+  align-items: flex-start;
+
+  @media (max-width: 900px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+`
+
+const OverlayPanel = styled.div`
+  flex: 0 0 18em;
+  overflow-y: auto;
+  box-sizing: border-box;
+  max-height: ${VIEWER_HEIGHT}px;
+  padding-left: 1em;
+
+  @media (max-width: 900px) {
+    flex: none;
+    max-height: none;
+    padding: 1em 0 0;
+  }
+`
+
+const SliderControl = styled.div`
+  margin-bottom: 0.5em;
+
+  div {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  input {
+    width: 100%;
+    margin: 0.25em 0 0;
+  }
+`
+
+const OverlayGroupHeading = styled.h3`
+  display: flex;
   align-items: center;
+  margin: 0.75em 0 0.35em;
+  font-size: 1em;
+`
+
+const OverlaySubgroupHeading = styled.h4`
+  margin: 0.5em 0 0.25em;
+  font-size: 0.9em;
+`
+
+const OverlayList = styled.ul`
   padding: 0;
-  margin: 0 0 0.5em;
+  margin: 0;
   list-style-type: none;
 
-  li:first-child {
-    margin-left: 0;
+  li {
+    margin: 0 0 0.35em;
   }
+`
+
+const OverlaySwatch = styled(LegendSwatch)`
+  flex-shrink: 0;
+  margin: 0 0.5em 0 0;
+`
+
+const CategoryKey = styled.ul`
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 0 0 1.5em;
+  margin: 0;
+  font-size: 0.85em;
+  list-style-type: none;
+
+  li {
+    display: flex;
+    align-items: center;
+    margin: 0 0.75em 0.25em 0;
+  }
+`
+
+const UnplacedVariantsNote = styled.p`
+  margin: 0.25em 0 0;
+  font-size: 0.85em;
 `
 
 const StructureLegend = styled.div`
@@ -170,6 +253,8 @@ const StructureOnlyColorKey = ({ colorBy }: { colorBy: StructureColorBy }) => {
 
 const ViewerWrapper = styled.div`
   position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
   height: ${VIEWER_HEIGHT}px;
   border: 1px solid #ccc;
 `
@@ -203,6 +288,7 @@ type ResidueTooltipProps = {
   regionalMissenseConstraintRegion: RegionalMissenseConstraintRegion | undefined
   gnomadVariants: MissenseConstraint3dVariant[]
   clinvarVariants: MissenseConstraint3dClinvarVariant[]
+  tableVariants: MissenseConstraint3dVariant[]
   uniprotFeatureDescriptions: string[]
 }
 
@@ -213,6 +299,7 @@ const ResidueTooltip = ({
   regionalMissenseConstraintRegion,
   gnomadVariants,
   clinvarVariants,
+  tableVariants,
   uniprotFeatureDescriptions,
 }: ResidueTooltipProps) => (
   <RegionAttributeList>
@@ -251,6 +338,12 @@ const ResidueTooltip = ({
         </dd>
       </div>
     )}
+    {tableVariants.length > 0 && (
+      <div>
+        <dt>In variant table:</dt>
+        <dd>{tableVariants.map((variant) => variant.hgvsp).join(', ')}</dd>
+      </div>
+    )}
     {uniprotFeatureDescriptions.length > 0 && (
       <div>
         <dt>UniProt:</dt>
@@ -271,6 +364,12 @@ type PanelProps = {
   colorRegion: (region: MissenseConstraint3dRegion) => string
   highlightedResidueRanges: ResidueRange[]
   regionalMissenseConstraint: RegionalMissenseConstraint | null
+  visibleOverlayIds: Set<string>
+  onToggleOverlay: (overlayId: string) => void
+  // Variants listed in the gene page's variant table, or null if it hasn't loaded
+  variantIdsInTable: Set<string> | null
+  // Variants listed in the gene page's ClinVar track, or null if it hasn't loaded
+  clinvarVariantIdsInTrack: Set<string> | null
 }
 
 type StructurePanelProps = PanelProps & {
@@ -288,10 +387,15 @@ const StructurePanel = ({
   colorRegion,
   highlightedResidueRanges,
   regionalMissenseConstraint,
+  visibleOverlayIds,
+  onToggleOverlay,
+  variantIdsInTable,
+  clinvarVariantIdsInTrack,
   variants,
   clinvarVariants,
 }: StructurePanelProps) => {
-  const [visibleOverlayIds, setVisibleOverlayIds] = useState<Set<string>>(new Set())
+  const [overlayTransparency, setOverlayTransparency] = useState(0)
+  const [overlaySize, setOverlaySize] = useState(1)
   const [hoveredResidue, setHoveredResidue] = useState<HoveredResidue | null>(null)
   const [resetViewCount, setResetViewCount] = useState(0)
   const [structureViewer, setStructureViewer] = useState(initialStructureViewer)
@@ -340,38 +444,127 @@ const StructurePanel = ({
     () => placeVariantsOnSequence(variants.filter(isPassingGnomadMissenseVariant), sequence),
     [variants, sequence]
   )
-  const clinvarMissense = useMemo(
-    () =>
-      placeVariantsOnSequence(clinvarVariants.filter(isPathogenicClinvarMissenseVariant), sequence),
-    [clinvarVariants, sequence]
-  )
 
+  const uniprotOverlays = useMemo(
+    () => uniprotFeatureOverlays(constraint.uniprot_features),
+    [constraint]
+  )
   const overlays = useMemo(
     () => [
       variantOverlay(GNOMAD_MISSENSE_OVERLAY, gnomadMissense.variantsByResidue),
-      variantOverlay(CLINVAR_PATHOGENIC_MISSENSE_OVERLAY, clinvarMissense.variantsByResidue),
-      ...uniprotFeatureOverlays(constraint.uniprot_features),
+      ...uniprotOverlays,
     ],
-    [gnomadMissense, clinvarMissense, constraint]
+    [gnomadMissense, uniprotOverlays]
   )
+  const tableVariants = useMemo(
+    () =>
+      variantIdsInTable &&
+      placeVariantsOnSequence(
+        variants.filter((variant) => variantIdsInTable.has(variant.variant_id)),
+        sequence,
+        parseProteinChangeHgvsp
+      ),
+    [variants, variantIdsInTable, sequence]
+  )
+  const tableOverlays = useMemo(
+    () => (tableVariants ? consequenceCategoryOverlays(tableVariants.variantsByResidue) : []),
+    [tableVariants]
+  )
+  const clinvarTrackVariants = useMemo(
+    () =>
+      clinvarVariantIdsInTrack &&
+      placeVariantsOnSequence(
+        clinvarVariants.filter((variant) => clinvarVariantIdsInTrack.has(variant.variant_id)),
+        sequence,
+        parseProteinChangeHgvsp
+      ),
+    [clinvarVariants, clinvarVariantIdsInTrack, sequence]
+  )
+  const clinvarTrackOverlays = useMemo(
+    () =>
+      clinvarTrackVariants
+        ? clinicalSignificanceCategoryOverlays(clinvarTrackVariants.variantsByResidue)
+        : [],
+    [clinvarTrackVariants]
+  )
+
+  // 3Dmol colors a residue in several variant overlays like the last of them, so ClinVar goes last
   const visibleOverlays = useMemo(
-    () => overlays.filter((overlay) => visibleOverlayIds.has(overlay.id)),
-    [overlays, visibleOverlayIds]
+    () => [
+      ...(visibleOverlayIds.has(TABLE_VARIANTS_OVERLAY_ID) ? tableOverlays : []),
+      ...overlays.filter((overlay) => visibleOverlayIds.has(overlay.id)),
+      ...(visibleOverlayIds.has(CLINVAR_TRACK_VARIANTS_OVERLAY_ID) ? clinvarTrackOverlays : []),
+    ],
+    [overlays, tableOverlays, clinvarTrackOverlays, visibleOverlayIds]
   )
 
-  const unplacedVariantCount =
-    gnomadMissense.unplacedVariantCount + clinvarMissense.unplacedVariantCount
+  const variantOverlays = overlays.filter((overlay) => overlay.style === 'variant')
 
-  const toggleOverlay = (overlayId: string) => {
-    setVisibleOverlayIds((previousOverlayIds) => {
-      const nextOverlayIds = new Set(previousOverlayIds)
-      if (nextOverlayIds.has(overlayId)) {
-        nextOverlayIds.delete(overlayId)
-      } else {
-        nextOverlayIds.add(overlayId)
-      }
-      return nextOverlayIds
-    })
+  const { unplacedVariantCount } = gnomadMissense
+
+  const renderOverlayList = (groupOverlays: StructureOverlay[]) => (
+    <OverlayList>
+      {groupOverlays.map((overlay) => (
+        <LegendItemWrapper key={overlay.id}>
+          <Label htmlFor={`missense-constraint-3d-overlay-${overlay.id}`}>
+            <CheckboxInput
+              id={`missense-constraint-3d-overlay-${overlay.id}`}
+              checked={visibleOverlayIds.has(overlay.id)}
+              disabled={overlay.count === 0}
+              onChange={() => onToggleOverlay(overlay.id)}
+            />
+            <OverlaySwatch
+              color={overlay.color}
+              // @ts-expect-error TS(2769) FIXME: No overload matches this call.
+              height={overlay.style === 'variant' ? 16 : 8}
+            />
+            {`${overlay.label} (${overlay.count})`}
+          </Label>
+        </LegendItemWrapper>
+      ))}
+    </OverlayList>
+  )
+
+  // A toggle for the variants listed elsewhere on the page, like the ClinVar track
+  const renderListedVariantsToggle = (
+    overlayId: string,
+    listedVariantIds: Set<string>,
+    placedVariants: { variantsByResidue: Map<number, unknown[]> },
+    categoryOverlays: StructureOverlay[]
+  ) => {
+    const placedVariantCount = Array.from(placedVariants.variantsByResidue.values()).reduce(
+      (count, variantsAtResidue) => count + variantsAtResidue.length,
+      0
+    )
+    return (
+      <>
+        <OverlayList>
+          <LegendItemWrapper>
+            <Label htmlFor={`missense-constraint-3d-overlay-${overlayId}`}>
+              <CheckboxInput
+                id={`missense-constraint-3d-overlay-${overlayId}`}
+                checked={visibleOverlayIds.has(overlayId)}
+                disabled={placedVariantCount === 0}
+                onChange={() => onToggleOverlay(overlayId)}
+              />
+              {`Current selection (${placedVariantCount} of ${listedVariantIds.size})`}
+            </Label>
+          </LegendItemWrapper>
+        </OverlayList>
+        <CategoryKey>
+          {categoryOverlays.map((overlay) => (
+            <li key={overlay.id}>
+              <OverlaySwatch
+                color={overlay.color}
+                // @ts-expect-error TS(2769) FIXME: No overload matches this call.
+                height={16}
+              />
+              {overlay.label}
+            </li>
+          ))}
+        </CategoryKey>
+      </>
+    )
   }
 
   const renderTooltip = (residue: HoveredResidue) => {
@@ -403,14 +596,19 @@ const StructurePanel = ({
               : []
           }
           clinvarVariants={
-            isVisible(CLINVAR_PATHOGENIC_MISSENSE_OVERLAY.id)
-              ? clinvarMissense.variantsByResidue.get(residue.residueNumber) || []
+            clinvarTrackVariants && isVisible(CLINVAR_TRACK_VARIANTS_OVERLAY_ID)
+              ? clinvarTrackVariants.variantsByResidue.get(residue.residueNumber) || []
+              : []
+          }
+          tableVariants={
+            tableVariants && isVisible(TABLE_VARIANTS_OVERLAY_ID)
+              ? tableVariants.variantsByResidue.get(residue.residueNumber) || []
               : []
           }
           uniprotFeatureDescriptions={constraint.uniprot_features
             .filter(
               (feature) =>
-                isVisible(`uniprot-${feature.feature_type}`) &&
+                isVisible(uniprotFeatureOverlayId(feature.feature_type)) &&
                 feature.start <= residue.residueNumber &&
                 residue.residueNumber <= feature.stop
             )
@@ -446,7 +644,7 @@ const StructurePanel = ({
         </LabeledControl>
         <Checkbox
           id="missense-constraint-3d-color-catch-all-region"
-          label="Color catch-all region"
+          label="Color unassigned residues"
           checked={colorCatchAllRegion}
           disabled={colorBy !== 'obs_exp' && colorBy !== 'oe_upper'}
           onChange={onChangeColorCatchAllRegion}
@@ -469,63 +667,127 @@ const StructurePanel = ({
         </LabeledControl>
       </Controls>
       <StructureOnlyColorKey colorBy={colorBy} />
-      <OverlayControls>
-        <li>Show on structure:</li>
-        {overlays.map((overlay) => (
-          <LegendItemWrapper key={overlay.id}>
-            <Label htmlFor={`missense-constraint-3d-overlay-${overlay.id}`}>
-              <CheckboxInput
-                id={`missense-constraint-3d-overlay-${overlay.id}`}
-                checked={visibleOverlayIds.has(overlay.id)}
-                disabled={overlay.count === 0}
-                onChange={() => toggleOverlay(overlay.id)}
-              />
-              {`${overlay.label} (${overlay.count})`}
-              <LegendSwatch
-                color={overlay.color}
-                // @ts-expect-error TS(2769) FIXME: No overload matches this call.
-                height={overlay.style === 'variant' ? 16 : 8}
-              />
-            </Label>
-          </LegendItemWrapper>
-        ))}
-      </OverlayControls>
-      {unplacedVariantCount > 0 && (
-        <p>
-          {unplacedVariantCount} missense variant{unplacedVariantCount === 1 ? '' : 's'} could not
-          be placed on the structure because the HGVSp reference amino acid does not match the
-          protein sequence.
-        </p>
-      )}
-      <ViewerWrapper ref={viewerWrapper} onMouseLeave={() => setHoveredResidue(null)}>
-        <Suspense
-          fallback={
-            <Delayed>
-              <StatusMessage>Loading structure viewer</StatusMessage>
-            </Delayed>
-          }
-        >
-          <StructureViewer
-            key={structureViewer}
-            structureUrl={alphafoldStructureUrl(constraint.uniprot_id)}
-            expectedSequence={sequence}
-            residueColors={colors}
-            highlightedResidueRanges={highlightedResidueRanges}
-            overlays={visibleOverlays}
-            resetViewCount={resetViewCount}
-            onHoverResidue={setHoveredResidue}
-            onLoadStructure={setPlddtByResidue}
-          />
-        </Suspense>
-        {hoveredResidue && renderTooltip(hoveredResidue)}
-      </ViewerWrapper>
+      <ViewerLayout>
+        <ViewerWrapper ref={viewerWrapper} onMouseLeave={() => setHoveredResidue(null)}>
+          <Suspense
+            fallback={
+              <Delayed>
+                <StatusMessage>Loading structure viewer</StatusMessage>
+              </Delayed>
+            }
+          >
+            <StructureViewer
+              key={structureViewer}
+              structureUrl={alphafoldStructureUrl(constraint.uniprot_id)}
+              expectedSequence={sequence}
+              residueColors={colors}
+              highlightedResidueRanges={highlightedResidueRanges}
+              overlays={visibleOverlays}
+              overlayOpacity={1 - overlayTransparency}
+              overlaySize={overlaySize}
+              resetViewCount={resetViewCount}
+              onHoverResidue={setHoveredResidue}
+              onLoadStructure={setPlddtByResidue}
+            />
+          </Suspense>
+          {hoveredResidue && renderTooltip(hoveredResidue)}
+        </ViewerWrapper>
+        <OverlayPanel>
+          <SliderControl>
+            <div>
+              <label htmlFor="missense-constraint-3d-overlay-transparency">Transparency</label>
+              <span>{`${Math.round(overlayTransparency * 100)}%`}</span>
+            </div>
+            <input
+              id="missense-constraint-3d-overlay-transparency"
+              type="range"
+              min={0}
+              max={MAX_OVERLAY_TRANSPARENCY}
+              step={0.05}
+              value={overlayTransparency}
+              aria-valuetext={`${Math.round(overlayTransparency * 100)}%`}
+              onChange={(event) => setOverlayTransparency(Number(event.target.value))}
+            />
+          </SliderControl>
+          <SliderControl>
+            <div>
+              <label htmlFor="missense-constraint-3d-overlay-size">Size</label>
+              <span>{`${overlaySize}×`}</span>
+            </div>
+            <input
+              id="missense-constraint-3d-overlay-size"
+              type="range"
+              min={MIN_OVERLAY_SIZE}
+              max={MAX_OVERLAY_SIZE}
+              step={0.25}
+              value={overlaySize}
+              aria-valuetext={`${overlaySize} times`}
+              onChange={(event) => setOverlaySize(Number(event.target.value))}
+            />
+          </SliderControl>
+          <OverlayGroupHeading>Missense variants</OverlayGroupHeading>
+          {renderOverlayList(variantOverlays)}
+          {unplacedVariantCount > 0 && (
+            <UnplacedVariantsNote>
+              {unplacedVariantCount} missense variant{unplacedVariantCount === 1 ? '' : 's'} could
+              not be placed on the structure because the HGVSp reference amino acid does not match
+              the protein sequence.
+            </UnplacedVariantsNote>
+          )}
+          {clinvarVariantIdsInTrack && clinvarTrackVariants && (
+            <>
+              <OverlayGroupHeading>ClinVar track</OverlayGroupHeading>
+              {renderListedVariantsToggle(
+                CLINVAR_TRACK_VARIANTS_OVERLAY_ID,
+                clinvarVariantIdsInTrack,
+                clinvarTrackVariants,
+                clinvarTrackOverlays
+              )}
+            </>
+          )}
+          {variantIdsInTable && tableVariants && (
+            <>
+              <OverlayGroupHeading>gnomAD variants table</OverlayGroupHeading>
+              {renderListedVariantsToggle(
+                TABLE_VARIANTS_OVERLAY_ID,
+                variantIdsInTable,
+                tableVariants,
+                tableOverlays
+              )}
+            </>
+          )}
+          {uniprotOverlays.length > 0 && (
+            <>
+              <OverlayGroupHeading>
+                UniProt features
+                <InfoButton topic="uniprot-features" />
+              </OverlayGroupHeading>
+              {UNIPROT_FEATURE_LEVELS.map(({ level, label }) => {
+                const levelOverlays = uniprotOverlays.filter((overlay) => overlay.level === level)
+                return (
+                  levelOverlays.length > 0 && (
+                    <React.Fragment key={level}>
+                      <OverlaySubgroupHeading>{label}</OverlaySubgroupHeading>
+                      {renderOverlayList(levelOverlays)}
+                    </React.Fragment>
+                  )
+                )
+              })}
+            </>
+          )}
+        </OverlayPanel>
+      </ViewerLayout>
       <Attribution>
         Predicted structure:{' '}
         <ExternalLink href={alphafoldEntryUrl(constraint.uniprot_id)}>
           AlphaFold DB AF-{constraint.uniprot_id}-F1 (model v{ALPHAFOLD_DB_MODEL_VERSION})
         </ExternalLink>
         , <ExternalLink href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</ExternalLink>
-        . Protein features: UniProtKB release 2021_04, CC BY 4.0. Rendered with{' '}
+        . Protein features: UniProtKB{' '}
+        <ExternalLink href={uniprotEntryUrl(constraint.uniprot_id)}>
+          {constraint.uniprot_id}
+        </ExternalLink>{' '}
+        release 2021_04, CC BY 4.0. Rendered with{' '}
         <ExternalLink href={viewerUrl}>{viewerLabel}</ExternalLink>.
       </Attribution>
     </>

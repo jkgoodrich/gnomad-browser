@@ -7,7 +7,7 @@ The 3D missense constraint track shows regions of a protein that are depleted of
 
 ### Methods
 
-Regions were identified from the AlphaFold predicted structure of each protein. Starting from each residue, candidate regions were grown from its nearest neighbors in 3D space, and regions were added one at a time (forward selection) while doing so improved the model's fit to the observed pattern of missense variation, as measured by the Akaike information criterion (AIC). Residues were only grouped with a region's central residue if the predicted aligned error (PAE) between them was at most 15 Å, and each region was required to have at least 16 expected missense variants. Residues not assigned to any region form the protein's "catch-all" region.
+Regions were identified from the AlphaFold predicted structure of each protein. Starting from each residue, candidate regions were grown from its nearest neighbors in 3D space, and regions were added one at a time (forward selection) while doing so improved the model's fit to the observed pattern of missense variation, as measured by the Akaike information criterion (AIC). Residues were only grouped with a region's central residue if the predicted aligned error (PAE) between them was at most 15 Å, and each region was required to have at least 16 expected missense variants. Residues not assigned to any region are labeled "Unassigned residue", and their missense o/e is calculated across all of them together.
 
 For each region we report the number of observed and expected rare missense variants, the observed/expected (o/e) ratio, the upper bound of the o/e confidence interval, and a p-value for the region's missense constraint.
 
@@ -23,7 +23,7 @@ AlphaFold structures are predictions. Regions of low predicted confidence (pLDDT
 - **o/e upper bound**: each region is colored by the upper bound of its o/e confidence interval using the same scale.
 - **Regions**: the 10 regions with the lowest o/e among those with p ≤ 1e-3 are shown in distinct colors, ranked from most to least constrained. All other residues are gray.
 
-The catch-all region is gray unless "Color catch-all region" is selected.
+Unassigned residues are gray unless "Color unassigned residues" is selected.
 
 The structure can also be colored by:
 
@@ -34,13 +34,14 @@ With these options, the track keeps showing the missense o/e of each 3D region.
 
 ### Showing the structure
 
-Select "Show structure" to view the AlphaFold structure colored the same way as the track. Hover over a region in the track to highlight all of its residues in the structure, or over a residue in the structure to see its region, predicted confidence, and any features shown on the structure. The structure can also show:
+Select "Show structure" to view the AlphaFold structure colored the same way as the track. Hover over a region in the track to highlight all of its residues in the structure, or over a residue in the structure to see its region, predicted confidence, and any features shown on the structure. The panel beside the structure can also show:
 
-- **gnomAD missense variants**: missense variants in the selected dataset that pass quality control in the exomes or genomes, placed using their HGVSp annotation on the constraint transcript.
-- **ClinVar pathogenic / likely pathogenic missense variants**: ClinVar missense variants classified as pathogenic, likely pathogenic, association, or risk factor.
-- **UniProt features**: protein features such as transmembrane regions, domains, and binding sites from UniProtKB release 2021_04.
+- **gnomAD missense variants**: missense variants in the selected dataset that pass quality control in the exomes or genomes.
+- **Current selection in the ClinVar track**: the ClinVar variants shown in the ClinVar track below, after its filters, colored by clinical significance: pathogenic / likely pathogenic in dark purple, uncertain significance / conflicting in light purple, benign / likely benign in green and other in gray. Residues with several variants take the color of the most pathogenic.
+- **Current selection in the gnomAD variants table**: the variants listed in the gnomAD variants table below, after its filters and search, colored by consequence: pLoF in black, missense in blue, synonymous in green and other in gray. Residues with several variants take the color of the most severe consequence.
+- **UniProt features**: residues and regions annotated in UniProtKB, such as binding sites and transmembrane regions. Selected features are also shown as rows between the track and the structure. See [UniProt features](/help/uniprot-features).
 
-Variants are only shown when the reference amino acid in their HGVSp annotation matches the protein sequence.
+Variants are placed using their HGVSp annotation on the constraint transcript, and only when its reference amino acid matches the protein sequence, so variants in the ClinVar and table selections that don't change the protein, such as intronic variants, aren't shown. Variant and feature colors are chosen to stand out against the missense o/e colors, and the panel's sliders set their transparency and size.
 
 ### Data sources and licenses
 

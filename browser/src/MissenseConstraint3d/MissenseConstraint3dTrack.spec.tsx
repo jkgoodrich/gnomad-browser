@@ -1,8 +1,9 @@
 import React from 'react'
 import renderer from 'react-test-renderer'
 import { jest, describe, expect, test, beforeEach, afterEach } from '@jest/globals'
-import { act, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { MemoryRouter } from 'react-router-dom'
 import { RegionViewerContext, regionViewerScale } from '@gnomad/region-viewer'
 
 import { mockQueries } from '../../../tests/__helpers__/queries'
@@ -20,7 +21,9 @@ import {
   NO_REGION_COLOR,
   PLDDT_BANDS,
   StructureViewerProps,
+  UNIPROT_FEATURE_OVERLAY_STYLES,
   alphafoldStructureUrl,
+  uniprotEntryUrl,
 } from './missenseConstraint3d'
 import StructureViewer3Dmol from './StructureViewer3Dmol'
 import StructureViewerMolstar from './StructureViewerMolstar'
@@ -182,10 +185,14 @@ const regionViewer = {
 
 const TrackInRegionViewer = (props: {
   regionalMissenseConstraint?: RegionalMissenseConstraint
+  variantIdsInTable?: Set<string>
+  clinvarVariantIdsInTrack?: Set<string>
 }) => (
-  <RegionViewerContext.Provider value={regionViewer}>
-    <MissenseConstraint3dTrack datasetId="gnomad_r4" gene={gene} {...props} />
-  </RegionViewerContext.Provider>
+  <MemoryRouter>
+    <RegionViewerContext.Provider value={regionViewer}>
+      <MissenseConstraint3dTrack datasetId="gnomad_r4" gene={gene} {...props} />
+    </RegionViewerContext.Provider>
+  </MemoryRouter>
 )
 
 const lastViewerProps = (viewer: unknown) => {
@@ -258,7 +265,7 @@ describe('MissenseConstraint3dTrack', () => {
       missenseObsExpColorScale.darker
     )
 
-    await userEvent.click(screen.getByLabelText('Color catch-all region'))
+    await userEvent.click(screen.getByLabelText('Color unassigned residues'))
     expect(trackRegionFills(container)).toContain(missenseObsExpColorScale.lightest)
     expect(lastViewerProps(StructureViewer3Dmol).residueColors[4]).toBe(
       missenseObsExpColorScale.lightest
@@ -294,19 +301,94 @@ describe('MissenseConstraint3dTrack', () => {
     render(<TrackInRegionViewer />)
     await showStructure()
 
+    expect(screen.getByRole('heading', { name: 'Missense variants' })).not.toBeNull()
+    expect(screen.getByRole('heading', { name: /^UniProt features/ })).not.toBeNull()
+    expect(screen.getByRole('heading', { name: 'Regions' })).not.toBeNull()
+    expect(screen.queryByRole('heading', { name: 'Residues' })).toBeNull()
     expect(screen.getByText(/1 missense variant could not be placed/)).not.toBeNull()
-    expect(
-      screen.getByLabelText('ClinVar pathogenic / likely pathogenic missense (1)')
-    ).not.toBeNull()
     expect(screen.getByLabelText('Transmembrane (1)')).not.toBeNull()
 
-    await userEvent.click(screen.getByLabelText('gnomAD missense variants (1)'))
+    expect(screen.queryByText('gnomAD variants table')).toBeNull()
+    expect(screen.queryByText('ClinVar track')).toBeNull()
+
+    await userEvent.click(screen.getByLabelText('gnomAD (1)'))
     expect(
       lastViewerProps(StructureViewer3Dmol).overlays.map(({ id, residueRanges }) => [
         id,
         residueRanges,
       ])
     ).toEqual([['gnomad-missense', [[2, 2]]]])
+  })
+
+  test('shows UniProt features selected in the legend in rows and on the structure', async () => {
+    const { container } = render(<TrackInRegionViewer />)
+    await showStructure()
+    const featureRects = () =>
+      container.querySelectorAll(
+        `rect[fill="${UNIPROT_FEATURE_OVERLAY_STYLES['transmembrane region'].color}"]`
+      )
+    expect(featureRects()).toHaveLength(0)
+    expect(screen.getByText(/Select features in the legend/)).not.toBeNull()
+    expect(
+      screen.getAllByRole('link', { name: 'P00001' }).map((link) => link.getAttribute('href'))
+    ).toContain(uniprotEntryUrl('P00001'))
+
+    await userEvent.click(screen.getByLabelText('Transmembrane (1)'))
+    // The feature spans the intron between the two coding exons
+    expect(featureRects()).toHaveLength(2)
+    expect(lastViewerProps(StructureViewer3Dmol).overlays.map(({ id }) => id)).toEqual([
+      'uniprot-transmembrane-region',
+    ])
+
+    await userEvent.hover(featureRects()[0])
+    expect(lastViewerProps(StructureViewer3Dmol).highlightedResidueRanges).toEqual([[2, 3]])
+  })
+
+  test('shows the variants listed in the variant table on the structure', async () => {
+    render(
+      <TrackInRegionViewer
+        variantIdsInTable={new Set(['12-103-C-T', '12-201-G-A', '12-999-A-T'])}
+      />
+    )
+    await showStructure()
+
+    // 12-201-G-A's HGVSp doesn't match the sequence, and 12-999-A-T isn't in the transcript
+    await userEvent.click(screen.getByLabelText('Current selection (1 of 3)'))
+    expect(
+      lastViewerProps(StructureViewer3Dmol).overlays.map(({ id, residueRanges }) => [
+        id,
+        residueRanges,
+      ])
+    ).toEqual([['gnomad-table-missense', [[2, 2]]]])
+  })
+
+  test('shows the variants listed in the ClinVar track on the structure', async () => {
+    render(<TrackInRegionViewer clinvarVariantIdsInTrack={new Set(['12-104-A-G'])} />)
+    await showStructure()
+
+    await userEvent.click(screen.getByLabelText('Current selection (1 of 1)'))
+    expect(
+      lastViewerProps(StructureViewer3Dmol).overlays.map(({ id, residueRanges }) => [
+        id,
+        residueRanges,
+      ])
+    ).toEqual([['clinvar-track-pathogenic', [[3, 3]]]])
+  })
+
+  test('sets the transparency and size of variants and features on the structure', async () => {
+    render(<TrackInRegionViewer />)
+    await showStructure()
+    expect(lastViewerProps(StructureViewer3Dmol)).toMatchObject({
+      overlayOpacity: 1,
+      overlaySize: 1,
+    })
+
+    fireEvent.change(screen.getByLabelText('Transparency'), { target: { value: '0.25' } })
+    fireEvent.change(screen.getByLabelText('Size'), { target: { value: '3' } })
+    expect(lastViewerProps(StructureViewer3Dmol)).toMatchObject({
+      overlayOpacity: 0.75,
+      overlaySize: 3,
+    })
   })
 
   test('colors the structure by regional missense constraint when it is available', async () => {

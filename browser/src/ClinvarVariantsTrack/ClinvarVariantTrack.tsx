@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
 import { Track } from '@gnomad/region-viewer'
@@ -99,9 +99,16 @@ type Props = {
   referenceGenome: 'GRCh37' | 'GRCh38'
   transcripts: Transcript[]
   variants: ClinvarVariant[]
+  // Lets other parts of the page show the variants that the track shows
+  onChangeFilteredVariants?: (variants: ClinvarVariant[]) => void
 }
 
-const UnmemoizedClinvarVariantTrack = ({ referenceGenome, transcripts, variants }: Props) => {
+const UnmemoizedClinvarVariantTrack = ({
+  referenceGenome,
+  transcripts,
+  variants,
+  onChangeFilteredVariants,
+}: Props) => {
   const [selectedVariant, setSelectedVariant] = useState(null)
 
   const [includedClinicalSignificanceCategories, setIncludedClinicalSignificanceCategories] =
@@ -129,15 +136,31 @@ const UnmemoizedClinvarVariantTrack = ({ referenceGenome, transcripts, variants 
   const [isExpanded, setIsExpanded] = useState(false)
   const [starFilter, setStarFilter] = useState(0)
 
-  const filteredVariants = variants.filter(
-    (v) =>
-      // @ts-expect-error TS(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
-      includedClinicalSignificanceCategories[clinvarVariantClinicalSignificanceCategory(v)] &&
-      // @ts-expect-error TS(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
-      includedConsequenceCategories[getCategoryFromConsequence(v.major_consequence)] &&
-      (!showOnlyGnomad || v.in_gnomad) &&
-      v.gold_stars >= starFilter
+  const filteredVariants = useMemo(
+    () =>
+      variants.filter(
+        (v) =>
+          // @ts-expect-error TS(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
+          includedClinicalSignificanceCategories[clinvarVariantClinicalSignificanceCategory(v)] &&
+          // @ts-expect-error TS(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
+          includedConsequenceCategories[getCategoryFromConsequence(v.major_consequence)] &&
+          (!showOnlyGnomad || v.in_gnomad) &&
+          v.gold_stars >= starFilter
+      ),
+    [
+      variants,
+      includedClinicalSignificanceCategories,
+      includedConsequenceCategories,
+      showOnlyGnomad,
+      starFilter,
+    ]
   )
+
+  useEffect(() => {
+    if (onChangeFilteredVariants) {
+      onChangeFilteredVariants(filteredVariants)
+    }
+  }, [filteredVariants, onChangeFilteredVariants])
 
   return (
     <>
@@ -301,6 +324,7 @@ type ClinvarVariantsProps = {
   transcripts: Transcript[]
   zoomRegion?: { start: number; stop: number } | null
   pageType: PageType
+  onChangeFilteredVariants?: (variants: ClinvarVariant[]) => void
 }
 
 const ClinvarVariants = ({
@@ -310,6 +334,7 @@ const ClinvarVariants = ({
   transcripts,
   zoomRegion = null,
   pageType,
+  onChangeFilteredVariants,
 }: ClinvarVariantsProps) => {
   const heading = (
     <TrackPageSection>
@@ -338,6 +363,7 @@ const ClinvarVariants = ({
         referenceGenome={referenceGenome}
         transcripts={transcripts}
         variants={filterVariantsInZoomRegion(clinvarVariants, zoomRegion)}
+        onChangeFilteredVariants={onChangeFilteredVariants}
       />
       <TrackPageSection as="p">
         Data displayed here is from ClinVar&apos;s {formatClinvarDate(clinvarReleaseDate)} release.

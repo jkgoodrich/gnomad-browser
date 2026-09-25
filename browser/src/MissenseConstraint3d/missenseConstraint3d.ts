@@ -1,6 +1,6 @@
 import { advanceOverIntervals } from '../ClinvarVariantsTrack/ClinvarAllVariantsPlot'
 import {
-  CLINICAL_SIGNIFICANCE_CATEGORY_COLORS,
+  CLINICAL_SIGNIFICANCE_CATEGORY_LABELS,
   clinvarVariantClinicalSignificanceCategory,
 } from '../ClinvarVariantsTrack/clinvarVariantCategories'
 import { Strand } from '../GenePage/GenePage'
@@ -8,7 +8,7 @@ import {
   RegionalMissenseConstraintRegion,
   missenseObsExpColorScale,
 } from '../RegionalMissenseConstraintTrack'
-import { VEP_CONSEQUENCE_CATEGORY_COLORS } from '../vepConsequences'
+import { VEP_CONSEQUENCE_CATEGORY_LABELS, getCategoryFromConsequence } from '../vepConsequences'
 
 export type MissenseConstraint3dSegment = {
   aa_start: number
@@ -63,6 +63,14 @@ export type MissenseConstraint3dClinvarVariant = {
   hgvsp: string | null
 }
 
+// A UniProt feature placed on the genome, for display in the region viewer
+export type UniprotFeatureOnGenome = {
+  chrom: string
+  start: number
+  stop: number
+  feature: UniprotFeature
+}
+
 // A region's segment placed on the genome, for display in the region viewer
 export type MissenseConstraint3dTrackRegion = {
   chrom: string
@@ -107,6 +115,10 @@ export type StructureViewerProps = {
   residueColors: string[]
   highlightedResidueRanges: ResidueRange[]
   overlays: StructureOverlay[]
+  // Opacity, from 0 to 1, of variant and feature overlays
+  overlayOpacity: number
+  // Scale of variant spheres and feature sticks, where 1 is their default size
+  overlaySize: number
   resetViewCount: number
   onHoverResidue: (residue: HoveredResidue | null) => void
   // pLDDT of each residue in the loaded structure, indexed by residue number
@@ -158,6 +170,12 @@ export const alphafoldStructureUrl = (uniprotId: string) =>
 export const alphafoldEntryUrl = (uniprotId: string) =>
   `https://alphafold.ebi.ac.uk/entry/${uniprotId}`
 
+export const uniprotEntryUrl = (uniprotId: string) =>
+  `https://www.uniprot.org/uniprotkb/${uniprotId}/entry`
+
+export const uniprotHelpUrl = (uniprotHelpId: string) =>
+  `https://www.uniprot.org/help/${uniprotHelpId}`
+
 // Tableau 10
 export const RANKED_REGION_COLORS = [
   '#1f77b4',
@@ -176,27 +194,175 @@ export const RANKED_REGION_MAX_P_VALUE = 1e-3
 
 export const NO_REGION_COLOR = missenseObsExpColorScale.not_significant
 
-export const UNIPROT_FEATURE_OVERLAY_STYLES: Record<string, { label: string; color: string }> = {
-  'transmembrane region': { label: 'Transmembrane', color: '#ffa500' },
-  'intramembrane region': { label: 'Intramembrane', color: '#00c8c8' },
-  'topological domain': { label: 'Topological domain', color: '#4393c3' },
-  domain: { label: 'Domain', color: '#a03cdc' },
-  repeat: { label: 'Repeat', color: '#c2a5cf' },
-  'zinc finger region': { label: 'Zinc finger', color: '#b450b4' },
-  'DNA-binding region': { label: 'DNA binding', color: '#3c64f0' },
-  'coiled-coil region': { label: 'Coiled coil', color: '#d2a08c' },
-  'region of interest': { label: 'Region of interest', color: '#92c5de' },
-  'short sequence motif': { label: 'Motif', color: '#a6611a' },
-  'active site': { label: 'Active site', color: '#006d2c' },
-  'binding site': { label: 'Binding site', color: '#32b432' },
-  'metal ion-binding site': { label: 'Metal binding', color: '#f4a582' },
-  site: { label: 'Site', color: '#e7298a' },
-  'disulfide bond': { label: 'Disulfide bond', color: '#dcaa00' },
-  'glycosylation site': { label: 'Glycosylation', color: '#7570b3' },
-  'lipid moiety-binding region': { label: 'Lipidation', color: '#66a61e' },
-  'signal peptide': { label: 'Signal peptide', color: '#1b7837' },
-  propeptide: { label: 'Propeptide', color: '#7fbf7b' },
-  'transit peptide': { label: 'Transit peptide', color: '#d95f02' },
+export type UniprotFeatureLevel = 'residue' | 'region'
+
+// In the order that the structure's legend lists them
+export const UNIPROT_FEATURE_LEVELS: { level: UniprotFeatureLevel; label: string }[] = [
+  { level: 'residue', label: 'Residues' },
+  { level: 'region', label: 'Regions' },
+]
+
+// Overlays use cool colors that stand out against the warm missense o/e colors, but not the magenta
+// that highlights residues. UniProt features are grouped into color families: sites in greens,
+// modifications in teals, topology in blues, domains and regions in purples and processing in grays.
+// Features are listed in this order. Descriptions are adapted from UniProt's documentation of each
+// feature type, at https://www.uniprot.org/help/<uniprotHelpId>.
+export const UNIPROT_FEATURE_OVERLAY_STYLES: Record<
+  string,
+  {
+    label: string
+    color: string
+    level: UniprotFeatureLevel
+    uniprotHelpId: string
+    description: string
+  }
+> = {
+  'active site': {
+    label: 'Active site',
+    color: '#a1d99b',
+    level: 'residue',
+    uniprotHelpId: 'act_site',
+    description: 'Residues directly involved in catalysis by an enzyme.',
+  },
+  'binding site': {
+    label: 'Binding site',
+    color: '#238b45',
+    level: 'residue',
+    uniprotHelpId: 'binding',
+    description:
+      'Residues that interact with a chemical entity, such as a metal, cofactor, substrate or other ligand.',
+  },
+  'metal ion-binding site': {
+    label: 'Metal binding',
+    color: '#74c476',
+    level: 'residue',
+    uniprotHelpId: 'metal',
+    description:
+      'Residues that bind a metal ion. UniProt has since merged these into binding sites.',
+  },
+  site: {
+    label: 'Site',
+    color: '#00441b',
+    level: 'residue',
+    uniprotHelpId: 'site',
+    description: 'Single residues of interest that no other feature type describes.',
+  },
+  'disulfide bond': {
+    label: 'Disulfide bond',
+    color: '#01665e',
+    level: 'residue',
+    uniprotHelpId: 'disulfid',
+    description: 'Cysteine residues that participate in disulfide bonds.',
+  },
+  'glycosylation site': {
+    label: 'Glycosylation',
+    color: '#35978f',
+    level: 'residue',
+    uniprotHelpId: 'carbohyd',
+    description: 'Residues with a covalently attached glycan group (mono-, di- or polysaccharide).',
+  },
+  'lipid moiety-binding region': {
+    label: 'Lipidation',
+    color: '#80cdc1',
+    level: 'residue',
+    uniprotHelpId: 'lipid',
+    description: 'Residues with a covalently attached lipid group.',
+  },
+  'transmembrane region': {
+    label: 'Transmembrane',
+    color: '#08519c',
+    level: 'region',
+    uniprotHelpId: 'transmem',
+    description: 'Membrane-spanning regions, both alpha-helical and those of beta-barrel proteins.',
+  },
+  'intramembrane region': {
+    label: 'Intramembrane',
+    color: '#4292c6',
+    level: 'region',
+    uniprotHelpId: 'intramem',
+    description: "Regions buried within a membrane that don't cross it.",
+  },
+  'topological domain': {
+    label: 'Topological domain',
+    color: '#9ecae1',
+    level: 'region',
+    uniprotHelpId: 'topo_dom',
+    description:
+      'The subcellular compartment where each region of a membrane-spanning protein outside the membrane is found.',
+  },
+  domain: {
+    label: 'Domain',
+    color: '#3f007d',
+    level: 'region',
+    uniprotHelpId: 'domain',
+    description:
+      'Specific combinations of secondary structures organized into a characteristic three-dimensional structure or fold.',
+  },
+  repeat: {
+    label: 'Repeat',
+    color: '#54278f',
+    level: 'region',
+    uniprotHelpId: 'repeat',
+    description: 'Repeated sequence motifs or repeated domains.',
+  },
+  'zinc finger region': {
+    label: 'Zinc finger',
+    color: '#807dba',
+    level: 'region',
+    uniprotHelpId: 'zn_fing',
+    description: 'Zinc fingers, with their types.',
+  },
+  'DNA-binding region': {
+    label: 'DNA binding',
+    color: '#9e9ac8',
+    level: 'region',
+    uniprotHelpId: 'dna_bind',
+    description: 'DNA-binding domains, with their types.',
+  },
+  'coiled-coil region': {
+    label: 'Coiled coil',
+    color: '#756bb1',
+    level: 'region',
+    uniprotHelpId: 'coiled',
+    description: 'Regions of coiled coil.',
+  },
+  'region of interest': {
+    label: 'Region of interest',
+    color: '#6a51a3',
+    level: 'region',
+    uniprotHelpId: 'region',
+    description: 'Regions of interest that no other feature type describes.',
+  },
+  'short sequence motif': {
+    label: 'Motif',
+    color: '#bcbddc',
+    level: 'region',
+    uniprotHelpId: 'motif',
+    description:
+      'Short (usually no more than 20 amino acids) conserved sequence motifs of biological significance.',
+  },
+  'signal peptide': {
+    label: 'Signal peptide',
+    color: '#252525',
+    level: 'region',
+    uniprotHelpId: 'signal',
+    description: 'An N-terminal signal peptide.',
+  },
+  propeptide: {
+    label: 'Propeptide',
+    color: '#636363',
+    level: 'region',
+    uniprotHelpId: 'propep',
+    description:
+      'Parts of a protein that are cleaved during maturation or activation, and generally have no function of their own once cleaved.',
+  },
+  'transit peptide': {
+    label: 'Transit peptide',
+    color: '#969696',
+    level: 'region',
+    uniprotHelpId: 'transit',
+    description: 'The extent of a transit peptide.',
+  },
 }
 
 const AMINO_ACID_CODES: Record<string, string> = {
@@ -247,43 +413,59 @@ export const codingSequenceLength = (
     .filter((exon) => exon.feature_type === 'CDS')
     .reduce((length, exon) => length + exon.stop - exon.start + 1, 0)
 
+type TranscriptOnGenome = {
+  strand: Strand
+  exons: { feature_type: string; start: number; stop: number }[]
+}
+
+// Places ranges of residues on the genome. Residues are numbered from the 5' end of the coding sequence
+const residueRangesOnGenome = ({ strand, exons }: TranscriptOnGenome) => {
+  const orderedCodingExons = exons
+    .filter((exon) => exon.feature_type === 'CDS')
+    .sort((a, b) => (strand === '+' ? a.start - b.start : b.start - a.start))
+
+  return ([aaStart, aaStop]: ResidueRange) => {
+    const firstBase = advanceOverIntervals(
+      orderedCodingExons,
+      aaStart * 3 - 2,
+      strand
+    ).globalCoordinate
+    const lastBase = advanceOverIntervals(orderedCodingExons, aaStop * 3, strand).globalCoordinate
+    if (firstBase === null || lastBase === null) {
+      throw new Error(`Residues ${aaStart}-${aaStop} are outside the coding sequence`)
+    }
+    return { start: Math.min(firstBase, lastBase), stop: Math.max(firstBase, lastBase) }
+  }
+}
+
 export const segmentsOnGenome = (
   regions: MissenseConstraint3dRegion[],
-  transcript: { strand: Strand; exons: { feature_type: string; start: number; stop: number }[] },
+  transcript: TranscriptOnGenome,
   chrom: string
 ): MissenseConstraint3dTrackRegion[] => {
-  // Residues are numbered from the 5' end of the coding sequence
-  const orderedCodingExons = transcript.exons
-    .filter((exon) => exon.feature_type === 'CDS')
-    .sort((a, b) => (transcript.strand === '+' ? a.start - b.start : b.start - a.start))
-
+  const onGenome = residueRangesOnGenome(transcript)
   return regions.flatMap((region) =>
-    region.segments.map((segment) => {
-      const firstBase = advanceOverIntervals(
-        orderedCodingExons,
-        segment.aa_start * 3 - 2,
-        transcript.strand
-      ).globalCoordinate
-      const lastBase = advanceOverIntervals(
-        orderedCodingExons,
-        segment.aa_stop * 3,
-        transcript.strand
-      ).globalCoordinate
-      if (firstBase === null || lastBase === null) {
-        throw new Error(
-          `Residues ${segment.aa_start}-${segment.aa_stop} are outside the coding sequence`
-        )
-      }
-      return {
-        chrom,
-        start: Math.min(firstBase, lastBase),
-        stop: Math.max(firstBase, lastBase),
-        aa_start: segment.aa_start,
-        aa_stop: segment.aa_stop,
-        region,
-      }
-    })
+    region.segments.map((segment) => ({
+      chrom,
+      ...onGenome([segment.aa_start, segment.aa_stop]),
+      aa_start: segment.aa_start,
+      aa_stop: segment.aa_stop,
+      region,
+    }))
   )
+}
+
+export const uniprotFeaturesOnGenome = (
+  features: UniprotFeature[],
+  transcript: TranscriptOnGenome,
+  chrom: string
+): UniprotFeatureOnGenome[] => {
+  const onGenome = residueRangesOnGenome(transcript)
+  return features.map((feature) => ({
+    chrom,
+    ...onGenome([feature.start, feature.stop]),
+    feature,
+  }))
 }
 
 // Rank (from 0) of the most constrained significant regions, keyed by region index
@@ -410,19 +592,25 @@ export const isPassingGnomadMissenseVariant = (variant: MissenseConstraint3dVari
   variant.consequence === MISSENSE_CONSEQUENCE &&
   (passesFilters(variant.exome) || passesFilters(variant.genome))
 
-export const isPathogenicClinvarMissenseVariant = (variant: MissenseConstraint3dClinvarVariant) =>
-  variant.major_consequence === MISSENSE_CONSEQUENCE &&
-  clinvarVariantClinicalSignificanceCategory(variant) === 'pathogenic'
+// The first residue changed by any protein change, like p.Arg540His, p.Leu10=, p.Gly50AlafsTer10 or
+// p.Lys5_Leu7del
+export const parseProteinChangeHgvsp = (hgvsp: string | null) => {
+  const match = hgvsp ? /^p\.([A-Z][a-z]{2})(\d+)/.exec(hgvsp) : null
+  return match ? { referenceAminoAcid: match[1], residueNumber: Number(match[2]) } : null
+}
 
 // Variants whose HGVSp reference amino acid doesn't match the protein sequence can't be placed
 export const placeVariantsOnSequence = <V extends { hgvsp: string | null }>(
   variants: V[],
-  sequence: string
+  sequence: string,
+  parseHgvsp: (
+    hgvsp: string | null
+  ) => { referenceAminoAcid: string; residueNumber: number } | null = parseMissenseHgvsp
 ) => {
   const variantsByResidue = new Map<number, V[]>()
   let unplacedVariantCount = 0
   variants.forEach((variant) => {
-    const change = parseMissenseHgvsp(variant.hgvsp)
+    const change = parseHgvsp(variant.hgvsp)
     if (
       !change ||
       AMINO_ACID_CODES[change.referenceAminoAcid] !== sequence[change.residueNumber - 1]
@@ -456,32 +644,119 @@ export const variantOverlay = (
   style: 'variant',
 })
 
+// Unlike the browser's usual variant colors, overlay colors don't blend into the missense o/e colors
 export const GNOMAD_MISSENSE_OVERLAY = {
   id: 'gnomad-missense',
-  label: 'gnomAD missense variants',
-  color: VEP_CONSEQUENCE_CATEGORY_COLORS.missense,
+  label: 'gnomAD',
+  color: '#2166ac',
 }
 
-export const CLINVAR_PATHOGENIC_MISSENSE_OVERLAY = {
-  id: 'clinvar-pathogenic-missense',
-  label: 'ClinVar pathogenic / likely pathogenic missense',
-  color: CLINICAL_SIGNIFICANCE_CATEGORY_COLORS.pathogenic,
-}
+type OverlayCategory = { id: string; label: string; color: string }
 
-export const uniprotFeatureOverlays = (features: UniprotFeature[]): StructureOverlay[] =>
-  Object.entries(UNIPROT_FEATURE_OVERLAY_STYLES).flatMap(([featureType, { label, color }]) => {
-    const featuresOfType = features.filter((feature) => feature.feature_type === featureType)
-    if (featuresOfType.length === 0) {
-      return []
+// One overlay per category. Residues with variants in several categories take the first of those
+// categories.
+const categoryOverlays = <V>(
+  overlayId: string,
+  categories: OverlayCategory[],
+  categoryOf: (variant: V) => string,
+  variantsByResidue: Map<number, V[]>
+): StructureOverlay[] => {
+  const residuesByCategory = new Map<string, number[]>()
+  variantsByResidue.forEach((variants, residue) => {
+    const variantCategories = new Set(variants.map(categoryOf))
+    const category = categories.find(({ id }) => variantCategories.has(id))
+    if (category) {
+      residuesByCategory.set(category.id, [...(residuesByCategory.get(category.id) || []), residue])
     }
-    return [
-      {
-        id: `uniprot-${featureType}`,
-        label,
-        color,
-        count: featuresOfType.length,
-        residueRanges: featuresOfType.map((feature): ResidueRange => [feature.start, feature.stop]),
-        style: 'feature',
-      },
-    ]
   })
+  return categories.flatMap(({ id, label, color }) => {
+    const residues = residuesByCategory.get(id)
+    return residues
+      ? [
+          {
+            id: `${overlayId}-${id}`,
+            label,
+            color,
+            count: residues.length,
+            residueRanges: residues.map((residue): ResidueRange => [residue, residue]),
+            style: 'variant' as const,
+          },
+        ]
+      : []
+  })
+}
+
+// The variants listed in the gnomAD variants table, colored by their most severe consequence
+export const TABLE_VARIANTS_OVERLAY_ID = 'gnomad-table'
+
+export const CONSEQUENCE_CATEGORY_OVERLAYS: OverlayCategory[] = [
+  { id: 'lof', label: VEP_CONSEQUENCE_CATEGORY_LABELS.lof, color: '#000000' },
+  {
+    id: 'missense',
+    label: VEP_CONSEQUENCE_CATEGORY_LABELS.missense,
+    color: GNOMAD_MISSENSE_OVERLAY.color,
+  },
+  { id: 'synonymous', label: VEP_CONSEQUENCE_CATEGORY_LABELS.synonymous, color: '#1b7837' },
+  { id: 'other', label: VEP_CONSEQUENCE_CATEGORY_LABELS.other, color: '#878787' },
+]
+
+export const consequenceCategoryOverlays = (
+  variantsByResidue: Map<number, { consequence: string | null }[]>
+) =>
+  categoryOverlays(
+    TABLE_VARIANTS_OVERLAY_ID,
+    CONSEQUENCE_CATEGORY_OVERLAYS,
+    (variant) => getCategoryFromConsequence(variant.consequence) || 'other',
+    variantsByResidue
+  )
+
+// The variants listed in the ClinVar track, colored by their clinical significance, from pathogenic
+// to benign
+export const CLINVAR_TRACK_VARIANTS_OVERLAY_ID = 'clinvar-track'
+
+export const CLINICAL_SIGNIFICANCE_CATEGORY_OVERLAYS: OverlayCategory[] = [
+  {
+    id: 'pathogenic',
+    label: CLINICAL_SIGNIFICANCE_CATEGORY_LABELS.pathogenic,
+    color: '#762a83',
+  },
+  { id: 'uncertain', label: CLINICAL_SIGNIFICANCE_CATEGORY_LABELS.uncertain, color: '#c2a5cf' },
+  { id: 'benign', label: CLINICAL_SIGNIFICANCE_CATEGORY_LABELS.benign, color: '#5aae61' },
+  { id: 'other', label: CLINICAL_SIGNIFICANCE_CATEGORY_LABELS.other, color: '#bababa' },
+]
+
+export const clinicalSignificanceCategoryOverlays = (
+  variantsByResidue: Map<number, MissenseConstraint3dClinvarVariant[]>
+) =>
+  categoryOverlays(
+    CLINVAR_TRACK_VARIANTS_OVERLAY_ID,
+    CLINICAL_SIGNIFICANCE_CATEGORY_OVERLAYS,
+    clinvarVariantClinicalSignificanceCategory,
+    variantsByResidue
+  )
+
+// Element ids can't contain spaces
+export const uniprotFeatureOverlayId = (featureType: string) =>
+  `uniprot-${featureType.replace(/ /g, '-')}`
+
+// UniProt features grouped by type, in the order of UNIPROT_FEATURE_OVERLAY_STYLES
+export const uniprotFeaturesByType = (features: UniprotFeature[]) =>
+  Object.entries(UNIPROT_FEATURE_OVERLAY_STYLES).flatMap(([featureType, style]) => {
+    const featuresOfType = features.filter((feature) => feature.feature_type === featureType)
+    return featuresOfType.length === 0
+      ? []
+      : [{ id: uniprotFeatureOverlayId(featureType), ...style, features: featuresOfType }]
+  })
+
+export const uniprotFeatureOverlays = (
+  features: UniprotFeature[]
+): (StructureOverlay & { level: UniprotFeatureLevel })[] =>
+  uniprotFeaturesByType(features).map(({ id, label, color, level, features: featuresOfType }) => ({
+    id,
+    label,
+    color,
+    level,
+    count: featuresOfType.length,
+    residueRanges: featuresOfType.map((feature): ResidueRange => [feature.start, feature.stop]),
+    style: 'feature',
+  }))

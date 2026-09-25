@@ -1,23 +1,26 @@
 import { describe, expect, test } from '@jest/globals'
 
-import { CLINICAL_SIGNIFICANCE_CATEGORY_COLORS } from '../ClinvarVariantsTrack/clinvarVariantCategories'
 import {
   RegionalMissenseConstraintRegion,
   missenseObsExpColorScale,
 } from '../RegionalMissenseConstraintTrack'
 import {
-  CLINVAR_PATHOGENIC_MISSENSE_OVERLAY,
+  CLINICAL_SIGNIFICANCE_CATEGORY_OVERLAYS,
+  CONSEQUENCE_CATEGORY_OVERLAYS,
+  GNOMAD_MISSENSE_OVERLAY,
   MissenseConstraint3dRegion,
   MissenseConstraint3dVariant,
   NO_REGION_COLOR,
   PLDDT_BANDS,
   RANKED_REGION_COLORS,
   codingSequenceLength,
+  clinicalSignificanceCategoryOverlays,
+  consequenceCategoryOverlays,
   formatResidue,
   isPassingGnomadMissenseVariant,
-  isPathogenicClinvarMissenseVariant,
   obsExpBinColor,
   parseMissenseHgvsp,
+  parseProteinChangeHgvsp,
   placeVariantsOnSequence,
   plddtColor,
   plddtResidueColors,
@@ -29,6 +32,7 @@ import {
   residueNamesMatchSequence,
   segmentsOnGenome,
   uniprotFeatureOverlays,
+  uniprotFeaturesOnGenome,
   variantOverlay,
 } from './missenseConstraint3d'
 
@@ -102,6 +106,16 @@ describe('segmentsOnGenome', () => {
       )
     ).toThrow('Residues 4-5 are outside the coding sequence')
   })
+})
+
+test('UniProt features are placed on the genome like region segments', () => {
+  expect(
+    uniprotFeaturesOnGenome(
+      [{ feature_type: 'transmembrane region', start: 2, stop: 3, note: 'Helical' }],
+      { strand: '+', exons: codingExons },
+      '1'
+    ).map(({ start, stop, feature }) => [feature.start, feature.stop, start, stop])
+  ).toEqual([[2, 3, 103, 202]])
 })
 
 test('codingSequenceLength counts only coding bases', () => {
@@ -258,9 +272,8 @@ describe('placeVariantsOnSequence', () => {
       [variant({ hgvsp: 'p.Ala2Val' }), variant({ hgvsp: 'p.Ala2Thr' })],
       'MAG'
     )
-    expect(variantOverlay(CLINVAR_PATHOGENIC_MISSENSE_OVERLAY, variantsByResidue)).toEqual({
-      ...CLINVAR_PATHOGENIC_MISSENSE_OVERLAY,
-      color: CLINICAL_SIGNIFICANCE_CATEGORY_COLORS.pathogenic,
+    expect(variantOverlay(GNOMAD_MISSENSE_OVERLAY, variantsByResidue)).toEqual({
+      ...GNOMAD_MISSENSE_OVERLAY,
       count: 2,
       residueRanges: [[2, 2]],
       style: 'variant',
@@ -286,29 +299,6 @@ describe('variant filters', () => {
       false
     )
   })
-
-  test('ClinVar variants must be pathogenic missense variants', () => {
-    const clinvarVariant = {
-      variant_id: '1-100-A-G',
-      clinical_significance: 'Pathogenic',
-      gold_stars: 2,
-      major_consequence: 'missense_variant',
-      hgvsp: 'p.Ala2Val',
-    }
-    expect(isPathogenicClinvarMissenseVariant(clinvarVariant)).toBe(true)
-    expect(
-      isPathogenicClinvarMissenseVariant({
-        ...clinvarVariant,
-        clinical_significance: 'Uncertain significance',
-      })
-    ).toBe(false)
-    expect(
-      isPathogenicClinvarMissenseVariant({
-        ...clinvarVariant,
-        major_consequence: 'synonymous_variant',
-      })
-    ).toBe(false)
-  })
 })
 
 test('UniProt features are grouped into one overlay per known feature type', () => {
@@ -318,16 +308,95 @@ test('UniProt features are grouped into one overlay per known feature type', () 
     { feature_type: 'disulfide bond', start: 8, stop: 8, note: null },
     { feature_type: 'sequence variant', start: 10, stop: 10, note: null },
   ])
-  expect(overlays.map(({ label, count, residueRanges }) => [label, count, residueRanges])).toEqual([
+  // Features of single residues are listed before regions
+  expect(
+    overlays.map(({ id, label, level, count, residueRanges }) => [
+      id,
+      label,
+      level,
+      count,
+      residueRanges,
+    ])
+  ).toEqual([
+    ['uniprot-disulfide-bond', 'Disulfide bond', 'residue', 1, [[8, 8]]],
     [
+      'uniprot-transmembrane-region',
       'Transmembrane',
+      'region',
       2,
       [
         [5, 20],
         [30, 45],
       ],
     ],
-    ['Disulfide bond', 1, [[8, 8]]],
+  ])
+})
+
+describe('parseProteinChangeHgvsp', () => {
+  test.each([
+    ['p.Arg540His', 'Arg', 540],
+    ['p.Leu10=', 'Leu', 10],
+    ['p.Arg100Ter', 'Arg', 100],
+    ['p.Gly50AlafsTer10', 'Gly', 50],
+    ['p.Lys5_Leu7del', 'Lys', 5],
+  ])('finds the first residue changed by %s', (hgvsp, referenceAminoAcid, residueNumber) => {
+    expect(parseProteinChangeHgvsp(hgvsp)).toEqual({ referenceAminoAcid, residueNumber })
+  })
+
+  test('finds no residue without a protein change', () => {
+    expect(parseProteinChangeHgvsp(null)).toBeNull()
+    expect(parseProteinChangeHgvsp('p.?')).toBeNull()
+  })
+
+  test('places variants of any consequence on the sequence', () => {
+    const { variantsByResidue, unplacedVariantCount } = placeVariantsOnSequence(
+      [
+        variant({ hgvsp: 'p.Ala2=', consequence: 'synonymous_variant' }),
+        variant({ hgvsp: 'p.Gly3Ter', consequence: 'stop_gained' }),
+        variant({ hgvsp: null, consequence: 'intron_variant' }),
+      ],
+      'MAG',
+      parseProteinChangeHgvsp
+    )
+    expect(Array.from(variantsByResidue.keys())).toEqual([2, 3])
+    expect(unplacedVariantCount).toBe(1)
+  })
+})
+
+test('variants are colored by their most severe consequence', () => {
+  const overlays = consequenceCategoryOverlays(
+    new Map([
+      [1, [{ consequence: 'synonymous_variant' }, { consequence: 'stop_gained' }]],
+      [2, [{ consequence: 'synonymous_variant' }]],
+      [3, [{ consequence: 'missense_variant' }]],
+    ])
+  )
+  expect(overlays.map(({ id, color, residueRanges }) => [id, color, residueRanges])).toEqual([
+    ['gnomad-table-lof', CONSEQUENCE_CATEGORY_OVERLAYS[0].color, [[1, 1]]],
+    ['gnomad-table-missense', CONSEQUENCE_CATEGORY_OVERLAYS[1].color, [[3, 3]]],
+    ['gnomad-table-synonymous', CONSEQUENCE_CATEGORY_OVERLAYS[2].color, [[2, 2]]],
+  ])
+})
+
+test('ClinVar variants are colored by their most pathogenic significance', () => {
+  const clinvarVariant = (clinicalSignificance: string) => ({
+    variant_id: '1-100-A-G',
+    clinical_significance: clinicalSignificance,
+    gold_stars: 2,
+    major_consequence: 'missense_variant',
+    hgvsp: 'p.Ala2Val',
+  })
+  const overlays = clinicalSignificanceCategoryOverlays(
+    new Map([
+      [1, [clinvarVariant('Benign'), clinvarVariant('Likely pathogenic')]],
+      [2, [clinvarVariant('Uncertain significance'), clinvarVariant('Likely benign')]],
+      [3, [clinvarVariant('Benign')]],
+    ])
+  )
+  expect(overlays.map(({ id, color, residueRanges }) => [id, color, residueRanges])).toEqual([
+    ['clinvar-track-pathogenic', CLINICAL_SIGNIFICANCE_CATEGORY_OVERLAYS[0].color, [[1, 1]]],
+    ['clinvar-track-uncertain', CLINICAL_SIGNIFICANCE_CATEGORY_OVERLAYS[1].color, [[2, 2]]],
+    ['clinvar-track-benign', CLINICAL_SIGNIFICANCE_CATEGORY_OVERLAYS[2].color, [[3, 3]]],
   ])
 })
 
