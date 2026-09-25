@@ -207,10 +207,10 @@ export const UNIPROT_FEATURE_LEVELS: { level: UniprotFeatureLevel; label: string
   { level: 'region', label: 'Regions' },
 ]
 
-// Overlays use cool colors that stand out against the warm missense o/e colors, but not the magenta
-// that highlights residues. UniProt features are grouped into color families: sites in greens,
-// modifications in teals, topology in blues, domains and regions in purples and processing in grays.
-// Features are listed in this order. Descriptions are adapted from UniProt's documentation of each
+// UniProt features use the colors of UniProtKB's feature viewer, from the default config of
+// @nightingale-elements/nightingale-track 5.6.0. That config's binding site color is invalid
+// ("#catFace"), so binding sites use its nucleotide-binding region color. Features are listed in
+// this order. Descriptions are adapted from UniProt's documentation of each
 // feature type, at https://www.uniprot.org/help/<uniprotHelpId>.
 export const UNIPROT_FEATURE_OVERLAY_STYLES: Record<
   string,
@@ -224,14 +224,14 @@ export const UNIPROT_FEATURE_OVERLAY_STYLES: Record<
 > = {
   'active site': {
     label: 'Active site',
-    color: '#a1d99b',
+    color: '#FF6666',
     level: 'residue',
     uniprotHelpId: 'act_site',
     description: 'Residues directly involved in catalysis by an enzyme.',
   },
   'binding site': {
     label: 'Binding site',
-    color: '#238b45',
+    color: '#FF9900',
     level: 'residue',
     uniprotHelpId: 'binding',
     description:
@@ -239,7 +239,7 @@ export const UNIPROT_FEATURE_OVERLAY_STYLES: Record<
   },
   'metal ion-binding site': {
     label: 'Metal binding',
-    color: '#74c476',
+    color: '#009900',
     level: 'residue',
     uniprotHelpId: 'metal',
     description:
@@ -247,49 +247,49 @@ export const UNIPROT_FEATURE_OVERLAY_STYLES: Record<
   },
   site: {
     label: 'Site',
-    color: '#00441b',
+    color: '#660033',
     level: 'residue',
     uniprotHelpId: 'site',
     description: 'Single residues of interest that no other feature type describes.',
   },
   'disulfide bond': {
     label: 'Disulfide bond',
-    color: '#01665e',
+    color: '#23B14D',
     level: 'residue',
     uniprotHelpId: 'disulfid',
     description: 'Cysteine residues that participate in disulfide bonds.',
   },
   'glycosylation site': {
     label: 'Glycosylation',
-    color: '#35978f',
+    color: '#CC3366',
     level: 'residue',
     uniprotHelpId: 'carbohyd',
     description: 'Residues with a covalently attached glycan group (mono-, di- or polysaccharide).',
   },
   'lipid moiety-binding region': {
     label: 'Lipidation',
-    color: '#80cdc1',
+    color: '#99CC33',
     level: 'residue',
     uniprotHelpId: 'lipid',
     description: 'Residues with a covalently attached lipid group.',
   },
   'transmembrane region': {
     label: 'Transmembrane',
-    color: '#08519c',
+    color: '#CC00CC',
     level: 'region',
     uniprotHelpId: 'transmem',
     description: 'Membrane-spanning regions, both alpha-helical and those of beta-barrel proteins.',
   },
   'intramembrane region': {
     label: 'Intramembrane',
-    color: '#4292c6',
+    color: '#0000CC',
     level: 'region',
     uniprotHelpId: 'intramem',
     description: "Regions buried within a membrane that don't cross it.",
   },
   'topological domain': {
     label: 'Topological domain',
-    color: '#9ecae1',
+    color: '#CC0000',
     level: 'region',
     uniprotHelpId: 'topo_dom',
     description:
@@ -297,7 +297,7 @@ export const UNIPROT_FEATURE_OVERLAY_STYLES: Record<
   },
   domain: {
     label: 'Domain',
-    color: '#3f007d',
+    color: '#9999FF',
     level: 'region',
     uniprotHelpId: 'domain',
     description:
@@ -305,42 +305,42 @@ export const UNIPROT_FEATURE_OVERLAY_STYLES: Record<
   },
   repeat: {
     label: 'Repeat',
-    color: '#54278f',
+    color: '#9900FF',
     level: 'region',
     uniprotHelpId: 'repeat',
     description: 'Repeated sequence motifs or repeated domains.',
   },
   'zinc finger region': {
     label: 'Zinc finger',
-    color: '#807dba',
+    color: '#990066',
     level: 'region',
     uniprotHelpId: 'zn_fing',
     description: 'Zinc fingers, with their types.',
   },
   'DNA-binding region': {
     label: 'DNA binding',
-    color: '#9e9ac8',
+    color: '#009933',
     level: 'region',
     uniprotHelpId: 'dna_bind',
     description: 'DNA-binding domains, with their types.',
   },
   'coiled-coil region': {
     label: 'Coiled coil',
-    color: '#756bb1',
+    color: '#006699',
     level: 'region',
     uniprotHelpId: 'coiled',
     description: 'Regions of coiled coil.',
   },
   'region of interest': {
     label: 'Region of interest',
-    color: '#6a51a3',
+    color: '#B33E00',
     level: 'region',
     uniprotHelpId: 'region',
     description: 'Regions of interest that no other feature type describes.',
   },
   'short sequence motif': {
     label: 'Motif',
-    color: '#bcbddc',
+    color: '#402060',
     level: 'region',
     uniprotHelpId: 'motif',
     description:
@@ -348,14 +348,14 @@ export const UNIPROT_FEATURE_OVERLAY_STYLES: Record<
   },
   'signal peptide': {
     label: 'Signal peptide',
-    color: '#252525',
+    color: '#CC0033',
     level: 'region',
     uniprotHelpId: 'signal',
     description: 'An N-terminal signal peptide.',
   },
   propeptide: {
     label: 'Propeptide',
-    color: '#636363',
+    color: '#99CCCC',
     level: 'region',
     uniprotHelpId: 'propep',
     description:
@@ -363,7 +363,7 @@ export const UNIPROT_FEATURE_OVERLAY_STYLES: Record<
   },
   'transit peptide': {
     label: 'Transit peptide',
-    color: '#969696',
+    color: '#009966',
     level: 'region',
     uniprotHelpId: 'transit',
     description: 'The extent of a transit peptide.',
