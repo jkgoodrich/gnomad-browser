@@ -38,6 +38,9 @@ from data_pipeline.datasets.gnomad_v4.gnomad_v4_constraint import (
     prepare_gnomad_v4_constraint,
     remove_gnomad_v4_constraint,
 )
+from data_pipeline.datasets.gnomad_v4.gnomad_v4_missense_constraint_3d import (
+    prepare_gnomad_v4_missense_constraint_3d,
+)
 
 pipeline = Pipeline()
 
@@ -303,6 +306,16 @@ pipeline.add_task(
 )
 
 pipeline.add_task(
+    "prepare_gnomad_v4_missense_constraint_3d",
+    prepare_gnomad_v4_missense_constraint_3d,
+    f"/{constraint_subdir}/gnomad_v4_missense_constraint_3d.ht",
+    {
+        "residues_path": "gs://gnomad-v4-data-pipeline/inputs/v4.1.1/constraint/gnomad.v4.1.missense_constraint_3d.residues.ht",
+        "uniprot_features_path": "gs://gnomad-v4-data-pipeline/inputs/v4.1.1/constraint/alphafold_uniprot_mapping.ht",
+    },
+)
+
+pipeline.add_task(
     "prepare_grch37_heterozygous_variant_cooccurrence_counts",
     prepare_heterozygous_variant_cooccurrence_counts,
     f"/{genes_subdir}/genes_grch37_heterozygous_variant_cooccurrence_counts.ht",
@@ -510,6 +523,18 @@ pipeline.add_task(
     },
 )
 
+# Transcripts and the public release are extracted from step 8, so they don't carry this field
+pipeline.add_task(
+    "annotate_grch38_genes_step_9",
+    annotate_table,
+    f"/{genes_subdir}/genes_grch38_annotated_9.ht",
+    {
+        "table_path": pipeline.get_task("annotate_grch38_genes_step_8"),
+        "missense_constraint_3d": pipeline.get_task("prepare_gnomad_v4_missense_constraint_3d"),
+    },
+    {"join_on": "preferred_transcript_id"},
+)
+
 
 pipeline.add_task(
     "remove_grch38_genes_constraint_for_release",
@@ -583,7 +608,7 @@ pipeline.add_task(
 pipeline.set_outputs(
     {
         "genes_grch37": "annotate_grch37_genes_step_5",
-        "genes_grch38": "annotate_grch38_genes_step_8",
+        "genes_grch38": "annotate_grch38_genes_step_9",
         "base_transcripts_grch37": "extract_grch37_transcripts",
         "base_transcripts_grch38": "extract_grch38_transcripts",
         "transcripts_grch37": "annotate_grch37_transcripts",
