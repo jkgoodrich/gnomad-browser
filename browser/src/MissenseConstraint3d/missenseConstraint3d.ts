@@ -159,6 +159,8 @@ export interface StructureViewerHandle {
   zoomBy(factor: number): void
 }
 
+export const DEFAULT_COLOR_BY: StructureColorBy = 'obs_exp'
+
 export type StructureViewerStatus =
   | 'loading'
   | 'ready'

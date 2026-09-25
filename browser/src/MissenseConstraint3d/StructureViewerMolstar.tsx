@@ -8,6 +8,7 @@ import {
   StructureSelection,
 } from 'molstar/lib/mol-model/structure'
 import { Vec3, Vec4 } from 'molstar/lib/mol-math/linear-algebra'
+import { Loci } from 'molstar/lib/mol-model/loci'
 import { InteractivityManager } from 'molstar/lib/mol-plugin-state/manager/interactivity'
 import { PluginStateObject } from 'molstar/lib/mol-plugin-state/objects'
 import { StateTransforms } from 'molstar/lib/mol-plugin-state/transforms'
@@ -48,6 +49,11 @@ const NO_DATA_COLOR = Color.fromHexStyle(NO_REGION_COLOR)
 // Mol*'s own limits on zooming, in Å and as a multiple of the scene's radius
 const MIN_CAMERA_DISTANCE = 5
 const MAX_CAMERA_DISTANCE_FACTOR = 10
+// Mol*'s default padding around what the camera focuses on, and its starting orientation
+const CAMERA_FOCUS_EXTRA_RADIUS = 4
+const CAMERA_FOCUS_MIN_RADIUS = 5
+const INITIAL_CAMERA_UP = Vec3.create(0, 1, 0)
+const INITIAL_CAMERA_DIRECTION = Vec3.create(0, 0, -1)
 
 // A dense array rather than a Map: Mol* compares theme params with a deep equality that ignores Maps
 const residueColorThemeParams = { colors: PD.Value<Color[]>([], { isHidden: true }) }
@@ -373,19 +379,34 @@ class StructureViewerMolstar
     }
   }
 
+  // Unlike Mol*'s focus, which keeps the camera's direction, this also undoes any rotation
   frameConfidentResidues() {
-    const camera = this.plugin!.managers.camera
+    const plugin = this.plugin!
+    const structure = this.structure!.data!
     const selection = Script.getStructureSelection(
       MS.struct.generator.atomGroups({
         'atom-test': MS.core.rel.gre([MS.ammp('B_iso_or_equiv'), CONFIDENT_PLDDT]),
       }),
-      this.structure!.data!
+      structure
     )
-    if (StructureSelection.isEmpty(selection)) {
-      camera.reset()
+    const sphere = Loci.getBoundingSphere(
+      StructureSelection.isEmpty(selection)
+        ? Structure.toStructureElementLoci(structure)
+        : StructureSelection.toLociWithSourceUnits(selection)
+    )
+    if (!sphere) {
       return
     }
-    camera.focusLoci(StructureSelection.toLociWithSourceUnits(selection), { durationMs: 0 })
+    const radius = Math.max(sphere.radius + CAMERA_FOCUS_EXTRA_RADIUS, CAMERA_FOCUS_MIN_RADIUS)
+    plugin.managers.camera.setSnapshot(
+      plugin.canvas3d!.camera.getInvariantFocus(
+        sphere.center,
+        radius,
+        INITIAL_CAMERA_UP,
+        INITIAL_CAMERA_DIRECTION
+      ),
+      0
+    )
   }
 
   async recolor() {

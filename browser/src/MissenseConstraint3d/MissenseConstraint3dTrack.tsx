@@ -30,6 +30,7 @@ import {
   RANKED_REGION_COLORS,
   RegionColorBy,
   ResidueRange,
+  DEFAULT_COLOR_BY,
   StructureColorBy,
   StructureSelection,
   UniprotFeature,
@@ -168,7 +169,7 @@ const MissenseConstraint3dView = ({
   onChangeStructureSelection,
 }: ViewProps) => {
   const [isStructureShown, setIsStructureShown] = useState(false)
-  const [colorBy, setColorBy] = useState<StructureColorBy>('obs_exp')
+  const [colorBy, setColorBy] = useState<StructureColorBy>(DEFAULT_COLOR_BY)
   const [colorCatchAllRegion, setColorCatchAllRegion] = useState(false)
   const [highlightedResidueRanges, setHighlightedResidueRanges] =
     useState<ResidueRange[]>(NO_HIGHLIGHTED_RESIDUES)
@@ -235,6 +236,14 @@ const MissenseConstraint3dView = ({
       ),
     []
   )
+
+  const hideOverlays = useCallback((overlayIds: string[]) => {
+    setVisibleOverlayIds((previousOverlayIds) => {
+      const nextOverlayIds = new Set(previousOverlayIds)
+      overlayIds.forEach((overlayId) => nextOverlayIds.delete(overlayId))
+      return nextOverlayIds
+    })
+  }, [])
 
   const toggleOverlay = useCallback((overlayId: string) => {
     setVisibleOverlayIds((previousOverlayIds) => {
@@ -316,6 +325,7 @@ const MissenseConstraint3dView = ({
               regionalMissenseConstraint={regionalMissenseConstraint}
               visibleOverlayIds={visibleOverlayIds}
               onToggleOverlay={toggleOverlay}
+              onHideOverlays={hideOverlays}
               variantIdsInTable={variantIdsInTable}
               clinvarVariantIdsInTrack={clinvarVariantIdsInTrack}
               selectedResidues={structureSelection ? structureSelection.residues : null}

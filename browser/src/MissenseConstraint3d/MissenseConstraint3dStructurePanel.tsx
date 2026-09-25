@@ -1,7 +1,7 @@
 import React, { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 
-import { Button, Checkbox, ExternalLink, SegmentedControl } from '@gnomad/ui'
+import { Button, Checkbox, ExternalLink, SegmentedControl, TextButton } from '@gnomad/ui'
 import { DatasetId, referenceGenome } from '@gnomad/dataset-metadata/metadata'
 
 import CategoryFilterControl from '../CategoryFilterControl'
@@ -23,6 +23,7 @@ import {
   CLINICAL_SIGNIFICANCE_CATEGORY_OVERLAYS,
   CLINVAR_TRACK_VARIANTS_OVERLAY_ID,
   CONSEQUENCE_CATEGORY_OVERLAYS,
+  DEFAULT_COLOR_BY,
   GNOMAD_MISSENSE_OVERLAY,
   HoveredResidue,
   MissenseConstraint3d,
@@ -195,6 +196,13 @@ const OverlayGroupHeading = styled.h3`
   font-size: 1em;
 `
 
+// Resets one section of the legend
+const SectionResetButton = styled(TextButton)`
+  margin-left: auto;
+  font-size: 0.85em;
+  font-weight: normal;
+`
+
 const OverlaySubgroupHeading = styled.h4`
   margin: 0.5em 0 0.25em;
   font-size: 0.9em;
@@ -290,6 +298,15 @@ const MIN_SELECTION_BOX_SIZE = 3
 const WHEEL_ZOOM_PER_PIXEL = 0.001
 const PIXELS_PER_WHEEL_LINE = 16
 const ZOOM_BUTTON_FACTOR = 1.25
+
+const DEFAULT_OVERLAY_TRANSPARENCY = 0
+const DEFAULT_OVERLAY_SIZE = 1
+
+const allCategoriesSelected = (categories: { id: string }[]): Record<string, boolean> =>
+  Object.fromEntries(categories.map(({ id }) => [id, true]))
+
+const areAllCategoriesSelected = (selections: Record<string, boolean>) =>
+  Object.values(selections).every(Boolean)
 
 const ZoomButton = styled(Button)`
   min-width: 2em;
@@ -447,6 +464,7 @@ type PanelProps = {
   regionalMissenseConstraint: RegionalMissenseConstraint | null
   visibleOverlayIds: Set<string>
   onToggleOverlay: (overlayId: string) => void
+  onHideOverlays: (overlayIds: string[]) => void
   // Variants listed in the gene page's variant table, or null if it hasn't loaded
   variantIdsInTable: Set<string> | null
   // Variants listed in the gene page's ClinVar track, or null if it hasn't loaded
@@ -472,6 +490,7 @@ const StructurePanel = ({
   regionalMissenseConstraint,
   visibleOverlayIds,
   onToggleOverlay,
+  onHideOverlays,
   variantIdsInTable,
   clinvarVariantIdsInTrack,
   selectedResidues,
@@ -485,13 +504,13 @@ const StructurePanel = ({
     end: ViewerPoint
   } | null>(null)
   const viewer = useRef<StructureViewerHandle>(null)
-  const [overlayTransparency, setOverlayTransparency] = useState(0)
-  const [overlaySize, setOverlaySize] = useState(1)
-  const [clinicalSignificanceSelections, setClinicalSignificanceSelections] = useState<
-    Record<string, boolean>
-  >(() => Object.fromEntries(CLINICAL_SIGNIFICANCE_CATEGORY_OVERLAYS.map(({ id }) => [id, true])))
-  const [consequenceSelections, setConsequenceSelections] = useState<Record<string, boolean>>(() =>
-    Object.fromEntries(CONSEQUENCE_CATEGORY_OVERLAYS.map(({ id }) => [id, true]))
+  const [overlayTransparency, setOverlayTransparency] = useState(DEFAULT_OVERLAY_TRANSPARENCY)
+  const [overlaySize, setOverlaySize] = useState(DEFAULT_OVERLAY_SIZE)
+  const [clinicalSignificanceSelections, setClinicalSignificanceSelections] = useState(() =>
+    allCategoriesSelected(CLINICAL_SIGNIFICANCE_CATEGORY_OVERLAYS)
+  )
+  const [consequenceSelections, setConsequenceSelections] = useState(() =>
+    allCategoriesSelected(CONSEQUENCE_CATEGORY_OVERLAYS)
   )
   const [hoveredResidue, setHoveredResidue] = useState<HoveredResidue | null>(null)
   const [resetViewCount, setResetViewCount] = useState(0)
@@ -703,6 +722,15 @@ const StructurePanel = ({
     </OverlayList>
   )
 
+  const renderSectionReset = (sectionLabel: string, onReset: () => void) => (
+    <SectionResetButton aria-label={`Reset ${sectionLabel}`} onClick={onReset}>
+      Reset
+    </SectionResetButton>
+  )
+
+  const isAnyOverlayVisible = (overlayIds: string[]) =>
+    overlayIds.some((overlayId) => visibleOverlayIds.has(overlayId))
+
   // A toggle for the variants listed elsewhere on the page, like the ClinVar track
   const renderListedVariantsToggle = (
     overlayId: string,
@@ -817,7 +845,15 @@ const StructurePanel = ({
           disabled={colorBy !== 'obs_exp' && colorBy !== 'oe_upper'}
           onChange={onChangeColorCatchAllRegion}
         />
-        <Button onClick={() => setResetViewCount((count) => count + 1)}>Reset view</Button>
+        <Button
+          disabled={colorBy === DEFAULT_COLOR_BY && !colorCatchAllRegion}
+          onClick={() => {
+            onChangeColorBy(DEFAULT_COLOR_BY)
+            onChangeColorCatchAllRegion(false)
+          }}
+        >
+          Reset colors
+        </Button>
         <LabeledControl>
           <span>Zoom</span>
           <ZoomButton
@@ -833,6 +869,9 @@ const StructurePanel = ({
             +
           </ZoomButton>
         </LabeledControl>
+        <Button onClick={() => setResetViewCount((count) => count + 1)}>
+          Reset rotation and zoom
+        </Button>
         <LabeledControl>
           <span>Viewer</span>
           <SegmentedControl<string>
@@ -927,6 +966,15 @@ const StructurePanel = ({
           {hoveredResidue && renderTooltip(hoveredResidue)}
         </ViewerWrapper>
         <OverlayPanel>
+          <OverlayGroupHeading>
+            Display
+            {(overlayTransparency !== DEFAULT_OVERLAY_TRANSPARENCY ||
+              overlaySize !== DEFAULT_OVERLAY_SIZE) &&
+              renderSectionReset('display', () => {
+                setOverlayTransparency(DEFAULT_OVERLAY_TRANSPARENCY)
+                setOverlaySize(DEFAULT_OVERLAY_SIZE)
+              })}
+          </OverlayGroupHeading>
           <SliderControl>
             <div>
               <label htmlFor="missense-constraint-3d-overlay-transparency">Transparency</label>
@@ -959,7 +1007,13 @@ const StructurePanel = ({
               onChange={(event) => setOverlaySize(Number(event.target.value))}
             />
           </SliderControl>
-          <OverlayGroupHeading>Missense variants</OverlayGroupHeading>
+          <OverlayGroupHeading>
+            Missense variants
+            {isAnyOverlayVisible(variantOverlays.map(({ id }) => id)) &&
+              renderSectionReset('missense variants', () =>
+                onHideOverlays(variantOverlays.map(({ id }) => id))
+              )}
+          </OverlayGroupHeading>
           {renderOverlayList(variantOverlays)}
           {unplacedVariantCount > 0 && (
             <UnplacedVariantsNote>
@@ -970,7 +1024,17 @@ const StructurePanel = ({
           )}
           {clinvarVariantIdsInTrack && clinvarTrackVariants && (
             <>
-              <OverlayGroupHeading>ClinVar track</OverlayGroupHeading>
+              <OverlayGroupHeading>
+                ClinVar track
+                {(isAnyOverlayVisible([CLINVAR_TRACK_VARIANTS_OVERLAY_ID]) ||
+                  !areAllCategoriesSelected(clinicalSignificanceSelections)) &&
+                  renderSectionReset('ClinVar track', () => {
+                    onHideOverlays([CLINVAR_TRACK_VARIANTS_OVERLAY_ID])
+                    setClinicalSignificanceSelections(
+                      allCategoriesSelected(CLINICAL_SIGNIFICANCE_CATEGORY_OVERLAYS)
+                    )
+                  })}
+              </OverlayGroupHeading>
               {renderListedVariantsToggle(
                 CLINVAR_TRACK_VARIANTS_OVERLAY_ID,
                 clinvarVariantIdsInTrack,
@@ -987,7 +1051,15 @@ const StructurePanel = ({
           )}
           {variantIdsInTable && tableVariants && (
             <>
-              <OverlayGroupHeading>gnomAD variants table</OverlayGroupHeading>
+              <OverlayGroupHeading>
+                gnomAD variants table
+                {(isAnyOverlayVisible([TABLE_VARIANTS_OVERLAY_ID]) ||
+                  !areAllCategoriesSelected(consequenceSelections)) &&
+                  renderSectionReset('gnomAD variants table', () => {
+                    onHideOverlays([TABLE_VARIANTS_OVERLAY_ID])
+                    setConsequenceSelections(allCategoriesSelected(CONSEQUENCE_CATEGORY_OVERLAYS))
+                  })}
+              </OverlayGroupHeading>
               {renderListedVariantsToggle(
                 TABLE_VARIANTS_OVERLAY_ID,
                 variantIdsInTable,
@@ -1007,6 +1079,10 @@ const StructurePanel = ({
               <OverlayGroupHeading>
                 UniProt features
                 <InfoButton topic="uniprot-features" />
+                {isAnyOverlayVisible(uniprotOverlays.map(({ id }) => id)) &&
+                  renderSectionReset('UniProt features', () =>
+                    onHideOverlays(uniprotOverlays.map(({ id }) => id))
+                  )}
               </OverlayGroupHeading>
               {UNIPROT_FEATURE_LEVELS.map(({ level, label }) => {
                 const levelOverlays = uniprotOverlays.filter((overlay) => overlay.level === level)

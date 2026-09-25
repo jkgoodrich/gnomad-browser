@@ -83,6 +83,9 @@ class StructureViewer3Dmol
 
   alphaCarbons: { residue: number; x: number; y: number; z: number }[] = []
 
+  // The first view, which resetting restores. 3Dmol's zoomTo would keep any rotation.
+  initialView: number[] | null = null
+
   isUnmounted = false
 
   constructor(props: StructureViewerProps) {
@@ -126,8 +129,8 @@ class StructureViewer3Dmol
     ) {
       this.styleOverlays(viewer)
     }
-    if (resetViewCount !== prevProps.resetViewCount) {
-      frameConfidentResidues(viewer)
+    if (resetViewCount !== prevProps.resetViewCount && this.initialView) {
+      viewer.setView(this.initialView)
     }
     viewer.render()
   }
@@ -249,6 +252,7 @@ class StructureViewer3Dmol
     this.styleCartoon(viewer)
     this.styleOverlays(viewer)
     frameConfidentResidues(viewer)
+    this.initialView = viewer.getView()
     viewer.render()
     this.viewer = viewer
     this.setState({ status: 'ready' })

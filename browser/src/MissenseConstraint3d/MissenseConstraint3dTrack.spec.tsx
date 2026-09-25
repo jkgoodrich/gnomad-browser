@@ -600,6 +600,51 @@ describe('MissenseConstraint3dTrack', () => {
     expect(calls[calls.length - 1][0]).toBeCloseTo(Math.exp(-0.1))
   })
 
+  test('resets the coloring', async () => {
+    render(<TrackInRegionViewer />)
+    await showStructure()
+    const resetColors = screen.getByRole('button', { name: 'Reset colors' }) as HTMLButtonElement
+    expect(resetColors.disabled).toBe(true)
+
+    await userEvent.click(screen.getByLabelText('o/e upper bound'))
+    await userEvent.click(screen.getByLabelText('Color unassigned residues'))
+    await userEvent.click(resetColors)
+    expect((screen.getByLabelText('Missense o/e') as HTMLInputElement).checked).toBe(true)
+    expect((screen.getByLabelText('Color unassigned residues') as HTMLInputElement).checked).toBe(
+      false
+    )
+  })
+
+  test('resets each section of the legend separately', async () => {
+    render(<TrackInRegionViewer />)
+    await showStructure()
+    expect(screen.queryByRole('button', { name: 'Reset UniProt features' })).toBeNull()
+
+    await userEvent.click(screen.getByLabelText('Transmembrane (1)'))
+    await userEvent.click(screen.getByLabelText('gnomAD (1)'))
+    fireEvent.change(screen.getByLabelText('Transparency'), { target: { value: '0.5' } })
+
+    await userEvent.click(screen.getByRole('button', { name: 'Reset UniProt features' }))
+    expect(lastViewerProps(StructureViewer3Dmol).overlays.map(({ id }) => id)).toEqual([
+      'gnomad-missense',
+    ])
+
+    await userEvent.click(screen.getByRole('button', { name: 'Reset display' }))
+    expect(lastViewerProps(StructureViewer3Dmol).overlayOpacity).toBe(1)
+    expect(lastViewerProps(StructureViewer3Dmol).overlays.map(({ id }) => id)).toEqual([
+      'gnomad-missense',
+    ])
+  })
+
+  test('resets the rotation and zoom of the structure', async () => {
+    render(<TrackInRegionViewer />)
+    await showStructure()
+    const { resetViewCount } = lastViewerProps(StructureViewer3Dmol)
+
+    await userEvent.click(screen.getByRole('button', { name: 'Reset rotation and zoom' }))
+    expect(lastViewerProps(StructureViewer3Dmol).resetViewCount).toBe(resetViewCount + 1)
+  })
+
   test('clears the selection when the structure is hidden', async () => {
     render(<TrackWithStructureSelection />)
     await showStructure()
