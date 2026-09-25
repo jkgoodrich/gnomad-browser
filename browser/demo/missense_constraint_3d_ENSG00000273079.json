@@ -1,0 +1,1012 @@
+{
+  "data": {
+    "gene": {
+      "missense_constraint_3d": {
+        "transcript_id": "ENST00000609686",
+        "uniprot_id": "Q13224",
+        "protein_sequence": "MKPRAECCSPKFWLVLAVLAVSGSRARSQKSPPSIGIAVILVGTSDEVAIKDAHEKDDFHHLSVVPRVELVAMNETDPKSIITRICDLMSDRKIQGVVFADDTDQEAIAQILDFISAQTLTPILGIHGGSSMIMADKDESSMFFQFGPSIEQQASVMLNIMEEYDWYIFSIVTTYFPGYQDFVNKIRSTIENSFVGWELEEVLLLDMSLDDGDSKIQNQLKKLQSPIILLYCTKEEATYIFEVANSVGLTGYGYTWIVPSLVAGDTDTVPAEFPTGLISVSYDEWDYGLPARVRDGIAIITTAASDMLSEHSFIPEPKSSCYNTHEKRIYQSNMLNRYLINVTFEGRNLSFSEDGYQMHPKLVIILLNKERKWERVGKWKDKSLQMKYYVWPRMCPETEEQEDDHLSIVTLEEAPFVIVESVDPLSGTCMRNTVPCQKRIVTENKTDEEPGYIKKCCKGFCIDILKKISKSVKFTYDLYLVTNGKHGKKINGTWNGMIGEVVMKRAYMAVGSLTINEERSEVVDFSVPFIETGISVMVSRSNGTVSPSAFLEPFSADVWVMMFVMLLIVSAVAVFVFEYFSPVGYNRCLADGREPGGPSFTIGKAIWLLWGLVFNNSVPVQNPKGTTSKIMVSVWAFFAVIFLASYTANLAAFMIQEEYVDQVSGLSDKKFQRPNDFSPPFRFGTVPNGSTERNIRNNYAEMHAYMGKFNQRGVDDALLSLKTGKLDAFIYDAAVLNYMAGRDEGCKLVTIGSGKVFASTGYGIAIQKDSGWKRQVDLAILQLFGDGEMEELEALWLTGICHNEKNEVMSSQLDIDNMAGVFYMLGAAMALSLITFICEHLFYWQFRHCFMGVCSGKPGMVFSISRGIYSCIHGVAIEERQSVMNSPTATMNNTHSNILRLLRTAKNMANLSGVNGSPQSALDFIRRESSVYDISEHRRSFTHSDCKSYNNPPCEENLFSDYISEVERTFGNLQLKDSNVYQDHYHHHHRPHSIGSASSIDGLYDCDNPPFTTQSRSISKKPLDIGLPSSKHSQLSDLYGKFSFKSDRYSGHDDLIRSDVSDISTHTVTYGNIEGNAAKRRKQQYKDSLKKRPASAKSRREFDEIELAYRRRPPRSPDHKRYFRDKEGLRDFYLDQFRTKENSPHWEHVDLTDIYKERSDDFKRDSVSGGGPCTNRSHIKHGTGDKHGVVSGVPAPWEKNLTNVEWEDRSGGNFCRSCPSKLHNYSTTVTGQNSGRQACIRCEACKKAGNLYDISEDNSLQELDQPAAPVAVTSNASTTKYPQSPTNSKAQKKNRNKLRRQHSYDTFVDLQKEEAALAPRSVSLKDKGRFMDGSPYAHMFEMSAGESTFANNKSSVPTAGHHHHNNPGGGYMLSKSLYPDRVTQNPFIPTFGDDQCLLHGSKSYFFRQPTVAGASKARPDFRALVTNKPVVSALHGAVPARFQKDICIGNQSNPCVPNNKNPRAFNGSSNGHVYEKLSSIESDV",
+        "regions": [
+          {
+            "region_index": 0,
+            "is_catch_all": false,
+            "obs_mis": 49,
+            "exp_mis": 358.7154369095548,
+            "obs_exp": 0.1365985261803904,
+            "oe_upper": 0.1733158105422644,
+            "p_value": 4.165504513133678e-60,
+            "segments": [
+              {
+                "aa_start": 409,
+                "aa_stop": 422
+              },
+              {
+                "aa_start": 432,
+                "aa_stop": 434
+              },
+              {
+                "aa_start": 455,
+                "aa_stop": 465
+              },
+              {
+                "aa_start": 480,
+                "aa_stop": 490
+              },
+              {
+                "aa_start": 494,
+                "aa_stop": 498
+              },
+              {
+                "aa_start": 509,
+                "aa_stop": 520
+              },
+              {
+                "aa_start": 525,
+                "aa_stop": 564
+              },
+              {
+                "aa_start": 610,
+                "aa_stop": 616
+              },
+              {
+                "aa_start": 638,
+                "aa_stop": 765
+              },
+              {
+                "aa_start": 780,
+                "aa_stop": 781
+              },
+              {
+                "aa_start": 783,
+                "aa_stop": 834
+              }
+            ]
+          },
+          {
+            "region_index": 1,
+            "is_catch_all": false,
+            "obs_mis": 198,
+            "exp_mis": 466.60025756616557,
+            "obs_exp": 0.4243461009489968,
+            "oe_upper": 0.4774064469851607,
+            "p_value": 1.6945890801191507e-35,
+            "segments": [
+              {
+                "aa_start": 38,
+                "aa_stop": 54
+              },
+              {
+                "aa_start": 70,
+                "aa_stop": 82
+              },
+              {
+                "aa_start": 85,
+                "aa_stop": 85
+              },
+              {
+                "aa_start": 96,
+                "aa_stop": 117
+              },
+              {
+                "aa_start": 122,
+                "aa_stop": 139
+              },
+              {
+                "aa_start": 141,
+                "aa_stop": 300
+              },
+              {
+                "aa_start": 336,
+                "aa_stop": 336
+              },
+              {
+                "aa_start": 339,
+                "aa_stop": 408
+              },
+              {
+                "aa_start": 423,
+                "aa_stop": 431
+              },
+              {
+                "aa_start": 435,
+                "aa_stop": 444
+              },
+              {
+                "aa_start": 449,
+                "aa_stop": 454
+              },
+              {
+                "aa_start": 466,
+                "aa_stop": 479
+              },
+              {
+                "aa_start": 493,
+                "aa_stop": 493
+              },
+              {
+                "aa_start": 499,
+                "aa_stop": 508
+              },
+              {
+                "aa_start": 521,
+                "aa_stop": 524
+              },
+              {
+                "aa_start": 766,
+                "aa_stop": 779
+              },
+              {
+                "aa_start": 782,
+                "aa_stop": 782
+              }
+            ]
+          },
+          {
+            "region_index": 2,
+            "is_catch_all": false,
+            "obs_mis": 13,
+            "exp_mis": 75.16314372591268,
+            "obs_exp": 0.1729571084387496,
+            "oe_upper": 0.27498276483861533,
+            "p_value": 7.489522014082008e-13,
+            "segments": [
+              {
+                "aa_start": 565,
+                "aa_stop": 579
+              },
+              {
+                "aa_start": 584,
+                "aa_stop": 584
+              },
+              {
+                "aa_start": 598,
+                "aa_stop": 609
+              },
+              {
+                "aa_start": 617,
+                "aa_stop": 637
+              },
+              {
+                "aa_start": 835,
+                "aa_stop": 836
+              },
+              {
+                "aa_start": 839,
+                "aa_stop": 839
+              },
+              {
+                "aa_start": 868,
+                "aa_stop": 869
+              },
+              {
+                "aa_start": 871,
+                "aa_stop": 875
+              }
+            ]
+          },
+          {
+            "region_index": 3,
+            "is_catch_all": false,
+            "obs_mis": 8,
+            "exp_mis": 30.966869376025258,
+            "obs_exp": 0.25834061244155504,
+            "oe_upper": 0.46613203097539185,
+            "p_value": 3.672428979985793e-5,
+            "segments": [
+              {
+                "aa_start": 1054,
+                "aa_stop": 1075
+              }
+            ]
+          },
+          {
+            "region_index": 4,
+            "is_catch_all": false,
+            "obs_mis": 19,
+            "exp_mis": 48.32903019331846,
+            "obs_exp": 0.39313844958194033,
+            "oe_upper": 0.5768632130196947,
+            "p_value": 2.4555602579158494e-5,
+            "segments": [
+              {
+                "aa_start": 885,
+                "aa_stop": 915
+              },
+              {
+                "aa_start": 918,
+                "aa_stop": 918
+              },
+              {
+                "aa_start": 921,
+                "aa_stop": 921
+              }
+            ]
+          },
+          {
+            "region_index": 5,
+            "is_catch_all": false,
+            "obs_mis": 4,
+            "exp_mis": 18.614074852003252,
+            "obs_exp": 0.21489115262526834,
+            "oe_upper": 0.4917525635528681,
+            "p_value": 0.0007059030572400765,
+            "segments": [
+              {
+                "aa_start": 1082,
+                "aa_stop": 1096
+              }
+            ]
+          },
+          {
+            "region_index": 6,
+            "is_catch_all": false,
+            "obs_mis": 6,
+            "exp_mis": 21.050890321887934,
+            "obs_exp": 0.28502357421725877,
+            "oe_upper": 0.5625603226912929,
+            "p_value": 0.0010365957898840533,
+            "segments": [
+              {
+                "aa_start": 86,
+                "aa_stop": 91
+              },
+              {
+                "aa_start": 93,
+                "aa_stop": 94
+              },
+              {
+                "aa_start": 119,
+                "aa_stop": 119
+              },
+              {
+                "aa_start": 317,
+                "aa_stop": 324
+              }
+            ]
+          },
+          {
+            "region_index": 7,
+            "is_catch_all": false,
+            "obs_mis": 5,
+            "exp_mis": 16.34915427614871,
+            "obs_exp": 0.3058262167905743,
+            "oe_upper": 0.6430323386255327,
+            "p_value": 0.0050031894518105515,
+            "segments": [
+              {
+                "aa_start": 1471,
+                "aa_stop": 1484
+              }
+            ]
+          },
+          {
+            "region_index": 8,
+            "is_catch_all": false,
+            "obs_mis": 11,
+            "exp_mis": 24.773220149956295,
+            "obs_exp": 0.44402786288642443,
+            "oe_upper": 0.734967603754806,
+            "p_value": 0.005653595781060328,
+            "segments": [
+              {
+                "aa_start": 1309,
+                "aa_stop": 1326
+              }
+            ]
+          },
+          {
+            "region_index": 9,
+            "is_catch_all": false,
+            "obs_mis": 41,
+            "exp_mis": 30.03104852803236,
+            "obs_exp": 1.3652536960782011,
+            "oe_upper": 1.7714140107930074,
+            "p_value": 0.04532649167517351,
+            "segments": [
+              {
+                "aa_start": 1337,
+                "aa_stop": 1359
+              }
+            ]
+          },
+          {
+            "region_index": 10,
+            "is_catch_all": false,
+            "obs_mis": 7,
+            "exp_mis": 17.515816895723514,
+            "obs_exp": 0.39963879741795255,
+            "oe_upper": 0.7506423411883364,
+            "p_value": 0.011983636632168447,
+            "segments": [
+              {
+                "aa_start": 939,
+                "aa_stop": 951
+              }
+            ]
+          },
+          {
+            "region_index": 11,
+            "is_catch_all": false,
+            "obs_mis": 7,
+            "exp_mis": 17.25244787536325,
+            "obs_exp": 0.4057395246500703,
+            "oe_upper": 0.7621013491776908,
+            "p_value": 0.013574729778747524,
+            "segments": [
+              {
+                "aa_start": 963,
+                "aa_stop": 976
+              }
+            ]
+          },
+          {
+            "region_index": 12,
+            "is_catch_all": false,
+            "obs_mis": 9,
+            "exp_mis": 18.672499312401836,
+            "obs_exp": 0.4819922523184891,
+            "oe_upper": 0.8410880707160835,
+            "p_value": 0.02519505446969052,
+            "segments": [
+              {
+                "aa_start": 1374,
+                "aa_stop": 1387
+              }
+            ]
+          },
+          {
+            "region_index": 13,
+            "is_catch_all": false,
+            "obs_mis": 8,
+            "exp_mis": 16.39948032476477,
+            "obs_exp": 0.4878203358626701,
+            "oe_upper": 0.8801894590158827,
+            "p_value": 0.03806661787421023,
+            "segments": [
+              {
+                "aa_start": 1006,
+                "aa_stop": 1018
+              }
+            ]
+          },
+          {
+            "region_index": 14,
+            "is_catch_all": false,
+            "obs_mis": 13,
+            "exp_mis": 23.48407252202513,
+            "obs_exp": 0.5535666774920586,
+            "oe_upper": 0.8801100855198412,
+            "p_value": 0.030507945291516687,
+            "segments": [
+              {
+                "aa_start": 837,
+                "aa_stop": 838
+              },
+              {
+                "aa_start": 840,
+                "aa_stop": 848
+              },
+              {
+                "aa_start": 861,
+                "aa_stop": 861
+              },
+              {
+                "aa_start": 864,
+                "aa_stop": 867
+              },
+              {
+                "aa_start": 870,
+                "aa_stop": 870
+              },
+              {
+                "aa_start": 877,
+                "aa_stop": 877
+              }
+            ]
+          },
+          {
+            "region_index": 15,
+            "is_catch_all": false,
+            "obs_mis": 45,
+            "exp_mis": 63.109729602294394,
+            "obs_exp": 0.7130437776168826,
+            "oe_upper": 0.9141996839111157,
+            "p_value": 0.022629815832801246,
+            "segments": [
+              {
+                "aa_start": 33,
+                "aa_stop": 37
+              },
+              {
+                "aa_start": 58,
+                "aa_stop": 68
+              },
+              {
+                "aa_start": 95,
+                "aa_stop": 95
+              },
+              {
+                "aa_start": 118,
+                "aa_stop": 118
+              },
+              {
+                "aa_start": 120,
+                "aa_stop": 121
+              },
+              {
+                "aa_start": 140,
+                "aa_stop": 140
+              },
+              {
+                "aa_start": 301,
+                "aa_stop": 316
+              },
+              {
+                "aa_start": 326,
+                "aa_stop": 335
+              },
+              {
+                "aa_start": 337,
+                "aa_stop": 338
+              }
+            ]
+          },
+          {
+            "region_index": 16,
+            "is_catch_all": false,
+            "obs_mis": 32,
+            "exp_mis": 21.12104547854643,
+            "obs_exp": 1.5150765160987791,
+            "oe_upper": 2.035053319887722,
+            "p_value": 0.017924695361025724,
+            "segments": [
+              {
+                "aa_start": 31,
+                "aa_stop": 32
+              },
+              {
+                "aa_start": 55,
+                "aa_stop": 57
+              },
+              {
+                "aa_start": 69,
+                "aa_stop": 69
+              },
+              {
+                "aa_start": 83,
+                "aa_stop": 84
+              },
+              {
+                "aa_start": 92,
+                "aa_stop": 92
+              },
+              {
+                "aa_start": 325,
+                "aa_stop": 325
+              },
+              {
+                "aa_start": 445,
+                "aa_stop": 445
+              },
+              {
+                "aa_start": 447,
+                "aa_stop": 448
+              }
+            ]
+          },
+          {
+            "region_index": 17,
+            "is_catch_all": false,
+            "obs_mis": 15,
+            "exp_mis": 25.419363414666435,
+            "obs_exp": 0.5901013237548395,
+            "oe_upper": 0.9086431230930304,
+            "p_value": 0.03877077222666976,
+            "segments": [
+              {
+                "aa_start": 1392,
+                "aa_stop": 1411
+              }
+            ]
+          },
+          {
+            "region_index": 18,
+            "is_catch_all": false,
+            "obs_mis": 9,
+            "exp_mis": 16.19122599940426,
+            "obs_exp": 0.555856610261085,
+            "oe_upper": 0.9699831515348691,
+            "p_value": 0.07391187517927321,
+            "segments": [
+              {
+                "aa_start": 16,
+                "aa_stop": 25
+              },
+              {
+                "aa_start": 27,
+                "aa_stop": 27
+              }
+            ]
+          },
+          {
+            "region_index": 19,
+            "is_catch_all": false,
+            "obs_mis": 9,
+            "exp_mis": 16.121327616304264,
+            "obs_exp": 0.5582666771747677,
+            "oe_upper": 0.9741887762538878,
+            "p_value": 0.07612603624772703,
+            "segments": [
+              {
+                "aa_start": 1227,
+                "aa_stop": 1237
+              }
+            ]
+          },
+          {
+            "region_index": 20,
+            "is_catch_all": false,
+            "obs_mis": 13,
+            "exp_mis": 20.14107511695991,
+            "obs_exp": 0.645447173227276,
+            "oe_upper": 1.0261899603516997,
+            "p_value": 0.1115666280818843,
+            "segments": [
+              {
+                "aa_start": 1100,
+                "aa_stop": 1112
+              }
+            ]
+          },
+          {
+            "region_index": 21,
+            "is_catch_all": false,
+            "obs_mis": 18,
+            "exp_mis": 25.65952539355823,
+            "obs_exp": 0.7014938789366253,
+            "oe_upper": 1.0402285273049345,
+            "p_value": 0.13051104867629773,
+            "segments": [
+              {
+                "aa_start": 1036,
+                "aa_stop": 1053
+              }
+            ]
+          },
+          {
+            "region_index": 22,
+            "is_catch_all": false,
+            "obs_mis": 17,
+            "exp_mis": 24.057423527896802,
+            "obs_exp": 0.7066425870703458,
+            "oe_upper": 1.0599318772971098,
+            "p_value": 0.1501872966150143,
+            "segments": [
+              {
+                "aa_start": 1254,
+                "aa_stop": 1272
+              }
+            ]
+          },
+          {
+            "region_index": 23,
+            "is_catch_all": false,
+            "obs_mis": 11,
+            "exp_mis": 16.820693458195407,
+            "obs_exp": 0.6539563917111016,
+            "oe_upper": 1.0824473019590377,
+            "p_value": 0.15583197504647392,
+            "segments": [
+              {
+                "aa_start": 977,
+                "aa_stop": 986
+              },
+              {
+                "aa_start": 989,
+                "aa_stop": 990
+              }
+            ]
+          },
+          {
+            "region_index": 24,
+            "is_catch_all": false,
+            "obs_mis": 19,
+            "exp_mis": 25.972547732899248,
+            "obs_exp": 0.7315416337047609,
+            "oe_upper": 1.0734118164360544,
+            "p_value": 0.1712646310368955,
+            "segments": [
+              {
+                "aa_start": 580,
+                "aa_stop": 583
+              },
+              {
+                "aa_start": 585,
+                "aa_stop": 592
+              },
+              {
+                "aa_start": 594,
+                "aa_stop": 597
+              },
+              {
+                "aa_start": 850,
+                "aa_stop": 850
+              },
+              {
+                "aa_start": 876,
+                "aa_stop": 876
+              },
+              {
+                "aa_start": 878,
+                "aa_stop": 878
+              }
+            ]
+          },
+          {
+            "region_index": 25,
+            "is_catch_all": false,
+            "obs_mis": 23,
+            "exp_mis": 29.604282922239854,
+            "obs_exp": 0.7769146126732066,
+            "oe_upper": 1.1006983191376523,
+            "p_value": 0.22482275735454224,
+            "segments": [
+              {
+                "aa_start": 1281,
+                "aa_stop": 1302
+              }
+            ]
+          },
+          {
+            "region_index": 26,
+            "is_catch_all": true,
+            "obs_mis": 499,
+            "exp_mis": 475.3790931357452,
+            "obs_exp": 1.0496885689870037,
+            "oe_upper": 1.1303394115573404,
+            "p_value": 0.2786445325338204,
+            "segments": [
+              {
+                "aa_start": 1,
+                "aa_stop": 15
+              },
+              {
+                "aa_start": 26,
+                "aa_stop": 26
+              },
+              {
+                "aa_start": 28,
+                "aa_stop": 30
+              },
+              {
+                "aa_start": 446,
+                "aa_stop": 446
+              },
+              {
+                "aa_start": 491,
+                "aa_stop": 492
+              },
+              {
+                "aa_start": 593,
+                "aa_stop": 593
+              },
+              {
+                "aa_start": 849,
+                "aa_stop": 849
+              },
+              {
+                "aa_start": 851,
+                "aa_stop": 860
+              },
+              {
+                "aa_start": 862,
+                "aa_stop": 863
+              },
+              {
+                "aa_start": 879,
+                "aa_stop": 884
+              },
+              {
+                "aa_start": 916,
+                "aa_stop": 917
+              },
+              {
+                "aa_start": 919,
+                "aa_stop": 920
+              },
+              {
+                "aa_start": 922,
+                "aa_stop": 938
+              },
+              {
+                "aa_start": 952,
+                "aa_stop": 962
+              },
+              {
+                "aa_start": 987,
+                "aa_stop": 988
+              },
+              {
+                "aa_start": 991,
+                "aa_stop": 1005
+              },
+              {
+                "aa_start": 1019,
+                "aa_stop": 1035
+              },
+              {
+                "aa_start": 1076,
+                "aa_stop": 1081
+              },
+              {
+                "aa_start": 1097,
+                "aa_stop": 1099
+              },
+              {
+                "aa_start": 1113,
+                "aa_stop": 1226
+              },
+              {
+                "aa_start": 1238,
+                "aa_stop": 1253
+              },
+              {
+                "aa_start": 1273,
+                "aa_stop": 1280
+              },
+              {
+                "aa_start": 1303,
+                "aa_stop": 1308
+              },
+              {
+                "aa_start": 1327,
+                "aa_stop": 1336
+              },
+              {
+                "aa_start": 1360,
+                "aa_stop": 1373
+              },
+              {
+                "aa_start": 1388,
+                "aa_stop": 1391
+              },
+              {
+                "aa_start": 1412,
+                "aa_stop": 1470
+              }
+            ]
+          }
+        ],
+        "uniprot_features": [
+          {
+            "feature_type": "signal peptide",
+            "start": 1,
+            "stop": 26,
+            "note": ""
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 27,
+            "stop": 557,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 558,
+            "stop": 576,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 577,
+            "stop": 603,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "intramembrane region",
+            "start": 604,
+            "stop": 623,
+            "note": "Discontinuously helical"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 624,
+            "stop": 630,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 631,
+            "stop": 646,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 647,
+            "stop": 817,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 818,
+            "stop": 837,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 838,
+            "stop": 1484,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 604,
+            "stop": 623,
+            "note": "Pore-forming"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 690,
+            "stop": 691,
+            "note": "Glutamate binding"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 1074,
+            "stop": 1097,
+            "note": "Disordered"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 1161,
+            "stop": 1194,
+            "note": "Disordered"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 1271,
+            "stop": 1301,
+            "note": "Disordered"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 1292,
+            "stop": 1304,
+            "note": "Interaction with DAPK1"
+          },
+          {
+            "feature_type": "short sequence motif",
+            "start": 1482,
+            "stop": 1484,
+            "note": "PDZ-binding"
+          },
+          {
+            "feature_type": "metal ion-binding site",
+            "start": 127,
+            "stop": 127,
+            "note": "Zinc"
+          },
+          {
+            "feature_type": "metal ion-binding site",
+            "start": 284,
+            "stop": 284,
+            "note": "Zinc"
+          },
+          {
+            "feature_type": "binding site",
+            "start": 514,
+            "stop": 514,
+            "note": "Glutamate"
+          },
+          {
+            "feature_type": "binding site",
+            "start": 519,
+            "stop": 519,
+            "note": "Glutamate"
+          },
+          {
+            "feature_type": "binding site",
+            "start": 732,
+            "stop": 732,
+            "note": "Glutamate"
+          },
+          {
+            "feature_type": "site",
+            "start": 615,
+            "stop": 615,
+            "note": "Functional determinant of NMDA receptors"
+          },
+          {
+            "feature_type": "glycosylation site",
+            "start": 74,
+            "stop": 74,
+            "note": "N-linked (GlcNAc...) asparagine"
+          },
+          {
+            "feature_type": "glycosylation site",
+            "start": 341,
+            "stop": 341,
+            "note": "N-linked (GlcNAc...) asparagine"
+          },
+          {
+            "feature_type": "glycosylation site",
+            "start": 348,
+            "stop": 348,
+            "note": "N-linked (GlcNAc...) asparagine"
+          },
+          {
+            "feature_type": "glycosylation site",
+            "start": 444,
+            "stop": 444,
+            "note": "N-linked (GlcNAc...) asparagine"
+          },
+          {
+            "feature_type": "glycosylation site",
+            "start": 491,
+            "stop": 491,
+            "note": "N-linked (GlcNAc...) asparagine"
+          },
+          {
+            "feature_type": "glycosylation site",
+            "start": 542,
+            "stop": 542,
+            "note": "N-linked (GlcNAc...) asparagine"
+          },
+          {
+            "feature_type": "glycosylation site",
+            "start": 688,
+            "stop": 688,
+            "note": "N-linked (GlcNAc...) asparagine"
+          },
+          {
+            "feature_type": "disulfide bond",
+            "start": 86,
+            "stop": 86,
+            "note": ""
+          },
+          {
+            "feature_type": "disulfide bond",
+            "start": 321,
+            "stop": 321,
+            "note": ""
+          },
+          {
+            "feature_type": "disulfide bond",
+            "start": 429,
+            "stop": 429,
+            "note": ""
+          },
+          {
+            "feature_type": "disulfide bond",
+            "start": 456,
+            "stop": 456,
+            "note": ""
+          },
+          {
+            "feature_type": "disulfide bond",
+            "start": 436,
+            "stop": 436,
+            "note": ""
+          },
+          {
+            "feature_type": "disulfide bond",
+            "start": 457,
+            "stop": 457,
+            "note": ""
+          },
+          {
+            "feature_type": "disulfide bond",
+            "start": 746,
+            "stop": 746,
+            "note": ""
+          },
+          {
+            "feature_type": "disulfide bond",
+            "start": 801,
+            "stop": 801,
+            "note": ""
+          }
+        ]
+      }
+    }
+  }
+}
