@@ -48,14 +48,15 @@ jest.mock('../analytics', () => ({ logButtonClick: jest.fn() }))
 // A declaration, so that it exists when the mocked modules are first imported
 function mockStructureViewer() {
   const { forwardRef, useImperativeHandle } = jest.requireActual<typeof React>('react')
+  const handle: StructureViewerHandle = { residuesInRectangle: () => [1, 2], zoomBy: jest.fn() }
   const renderViewer = jest.fn(
     (_props: StructureViewerProps, ref: React.ForwardedRef<StructureViewerHandle>) => {
-      useImperativeHandle(ref, () => ({ residuesInRectangle: () => [1, 2] }))
+      useImperativeHandle(ref, () => handle)
       return null
     }
   )
   // forwardRef exposes renderViewer as the component's render property
-  return { __esModule: true, default: forwardRef(renderViewer) }
+  return { __esModule: true, default: forwardRef(renderViewer), handle }
 }
 jest.mock('./StructureViewer3Dmol', () => mockStructureViewer())
 jest.mock('./StructureViewerMolstar', () => mockStructureViewer())
@@ -581,6 +582,22 @@ describe('MissenseConstraint3dTrack', () => {
       residues: [1, 2],
       intervals: [{ start: 100, stop: 105 }],
     })
+  })
+
+  test('zooms the structure with buttons and, in smaller steps, the mouse wheel', async () => {
+    const { container } = render(<TrackInRegionViewer />)
+    await showStructure()
+    const { handle } = jest.requireMock<{ handle: StructureViewerHandle }>('./StructureViewer3Dmol')
+
+    await userEvent.click(screen.getByRole('button', { name: 'Zoom in' }))
+    expect(handle.zoomBy).toHaveBeenLastCalledWith(1.25)
+    await userEvent.click(screen.getByRole('button', { name: 'Zoom out' }))
+    expect(handle.zoomBy).toHaveBeenLastCalledWith(0.8)
+
+    // Scrolling down zooms out
+    fireEvent.wheel(container.querySelector('[class*="ViewerWrapper"]')!, { deltaY: 100 })
+    const { calls } = (handle.zoomBy as jest.Mock).mock
+    expect(calls[calls.length - 1][0]).toBeCloseTo(Math.exp(-0.1))
   })
 
   test('clears the selection when the structure is hidden', async () => {

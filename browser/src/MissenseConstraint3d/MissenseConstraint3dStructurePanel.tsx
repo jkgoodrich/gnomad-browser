@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useMemo, useRef, useState } from 'react'
+import React, { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 
 import { Button, Checkbox, ExternalLink, SegmentedControl } from '@gnomad/ui'
@@ -285,6 +285,19 @@ const SELECTION_MODES: { value: SelectionMode; label: string; hint: string }[] =
 // A box smaller than this is a click rather than a selection
 const MIN_SELECTION_BOX_SIZE = 3
 
+// The viewers' own wheel zoom is too fast to zoom slowly. This zooms by about 10% for each notch of a
+// mouse wheel, and by much less for each of a trackpad's many small scrolls.
+const WHEEL_ZOOM_PER_PIXEL = 0.001
+const PIXELS_PER_WHEEL_LINE = 16
+const ZOOM_BUTTON_FACTOR = 1.25
+
+const ZoomButton = styled(Button)`
+  min-width: 2em;
+  padding-right: 0.5em;
+  padding-left: 0.5em;
+  margin-right: 0.25em;
+`
+
 const SelectionToolbar = styled.div`
   display: flex;
   flex-flow: row wrap;
@@ -485,6 +498,27 @@ const StructurePanel = ({
   const [structureViewer, setStructureViewer] = useState(initialStructureViewer)
   const [plddtByResidue, setPlddtByResidue] = useState<number[] | null>(null)
   const viewerWrapper = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const wrapper = viewerWrapper.current
+    if (!wrapper) {
+      return undefined
+    }
+    // Captured before the viewer, so that its own zoom doesn't run
+    const onWheel = (event: WheelEvent) => {
+      event.preventDefault()
+      event.stopPropagation()
+      const pixels =
+        event.deltaMode === WheelEvent.DOM_DELTA_LINE
+          ? event.deltaY * PIXELS_PER_WHEEL_LINE
+          : event.deltaY
+      if (viewer.current) {
+        viewer.current.zoomBy(Math.exp(-pixels * WHEEL_ZOOM_PER_PIXEL))
+      }
+    }
+    wrapper.addEventListener('wheel', onWheel, { capture: true, passive: false })
+    return () => wrapper.removeEventListener('wheel', onWheel, { capture: true })
+  }, [])
 
   const {
     label: viewerLabel,
@@ -784,6 +818,21 @@ const StructurePanel = ({
           onChange={onChangeColorCatchAllRegion}
         />
         <Button onClick={() => setResetViewCount((count) => count + 1)}>Reset view</Button>
+        <LabeledControl>
+          <span>Zoom</span>
+          <ZoomButton
+            aria-label="Zoom out"
+            onClick={() => viewer.current && viewer.current.zoomBy(1 / ZOOM_BUTTON_FACTOR)}
+          >
+            −
+          </ZoomButton>
+          <ZoomButton
+            aria-label="Zoom in"
+            onClick={() => viewer.current && viewer.current.zoomBy(ZOOM_BUTTON_FACTOR)}
+          >
+            +
+          </ZoomButton>
+        </LabeledControl>
         <LabeledControl>
           <span>Viewer</span>
           <SegmentedControl<string>

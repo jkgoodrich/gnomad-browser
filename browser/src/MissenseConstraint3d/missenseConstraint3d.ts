@@ -155,6 +155,8 @@ export type StructureViewerProps = {
 export interface StructureViewerHandle {
   // Residues whose alpha carbon is drawn within the rectangle, at any depth
   residuesInRectangle(rectangle: ViewerRectangle): number[]
+  // Zooms in by a factor greater than 1, or out by one less than 1
+  zoomBy(factor: number): void
 }
 
 export type StructureViewerStatus =

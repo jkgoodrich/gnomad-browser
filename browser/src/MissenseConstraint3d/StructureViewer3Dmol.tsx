@@ -169,6 +169,13 @@ class StructureViewer3Dmol
   }
 
   // eslint-disable-next-line react/no-unused-class-component-methods -- the panel calls it through a ref
+  zoomBy(factor: number) {
+    if (this.viewer) {
+      this.viewer.zoom(factor)
+    }
+  }
+
+  // eslint-disable-next-line react/no-unused-class-component-methods -- the panel calls it through a ref
   residuesInRectangle({ left, top, right, bottom }: ViewerRectangle) {
     const { viewer, container, alphaCarbons } = this
     if (!viewer || !container) {

@@ -34,7 +34,7 @@ With these options, the track keeps showing the missense o/e of each 3D region.
 
 ### Showing the structure
 
-Select "Show structure" to view the AlphaFold structure colored the same way as the track. Hover over a region in the track to highlight all of its residues in the structure, or over a residue in the structure to see its region, predicted confidence, and any features shown on the structure. The panel beside the structure can also show:
+Select "Show structure" to view the AlphaFold structure colored the same way as the track. Drag to rotate the structure, and scroll or use the zoom buttons to zoom in and out. Hover over a region in the track to highlight all of its residues in the structure, or over a residue in the structure to see its region, predicted confidence, and any features shown on the structure. The panel beside the structure can also show:
 
 - **gnomAD missense variants**: missense variants in the selected dataset that pass quality control in the exomes or genomes.
 - **Current selection in the ClinVar track**: the ClinVar variants shown in the ClinVar track below, after its filters, colored by clinical significance: pathogenic / likely pathogenic in dark purple, uncertain significance / conflicting in light purple, benign / likely benign in green and other in gray. Residues with several variants take the color of the most pathogenic.

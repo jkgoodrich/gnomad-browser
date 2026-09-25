@@ -45,6 +45,9 @@ const RESIDUE_COLOR_THEME_NAME = 'gnomad-residue-colors'
 const VARIANT_SPHERE_SIZE = 1.5
 const FEATURE_STICK_SIZE_FACTOR = 0.15
 const NO_DATA_COLOR = Color.fromHexStyle(NO_REGION_COLOR)
+// Mol*'s own limits on zooming, in Å and as a multiple of the scene's radius
+const MIN_CAMERA_DISTANCE = 5
+const MAX_CAMERA_DISTANCE_FACTOR = 10
 
 // A dense array rather than a Map: Mol* compares theme params with a deep equality that ignores Maps
 const residueColorThemeParams = { colors: PD.Value<Color[]>([], { isHidden: true }) }
@@ -236,6 +239,24 @@ class StructureViewerMolstar
     if (location) {
       onClickResidue(StructureProperties.residue.auth_seq_id(location))
     }
+  }
+
+  // eslint-disable-next-line react/no-unused-class-component-methods -- the panel calls it through a ref
+  zoomBy(factor: number) {
+    const canvas3d = this.plugin?.canvas3d
+    if (!canvas3d) {
+      return
+    }
+    // Moves the camera toward or away from what it's looking at
+    const { position, target, radiusMax } = canvas3d.camera.getSnapshot()
+    const offset = Vec3.sub(Vec3(), position, target)
+    const distance = Math.min(
+      Math.max(Vec3.magnitude(offset) / factor, MIN_CAMERA_DISTANCE),
+      MAX_CAMERA_DISTANCE_FACTOR * radiusMax
+    )
+    Vec3.setMagnitude(offset, offset, distance)
+    canvas3d.camera.setState({ position: Vec3.add(Vec3(), target, offset) }, 0)
+    canvas3d.requestDraw()
   }
 
   // eslint-disable-next-line react/no-unused-class-component-methods -- the panel calls it through a ref
