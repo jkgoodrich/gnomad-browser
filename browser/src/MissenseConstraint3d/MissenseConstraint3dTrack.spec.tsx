@@ -265,6 +265,17 @@ describe('MissenseConstraint3dTrack', () => {
     )
   })
 
+  test('adds a key for structure colors that the track legend does not describe', async () => {
+    render(<TrackInRegionViewer regionalMissenseConstraint={regionalMissenseConstraint} />)
+    expect(screen.getByText('Missense observed/expected')).not.toBeNull()
+
+    await showStructure()
+    expect(screen.queryByText('Regional missense constraint o/e')).toBeNull()
+
+    await userEvent.click(screen.getByLabelText('RMC o/e'))
+    expect(screen.getByText('Regional missense constraint o/e')).not.toBeNull()
+  })
+
   test('highlights all residues of a region hovered in the track', async () => {
     const { container } = render(<TrackInRegionViewer />)
     await showStructure()

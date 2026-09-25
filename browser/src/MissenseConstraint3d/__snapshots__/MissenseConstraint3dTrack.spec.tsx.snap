@@ -215,12 +215,6 @@ exports[`MissenseConstraint3dTrack has no unexpected changes 1`] = `
             height={55}
             width={500}
           >
-            <rect
-              height={1}
-              width={500}
-              x={0}
-              y={7.5}
-            />
             <g
               onMouseEnter={[Function]}
               onMouseLeave={[Function]}
@@ -247,6 +241,9 @@ exports[`MissenseConstraint3dTrack has no unexpected changes 1`] = `
                 y={1}
               />
             </g>
+            <g
+              transform="translate(0,20)"
+            />
           </svg>
         </div>
       </div>

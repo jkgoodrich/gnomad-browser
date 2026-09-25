@@ -211,7 +211,8 @@ const MissenseConstraint3dView = ({
     <>
       <ConstraintTrack
         trackTitle={TRACK_TITLE}
-        allRegions={null}
+        // An empty list, unlike null, draws neither region brackets nor a line through the track
+        allRegions={[]}
         constrainedRegions={constrainedRegions}
         infobuttonTopic={HELP_TOPIC}
         legend={legend}

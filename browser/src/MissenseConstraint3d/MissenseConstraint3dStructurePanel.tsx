@@ -10,6 +10,7 @@ import Delayed from '../Delayed'
 import Legend from '../Legend'
 import Query from '../Query'
 import {
+  MissenseObsExpLegend,
   RegionalMissenseConstraint,
   RegionalMissenseConstraintRegion,
   regionalMissenseConstraintRegionColor,
@@ -146,6 +147,26 @@ const StructureLegend = styled.div`
     margin-right: 1em;
   }
 `
+
+// The track's legend describes 3D region colors; these colors apply only to the structure
+const StructureOnlyColorKey = ({ colorBy }: { colorBy: StructureColorBy }) => {
+  if (colorBy === 'plddt') {
+    return (
+      <StructureLegend>
+        <span>AlphaFold confidence</span>
+        <Legend series={PLDDT_BANDS.map(({ label, color }) => ({ label, color }))} />
+      </StructureLegend>
+    )
+  }
+  if (colorBy === 'regional_missense_constraint') {
+    return (
+      <StructureLegend>
+        <MissenseObsExpLegend title="Regional missense constraint o/e" />
+      </StructureLegend>
+    )
+  }
+  return null
+}
 
 const ViewerWrapper = styled.div`
   position: relative;
@@ -447,6 +468,7 @@ const StructurePanel = ({
           />
         </LabeledControl>
       </Controls>
+      <StructureOnlyColorKey colorBy={colorBy} />
       <OverlayControls>
         <li>Show on structure:</li>
         {overlays.map((overlay) => (
@@ -474,12 +496,6 @@ const StructurePanel = ({
           be placed on the structure because the HGVSp reference amino acid does not match the
           protein sequence.
         </p>
-      )}
-      {colorBy === 'plddt' && (
-        <StructureLegend>
-          <span>AlphaFold confidence</span>
-          <Legend series={PLDDT_BANDS.map(({ label, color }) => ({ label, color }))} />
-        </StructureLegend>
       )}
       <ViewerWrapper ref={viewerWrapper} onMouseLeave={() => setHoveredResidue(null)}>
         <Suspense
