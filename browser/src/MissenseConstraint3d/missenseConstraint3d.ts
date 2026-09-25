@@ -90,7 +90,7 @@ export type RegionColorBy = 'obs_exp' | 'oe_upper' | 'ranked_regions'
 
 // The structure can also be colored by regional missense constraint (RMC) or AlphaFold confidence,
 // neither of which is a property of 3D regions
-export type StructureColorBy = RegionColorBy | 'regional_missense_constraint' | 'plddt'
+export type StructureColorBy = RegionColorBy | 'regional_missense_constraint' | 'plddt' | 'none'
 
 // Inclusive range of residue numbers, counted from 1
 export type ResidueRange = [number, number]

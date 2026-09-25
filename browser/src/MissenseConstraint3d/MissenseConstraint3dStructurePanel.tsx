@@ -29,6 +29,7 @@ import {
   MissenseConstraint3dClinvarVariant,
   MissenseConstraint3dRegion,
   MissenseConstraint3dVariant,
+  NO_REGION_COLOR,
   PLDDT_BANDS,
   ResidueRange,
   StructureColorBy,
@@ -425,6 +426,9 @@ const StructurePanel = ({
     [regionalMissenseConstraint, sequence]
   )
   const colors = useMemo(() => {
+    if (colorBy === 'none') {
+      return residueColors(regionByResidue, () => NO_REGION_COLOR)
+    }
     if (colorBy === 'plddt' && plddtByResidue) {
       return plddtResidueColors(plddtByResidue)
     }
@@ -650,6 +654,7 @@ const StructurePanel = ({
                 ? [{ value: 'regional_missense_constraint' as const, label: 'RMC o/e' }]
                 : []),
               { value: 'plddt', label: 'pLDDT' },
+              { value: 'none', label: 'None' },
             ]}
             value={colorBy}
             onChange={onChangeColorBy}

@@ -454,6 +454,16 @@ describe('MissenseConstraint3dTrack', () => {
     expect(screen.getByText('Very high (pLDDT > 90)')).not.toBeNull()
   })
 
+  test('can show the structure without colors', async () => {
+    render(<TrackInRegionViewer />)
+    await showStructure()
+
+    await userEvent.click(screen.getByLabelText('None'))
+    expect(lastViewerProps(StructureViewer3Dmol).residueColors).toEqual(
+      Array(5).fill(NO_REGION_COLOR)
+    )
+  })
+
   test('can show the structure with either viewer library', async () => {
     render(<TrackInRegionViewer />)
     await showStructure()

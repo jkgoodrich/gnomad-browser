@@ -169,9 +169,12 @@ const MissenseConstraint3dView = ({
   // Variants and features shown on the structure
   const [visibleOverlayIds, setVisibleOverlayIds] = useState<Set<string>>(new Set())
 
-  // The track shows 3D regions, so it keeps their o/e colors while the structure shows RMC or pLDDT
+  // The track shows 3D regions, so it keeps their o/e colors while the structure shows RMC, pLDDT or
+  // no colors
   const regionColorBy: RegionColorBy =
-    colorBy === 'regional_missense_constraint' || colorBy === 'plddt' ? 'obs_exp' : colorBy
+    colorBy === 'regional_missense_constraint' || colorBy === 'plddt' || colorBy === 'none'
+      ? 'obs_exp'
+      : colorBy
 
   const regionRanks = useMemo(() => rankConstrainedRegions(constraint.regions), [constraint])
 
