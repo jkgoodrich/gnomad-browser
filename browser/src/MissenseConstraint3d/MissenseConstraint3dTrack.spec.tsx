@@ -600,6 +600,27 @@ describe('MissenseConstraint3dTrack', () => {
     expect(calls[calls.length - 1][0]).toBeCloseTo(Math.exp(-0.1))
   })
 
+  test('explains the colors of ranked regions in the legend', async () => {
+    render(<TrackInRegionViewer />)
+    await showStructure()
+
+    await userEvent.click(screen.getByLabelText('Regions'))
+    expect(
+      screen.getByText('Significant regions (p ≤ 1e-3), most constrained first')
+    ).not.toBeNull()
+    expect(screen.getByText('1 · o/e 0.05')).not.toBeNull()
+    expect(screen.getByText('Not significant (p > 1e-3), or unassigned')).not.toBeNull()
+  })
+
+  test('keys unassigned residues only while they are gray', async () => {
+    render(<TrackInRegionViewer />)
+    await showStructure()
+    expect(screen.getByText('Unassigned residue')).not.toBeNull()
+
+    await userEvent.click(screen.getByLabelText('Color unassigned residues'))
+    expect(screen.queryByText('Unassigned residue')).toBeNull()
+  })
+
   test('resets the coloring', async () => {
     render(<TrackInRegionViewer />)
     await showStructure()

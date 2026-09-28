@@ -28,6 +28,7 @@ import {
   MissenseConstraint3dTrackRegion,
   NO_REGION_COLOR,
   RANKED_REGION_COLORS,
+  RANKED_REGION_MAX_P_VALUE,
   RegionColorBy,
   ResidueRange,
   DEFAULT_COLOR_BY,
@@ -35,6 +36,7 @@ import {
   StructureSelection,
   UniprotFeature,
   codingSequenceLength,
+  isSignificantRegion,
   rankConstrainedRegions,
   regionColor,
   regionResidueRanges,
@@ -99,18 +101,36 @@ const TrackRegionTooltip = ({ region }: { region: RegionWithUnclamped<TrackRegio
 
 const LegendTitle = styled.span`
   margin-right: 0.5em;
+  white-space: nowrap;
 `
 
-const RankedRegionsLegend = ({ rankedRegionCount }: { rankedRegionCount: number }) => (
+const RANKED_REGION_P_VALUE = RANKED_REGION_MAX_P_VALUE.toExponential()
+
+type RankedRegionsLegendProps = {
+  // Most constrained first
+  rankedRegions: MissenseConstraint3dRegion[]
+  significantRegionCount: number
+}
+
+const RankedRegionsLegend = ({
+  rankedRegions,
+  significantRegionCount,
+}: RankedRegionsLegendProps) => (
   <>
-    <LegendTitle>Regions ranked by missense o/e</LegendTitle>
+    <LegendTitle>{`Significant regions (p ≤ ${RANKED_REGION_P_VALUE}), most constrained first`}</LegendTitle>
     <Legend
       series={[
-        ...RANKED_REGION_COLORS.slice(0, rankedRegionCount).map((color, rank) => ({
-          color,
-          label: `${rank + 1}`,
+        ...rankedRegions.map((region, rank) => ({
+          color: RANKED_REGION_COLORS[rank],
+          label: `${rank + 1} · o/e ${region.obs_exp.toFixed(2)}`,
         })),
-        { color: NO_REGION_COLOR, label: 'Other' },
+        {
+          color: NO_REGION_COLOR,
+          label:
+            significantRegionCount > rankedRegions.length
+              ? 'Other regions, or unassigned'
+              : `Not significant (p > ${RANKED_REGION_P_VALUE}), or unassigned`,
+        },
       ]}
     />
   </>
@@ -184,6 +204,14 @@ const MissenseConstraint3dView = ({
       : colorBy
 
   const regionRanks = useMemo(() => rankConstrainedRegions(constraint.regions), [constraint])
+  const rankedRegions = useMemo(
+    () =>
+      constraint.regions
+        .filter((region) => regionRanks.has(region.region_index))
+        .sort((a, b) => regionRanks.get(a.region_index)! - regionRanks.get(b.region_index)!),
+    [constraint, regionRanks]
+  )
+  const significantRegionCount = constraint.regions.filter(isSignificantRegion).length
 
   const constrainedRegions = useMemo(() => {
     const trackRegions: TrackRegion[] = segmentsOnGenome(
@@ -259,13 +287,17 @@ const MissenseConstraint3dView = ({
 
   const legend =
     regionColorBy === 'ranked_regions' ? (
-      <RankedRegionsLegend rankedRegionCount={regionRanks.size} />
+      <RankedRegionsLegend
+        rankedRegions={rankedRegions}
+        significantRegionCount={significantRegionCount}
+      />
     ) : (
       <MissenseObsExpLegend
         title={
           regionColorBy === 'obs_exp' ? 'Missense observed/expected' : 'Missense o/e upper bound'
         }
-        notSignificantLabel="Unassigned residue"
+        // Colored unassigned residues use the scale
+        notSignificantLabel={colorCatchAllRegion ? null : 'Unassigned residue'}
       />
     )
 

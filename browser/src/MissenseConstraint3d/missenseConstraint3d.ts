@@ -212,7 +212,7 @@ export const uniprotEntryUrl = (uniprotId: string) =>
 export const uniprotHelpUrl = (uniprotHelpId: string) =>
   `https://www.uniprot.org/help/${uniprotHelpId}`
 
-// Tableau 10
+// Tableau 10, with dark indigo in place of its gray, which could be mistaken for unranked regions
 export const RANKED_REGION_COLORS = [
   '#1f77b4',
   '#ff7f0e',
@@ -221,7 +221,7 @@ export const RANKED_REGION_COLORS = [
   '#9467bd',
   '#8c564b',
   '#e377c2',
-  '#7f7f7f',
+  '#393b79',
   '#bcbd22',
   '#17becf',
 ]
@@ -567,11 +567,14 @@ const fadedColor = (color: string) => {
 export const fadeUnselectedResidues = (colors: string[], selectedResidues: ReadonlySet<number>) =>
   colors.map((color, residue) => (selectedResidues.has(residue) ? color : fadedColor(color)))
 
+export const isSignificantRegion = (region: MissenseConstraint3dRegion) =>
+  !region.is_catch_all && region.p_value <= RANKED_REGION_MAX_P_VALUE
+
 // Rank (from 0) of the most constrained significant regions, keyed by region index
 export const rankConstrainedRegions = (regions: MissenseConstraint3dRegion[]) =>
   new Map(
     regions
-      .filter((region) => !region.is_catch_all && region.p_value <= RANKED_REGION_MAX_P_VALUE)
+      .filter(isSignificantRegion)
       .sort((a, b) => a.obs_exp - b.obs_exp || a.region_index - b.region_index)
       .slice(0, RANKED_REGION_COLORS.length)
       .map((region, rank) => [region.region_index, rank])

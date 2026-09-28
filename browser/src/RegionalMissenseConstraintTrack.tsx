@@ -64,7 +64,8 @@ function regionColor(region: RegionalMissenseConstraintRegion) {
 
 type LegendProps = {
   title?: string
-  notSignificantLabel?: string
+  // No swatch is shown for null
+  notSignificantLabel?: string | null
 }
 
 const Legend = ({
@@ -99,12 +100,21 @@ const Legend = ({
           1.0+
         </text>
       </svg>
-      <svg width={170} height={25}>
-        <rect x={10} y={1} width={20} height={10} stroke="#000" fill={colorScale.not_significant} />
-        <text x={35} y={1} fontSize="10" dy="1em" textAnchor="start">
-          {notSignificantLabel}
-        </text>
-      </svg>
+      {notSignificantLabel !== null && (
+        <svg width={170} height={25}>
+          <rect
+            x={10}
+            y={1}
+            width={20}
+            height={10}
+            stroke="#000"
+            fill={colorScale.not_significant}
+          />
+          <text x={35} y={1} fontSize="10" dy="1em" textAnchor="start">
+            {notSignificantLabel}
+          </text>
+        </svg>
+      )}
     </>
   )
 }
