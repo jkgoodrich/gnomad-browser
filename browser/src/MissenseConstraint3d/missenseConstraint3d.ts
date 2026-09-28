@@ -5,6 +5,7 @@ import {
   clinvarVariantClinicalSignificanceCategory,
 } from '../ClinvarVariantsTrack/clinvarVariantCategories'
 import { Strand } from '../GenePage/GenePage'
+import { LegendInteraction } from '../Legend'
 import {
   RegionalMissenseConstraintRegion,
   missenseObsExpColorScale,
@@ -667,27 +668,59 @@ export const regionalMissenseConstraintByResidue = (
     sequenceLength
   )
 
-export const residueColors = <R extends object>(
+// Fill of each residue, like the track draws its region
+export const residueFills = <R extends object>(
   regionByResidue: (R | undefined)[],
   colorRegion: (region: R) => string
 ) => {
-  const colorByRegion = new Map<R, string>()
-  return Array.from(regionByResidue, (region, residue) => {
+  const fillByRegion = new Map<R, string>()
+  return Array.from(regionByResidue, (region) => {
     if (!region) {
       return NO_REGION_COLOR
     }
-    if (!colorByRegion.has(region)) {
-      colorByRegion.set(region, colorRegion(region))
+    if (!fillByRegion.has(region)) {
+      fillByRegion.set(region, colorRegion(region))
     }
-    const color = colorByRegion.get(region)!
-    // The structure can't be hatched, so unassigned residues alternate between the gray and the
-    // hatching's color instead
-    if (color === UNASSIGNED_RESIDUE_FILL) {
-      return residue % 2 === 0 ? NO_REGION_COLOR : UNASSIGNED_RESIDUE_HATCH_COLOR
-    }
-    return color
+    return fillByRegion.get(region)!
   })
 }
+
+// The structure can't be hatched, so its unassigned residues alternate between the gray and the
+// hatching's color instead
+export const residueColors = <R extends object>(
+  regionByResidue: (R | undefined)[],
+  colorRegion: (region: R) => string
+) =>
+  residueFills(regionByResidue, colorRegion).map((fill, residue) => {
+    if (fill !== UNASSIGNED_RESIDUE_FILL) {
+      return fill
+    }
+    return residue % 2 === 0 ? NO_REGION_COLOR : UNASSIGNED_RESIDUE_HATCH_COLOR
+  })
+
+export const NO_HIGHLIGHTED_RESIDUES: ResidueRange[] = []
+
+// Residues drawn in a fill, from the fill of each residue
+const residuesWithFill = (fillByResidue: string[], fill: string) =>
+  fillByResidue.flatMap((residueFill, residue) =>
+    residue > 0 && residueFill === fill ? [residue] : []
+  )
+
+// Hovering a legend entry highlights the residues drawn in its fill, and clicking it selects or
+// deselects them
+export const residueLegendInteraction = (
+  fillByResidue: string[],
+  selectedResidues: ReadonlySet<number> | null,
+  onHighlightResidues: (residueRanges: ResidueRange[]) => void,
+  onSelectResidues: (residues: ReadonlySet<number> | null) => void
+): LegendInteraction => ({
+  onHoverFill: (fill) =>
+    onHighlightResidues(
+      fill ? residueRanges(residuesWithFill(fillByResidue, fill)) : NO_HIGHLIGHTED_RESIDUES
+    ),
+  onClickFill: (fill) =>
+    onSelectResidues(toggleResidues(selectedResidues, residuesWithFill(fillByResidue, fill))),
+})
 
 export const regionResidueRanges = (region: MissenseConstraint3dRegion): ResidueRange[] =>
   region.segments.map((segment) => [segment.aa_start, segment.aa_stop])

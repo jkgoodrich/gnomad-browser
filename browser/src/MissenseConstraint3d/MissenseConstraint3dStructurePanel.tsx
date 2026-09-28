@@ -10,7 +10,7 @@ import { clinvarVariantClinicalSignificanceCategory } from '../ClinvarVariantsTr
 import { RegionAttributeList } from '../ConstraintTrack'
 import Delayed from '../Delayed'
 import InfoButton from '../help/InfoButton'
-import Legend from '../Legend'
+import Legend, { LegendInteraction } from '../Legend'
 import Query from '../Query'
 import {
   MissenseObsExpLegend,
@@ -55,6 +55,7 @@ import {
   regionResidues,
   regionsByResidue,
   residueColors,
+  residueLegendInteraction,
   toggleResidues,
   uniprotEntryUrl,
   uniprotFeatureOverlayId,
@@ -245,20 +246,28 @@ const StructureLegend = styled.div`
   }
 `
 
+type StructureOnlyColorKeyProps = {
+  colorBy: StructureColorBy
+  interaction: LegendInteraction
+}
+
 // The track's legend describes 3D region colors; these colors apply only to the structure
-const StructureOnlyColorKey = ({ colorBy }: { colorBy: StructureColorBy }) => {
+const StructureOnlyColorKey = ({ colorBy, interaction }: StructureOnlyColorKeyProps) => {
   if (colorBy === 'plddt') {
     return (
       <StructureLegend>
         <span>AlphaFold confidence</span>
-        <Legend series={PLDDT_BANDS.map(({ label, color }) => ({ label, color }))} />
+        <Legend
+          series={PLDDT_BANDS.map(({ label, color }) => ({ label, color }))}
+          interaction={interaction}
+        />
       </StructureLegend>
     )
   }
   if (colorBy === 'regional_missense_constraint') {
     return (
       <StructureLegend>
-        <MissenseObsExpLegend title="Regional missense constraint o/e" />
+        <MissenseObsExpLegend title="Regional missense constraint o/e" interaction={interaction} />
       </StructureLegend>
     )
   }
@@ -279,7 +288,7 @@ const SELECTION_MODES: { value: SelectionMode; label: string; hint: string }[] =
   {
     value: 'off',
     label: 'Off',
-    hint: 'Select residues to show only their variants in the ClinVar and gnomAD tracks below.',
+    hint: 'Select residues, or click colors in the legends, to show only their variants in the ClinVar and gnomAD tracks below.',
   },
   { value: 'residue', label: 'Residue', hint: 'Click residues to select or deselect them.' },
   { value: 'box', label: 'Box', hint: 'Drag a box to select the residues in it.' },
@@ -463,6 +472,7 @@ type PanelProps = {
   onChangeColorNonSignificantRegions: (colorNonSignificantRegions: boolean) => void
   colorRegion: (region: MissenseConstraint3dRegion) => string
   highlightedResidueRanges: ResidueRange[]
+  onHighlightResidues: (residueRanges: ResidueRange[]) => void
   regionalMissenseConstraint: RegionalMissenseConstraint | null
   visibleOverlayIds: Set<string>
   onToggleOverlay: (overlayId: string) => void
@@ -491,6 +501,7 @@ const StructurePanel = ({
   onChangeColorNonSignificantRegions,
   colorRegion,
   highlightedResidueRanges,
+  onHighlightResidues,
   regionalMissenseConstraint,
   visibleOverlayIds,
   onToggleOverlay,
@@ -902,7 +913,16 @@ const StructurePanel = ({
           />
         </LabeledControl>
       </Controls>
-      <StructureOnlyColorKey colorBy={colorBy} />
+      <StructureOnlyColorKey
+        colorBy={colorBy}
+        // Colors before any are faded, which are the ones in the key
+        interaction={residueLegendInteraction(
+          colors,
+          selectedResidues,
+          onHighlightResidues,
+          onSelectResidues
+        )}
+      />
       <SelectionToolbar>
         <LabeledControl>
           <span>Select</span>

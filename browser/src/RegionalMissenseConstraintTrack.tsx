@@ -6,6 +6,7 @@ import Link from './Link'
 
 import InfoButton from './help/InfoButton'
 import { Gene } from './GenePage/GenePage'
+import { LegendInteraction, legendEntryProps } from './Legend'
 import ConstraintTrack, {
   SidePanel,
   PlotWrapper,
@@ -62,25 +63,43 @@ function regionColor(region: RegionalMissenseConstraintRegion) {
   return colorScale.not_significant
 }
 
+const LEGEND_BINS = [
+  { fill: colorScale.darkest, label: '0.0–0.2' },
+  { fill: colorScale.darker, label: '0.2–0.4' },
+  { fill: colorScale.middle, label: '0.4–0.6' },
+  { fill: colorScale.lighter, label: '0.6–0.8' },
+  { fill: colorScale.lightest, label: 'over 0.8' },
+]
+
 type LegendProps = {
   title?: string
   // Fills used besides the scale, like the gray of regions that aren't significant
   swatches?: { label: string; fill: string }[]
+  // Makes the scale's bins and the swatches interactive
+  interaction?: LegendInteraction
 }
 
 const Legend = ({
   title = 'Missense observed/expected',
   swatches = [{ label: 'Not significant (p > 1e-3)', fill: colorScale.not_significant }],
+  interaction,
 }: LegendProps) => {
   return (
     <>
       <span>{title}</span>
       <svg width={170} height={25}>
-        <rect x={10} y={1} width={30} height={10} stroke="#000" fill={colorScale.darkest} />
-        <rect x={40} y={1} width={30} height={10} stroke="#000" fill={colorScale.darker} />
-        <rect x={70} y={1} width={30} height={10} stroke="#000" fill={colorScale.middle} />
-        <rect x={100} y={1} width={30} height={10} stroke="#000" fill={colorScale.lighter} />
-        <rect x={130} y={1} width={30} height={10} stroke="#000" fill={colorScale.lightest} />
+        {LEGEND_BINS.map(({ fill, label }, binIndex) => (
+          <rect
+            key={fill}
+            x={10 + 30 * binIndex}
+            y={1}
+            width={30}
+            height={10}
+            stroke="#000"
+            fill={fill}
+            {...(interaction ? legendEntryProps(fill, `${title} ${label}`, interaction) : {})}
+          />
+        ))}
         <text x={10} y={10} fontSize="10" dy="1.2em" textAnchor="middle">
           0.0
         </text>
@@ -101,7 +120,12 @@ const Legend = ({
         </text>
       </svg>
       {swatches.map(({ label, fill }) => (
-        <svg key={label} width={170} height={25}>
+        <svg
+          key={label}
+          width={170}
+          height={25}
+          {...(interaction ? legendEntryProps(fill, label, interaction) : {})}
+        >
           <rect x={10} y={1} width={20} height={10} stroke="#000" fill={fill} />
           <text x={35} y={1} fontSize="10" dy="1em" textAnchor="start">
             {label}

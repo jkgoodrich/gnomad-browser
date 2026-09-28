@@ -512,6 +512,9 @@ describe('MissenseConstraint3dTrack', () => {
       ...PLDDT_BANDS.map((band) => band.color),
     ])
     expect(screen.getByText('Very high (pLDDT > 90)')).not.toBeNull()
+
+    await userEvent.hover(screen.getByRole('button', { name: 'Very high (pLDDT > 90)' }))
+    expect(lastViewerProps(StructureViewer3Dmol).highlightedResidueRanges).toEqual([[1, 1]])
   })
 
   test('can show the structure without colors', async () => {
@@ -654,6 +657,32 @@ describe('MissenseConstraint3dTrack', () => {
     expect(trackRegionFills(container)).toContain(NO_REGION_COLOR)
     expect(lastViewerProps(StructureViewer3Dmol).residueColors[1]).toBe(NO_REGION_COLOR)
     expect(screen.getByText('Not significant (p > 1e-3)')).not.toBeNull()
+  })
+
+  test('highlights and selects the residues of a color in the legend', async () => {
+    render(<TrackWithStructureSelection />)
+    const darkestBinName = 'Missense observed/expected 0.0–0.2'
+    expect(screen.queryByRole('button', { name: darkestBinName })).toBeNull()
+    await showStructure()
+
+    const darkestBin = screen.getByRole('button', { name: darkestBinName })
+    await userEvent.hover(darkestBin)
+    expect(lastViewerProps(StructureViewer3Dmol).highlightedResidueRanges).toEqual([[1, 2]])
+    await userEvent.unhover(darkestBin)
+    expect(lastViewerProps(StructureViewer3Dmol).highlightedResidueRanges).toEqual([])
+
+    const unassignedResidues = screen.getByRole('button', { name: 'Unassigned residue' })
+    await userEvent.click(unassignedResidues)
+    expect(structureSelectionShown()).toEqual({
+      residues: [3, 4],
+      intervals: [{ start: 200, stop: 205 }],
+    })
+    fireEvent.keyDown(unassignedResidues, { key: 'Enter' })
+    expect(structureSelectionShown()).toBeNull()
+
+    await userEvent.click(screen.getByLabelText('Regions'))
+    await userEvent.hover(screen.getByRole('button', { name: '1 · o/e 0.05' }))
+    expect(lastViewerProps(StructureViewer3Dmol).highlightedResidueRanges).toEqual([[1, 2]])
   })
 
   test('resets the coloring', async () => {

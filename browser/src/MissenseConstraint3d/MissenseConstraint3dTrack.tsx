@@ -15,7 +15,7 @@ import ConstraintTrack, {
 } from '../ConstraintTrack'
 import { Gene, GeneTranscript } from '../GenePage/GenePage'
 import InfoButton from '../help/InfoButton'
-import Legend from '../Legend'
+import Legend, { LegendInteraction } from '../Legend'
 import Query from '../Query'
 import {
   MissenseObsExpLegend,
@@ -26,6 +26,7 @@ import {
   MissenseConstraint3d,
   MissenseConstraint3dRegion,
   MissenseConstraint3dTrackRegion,
+  NO_HIGHLIGHTED_RESIDUES,
   NO_REGION_COLOR,
   RANKED_REGION_COLORS,
   RANKED_REGION_MAX_P_VALUE,
@@ -43,6 +44,9 @@ import {
   rankConstrainedRegions,
   regionColor,
   regionResidueRanges,
+  regionsByResidue,
+  residueFills,
+  residueLegendInteraction,
   residuesOnGenome,
   segmentsOnGenome,
 } from './missenseConstraint3d'
@@ -52,7 +56,6 @@ import UniprotFeatureTracks from './UniprotFeatureTracks'
 
 const TRACK_TITLE = '3D missense constraint'
 const HELP_TOPIC = 'missense-constraint-3d'
-const NO_HIGHLIGHTED_RESIDUES: ResidueRange[] = []
 
 const operationName = 'MissenseConstraint3d'
 const query = `
@@ -132,15 +135,18 @@ type RankedRegionsLegendProps = {
   // Most constrained first
   rankedRegions: MissenseConstraint3dRegion[]
   significantRegionCount: number
+  interaction?: LegendInteraction
 }
 
 const RankedRegionsLegend = ({
   rankedRegions,
   significantRegionCount,
+  interaction,
 }: RankedRegionsLegendProps) => (
   <>
     <LegendTitle>{`Significant regions (p ≤ ${RANKED_REGION_P_VALUE}), most constrained first`}</LegendTitle>
     <Legend
+      interaction={interaction}
       series={[
         ...rankedRegions.map((region, rank) => ({
           color: RANKED_REGION_COLORS[rank],
@@ -228,6 +234,10 @@ const MissenseConstraint3dView = ({
       : colorBy
 
   const regionRanks = useMemo(() => rankConstrainedRegions(constraint.regions), [constraint])
+  const regionByResidue = useMemo(
+    () => regionsByResidue(constraint.regions, constraint.protein_sequence.length),
+    [constraint]
+  )
   const rankedRegions = useMemo(
     () =>
       constraint.regions
@@ -286,6 +296,21 @@ const MissenseConstraint3dView = ({
     [onChangeStructureSelection, gene, transcript]
   )
 
+  // Hovering a color in the legend highlights its residues on the structure, and clicking it selects
+  // them
+  const legendInteraction = useMemo(
+    () =>
+      isStructureShown
+        ? residueLegendInteraction(
+            residueFills(regionByResidue, colorRegion),
+            structureSelection && structureSelection.residues,
+            setHighlightedResidueRanges,
+            selectResidues
+          )
+        : undefined,
+    [isStructureShown, regionByResidue, colorRegion, structureSelection, selectResidues]
+  )
+
   const onHoverFeature = useCallback(
     (feature: UniprotFeature | null) =>
       setHighlightedResidueRanges(
@@ -321,6 +346,7 @@ const MissenseConstraint3dView = ({
         <RankedRegionsLegend
           rankedRegions={rankedRegions}
           significantRegionCount={significantRegionCount}
+          interaction={legendInteraction}
         />
       ) : (
         <MissenseObsExpLegend
@@ -341,6 +367,7 @@ const MissenseConstraint3dView = ({
               ? []
               : [{ label: 'Unassigned residue', fill: UNASSIGNED_RESIDUE_FILL }]),
           ]}
+          interaction={legendInteraction}
         />
       )}
     </>
@@ -401,6 +428,7 @@ const MissenseConstraint3dView = ({
               onChangeColorNonSignificantRegions={setColorNonSignificantRegions}
               colorRegion={colorRegion}
               highlightedResidueRanges={highlightedResidueRanges}
+              onHighlightResidues={setHighlightedResidueRanges}
               regionalMissenseConstraint={regionalMissenseConstraint}
               visibleOverlayIds={visibleOverlayIds}
               onToggleOverlay={toggleOverlay}

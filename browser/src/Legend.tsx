@@ -31,18 +31,66 @@ export type SeriesLegendProps = {
   swatch?: React.ReactNode
 }
 
-type LegendProps = {
-  series: SeriesLegendProps[]
+// Reports the fill of an interactive legend entry that is hovered, focused or clicked
+export type LegendInteraction = {
+  onHoverFill: (fill: string | null) => void
+  onClickFill: (fill: string) => void
 }
 
-const Legend = ({ series }: LegendProps) => (
+// Makes a legend entry, identified by its fill, work like a button
+export const legendEntryProps = (
+  fill: string,
+  label: string,
+  { onHoverFill, onClickFill }: LegendInteraction
+) => ({
+  role: 'button',
+  tabIndex: 0,
+  'aria-label': label,
+  style: { cursor: 'pointer' },
+  onMouseEnter: () => onHoverFill(fill),
+  onMouseLeave: () => onHoverFill(null),
+  onFocus: () => onHoverFill(fill),
+  onBlur: () => onHoverFill(null),
+  onClick: () => onClickFill(fill),
+  onKeyDown: (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      onClickFill(fill)
+    }
+  },
+})
+
+const InteractiveLegendEntry = styled.span`
+  display: flex;
+`
+
+type LegendProps = {
+  series: SeriesLegendProps[]
+  // Makes the entries with a color interactive
+  interaction?: LegendInteraction
+}
+
+const Legend = ({ series, interaction }: LegendProps) => (
   <LegendWrapper>
-    {series.map(({ color, label, swatch }) => (
-      <LegendItem key={label}>
-        {color ? <LegendSwatch color={color} /> : swatch}
-        <span style={{ marginLeft: '0.25em' }}>{label}</span>
-      </LegendItem>
-    ))}
+    {series.map(({ color, label, swatch }) => {
+      const entry = (
+        <>
+          {color ? <LegendSwatch color={color} /> : swatch}
+          <span style={{ marginLeft: '0.25em' }}>{label}</span>
+        </>
+      )
+      return (
+        <LegendItem key={label}>
+          {interaction && color ? (
+            <InteractiveLegendEntry {...legendEntryProps(color, label, interaction)}>
+              {entry}
+            </InteractiveLegendEntry>
+          ) : (
+            entry
+          )}
+        </LegendItem>
+      )
+    })}
   </LegendWrapper>
 )
 

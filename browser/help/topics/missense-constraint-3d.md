@@ -51,6 +51,8 @@ Use "Select" above the structure to select residues:
 - **Box**: drag a box to select the residues whose alpha carbon is inside it, including residues behind others.
 - **3D region**: click a residue to select or deselect all the residues of its 3D missense constraint region.
 
+While the structure is shown, the colors in the track's legend, and in the key above the structure, work the same way: hover over a color to highlight its residues in the structure, and click it to select or deselect them.
+
 Residues outside the selection are faded, and the ClinVar variants track and gnomAD variants table below show only the variants whose positions are in the coding bases of the selected residues. Select "Clear selection", or "Show all variants" in those sections, to show all variants again.
 
 ### Data sources and licenses
