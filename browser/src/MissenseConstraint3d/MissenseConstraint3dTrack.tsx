@@ -34,6 +34,9 @@ import {
   DEFAULT_COLOR_BY,
   StructureColorBy,
   StructureSelection,
+  UNASSIGNED_RESIDUE_FILL,
+  UNASSIGNED_RESIDUE_HATCH_COLOR,
+  UNASSIGNED_RESIDUE_PATTERN_ID,
   UniprotFeature,
   codingSequenceLength,
   isSignificantRegion,
@@ -106,6 +109,25 @@ const LegendTitle = styled.span`
 
 const RANKED_REGION_P_VALUE = RANKED_REGION_MAX_P_VALUE.toExponential()
 
+// For the track's regions and legend. A pattern in an SVG that isn't displayed isn't drawn, so this
+// one takes no space instead.
+const UnassignedResiduePattern = () => (
+  <svg width={0} height={0} style={{ position: 'absolute' }}>
+    <defs>
+      <pattern
+        id={UNASSIGNED_RESIDUE_PATTERN_ID}
+        width={4}
+        height={4}
+        patternUnits="userSpaceOnUse"
+        patternTransform="rotate(45)"
+      >
+        <rect width={4} height={4} fill={NO_REGION_COLOR} />
+        <rect width={1.5} height={4} fill={UNASSIGNED_RESIDUE_HATCH_COLOR} />
+      </pattern>
+    </defs>
+  </svg>
+)
+
 type RankedRegionsLegendProps = {
   // Most constrained first
   rankedRegions: MissenseConstraint3dRegion[]
@@ -128,9 +150,10 @@ const RankedRegionsLegend = ({
           color: NO_REGION_COLOR,
           label:
             significantRegionCount > rankedRegions.length
-              ? 'Other regions, or unassigned'
-              : `Not significant (p > ${RANKED_REGION_P_VALUE}), or unassigned`,
+              ? 'Other regions'
+              : `Not significant (p > ${RANKED_REGION_P_VALUE})`,
         },
+        { color: UNASSIGNED_RESIDUE_FILL, label: 'Unassigned residue' },
       ]}
     />
   </>
@@ -191,6 +214,7 @@ const MissenseConstraint3dView = ({
   const [isStructureShown, setIsStructureShown] = useState(false)
   const [colorBy, setColorBy] = useState<StructureColorBy>(DEFAULT_COLOR_BY)
   const [colorCatchAllRegion, setColorCatchAllRegion] = useState(false)
+  const [colorNonSignificantRegions, setColorNonSignificantRegions] = useState(true)
   const [highlightedResidueRanges, setHighlightedResidueRanges] =
     useState<ResidueRange[]>(NO_HIGHLIGHTED_RESIDUES)
   // Variants and features shown on the structure
@@ -230,8 +254,13 @@ const MissenseConstraint3dView = ({
 
   const colorRegion = useCallback(
     (region: MissenseConstraint3dRegion) =>
-      regionColor(region, { colorBy: regionColorBy, colorCatchAllRegion, regionRanks }),
-    [regionColorBy, colorCatchAllRegion, regionRanks]
+      regionColor(region, {
+        colorBy: regionColorBy,
+        colorCatchAllRegion,
+        colorNonSignificantRegions,
+        regionRanks,
+      }),
+    [regionColorBy, colorCatchAllRegion, colorNonSignificantRegions, regionRanks]
   )
 
   const onHoverRegion = useCallback(
@@ -285,21 +314,37 @@ const MissenseConstraint3dView = ({
     })
   }, [])
 
-  const legend =
-    regionColorBy === 'ranked_regions' ? (
-      <RankedRegionsLegend
-        rankedRegions={rankedRegions}
-        significantRegionCount={significantRegionCount}
-      />
-    ) : (
-      <MissenseObsExpLegend
-        title={
-          regionColorBy === 'obs_exp' ? 'Missense observed/expected' : 'Missense o/e upper bound'
-        }
-        // Colored unassigned residues use the scale
-        notSignificantLabel={colorCatchAllRegion ? null : 'Unassigned residue'}
-      />
-    )
+  const legend = (
+    <>
+      <UnassignedResiduePattern />
+      {regionColorBy === 'ranked_regions' ? (
+        <RankedRegionsLegend
+          rankedRegions={rankedRegions}
+          significantRegionCount={significantRegionCount}
+        />
+      ) : (
+        <MissenseObsExpLegend
+          title={
+            regionColorBy === 'obs_exp' ? 'Missense observed/expected' : 'Missense o/e upper bound'
+          }
+          // For the regions that aren't colored by the scale
+          swatches={[
+            ...(colorNonSignificantRegions
+              ? []
+              : [
+                  {
+                    label: `Not significant (p > ${RANKED_REGION_P_VALUE})`,
+                    fill: NO_REGION_COLOR,
+                  },
+                ]),
+            ...(colorCatchAllRegion
+              ? []
+              : [{ label: 'Unassigned residue', fill: UNASSIGNED_RESIDUE_FILL }]),
+          ]}
+        />
+      )}
+    </>
+  )
 
   return (
     <>
@@ -352,6 +397,8 @@ const MissenseConstraint3dView = ({
               onChangeColorBy={setColorBy}
               colorCatchAllRegion={colorCatchAllRegion}
               onChangeColorCatchAllRegion={setColorCatchAllRegion}
+              colorNonSignificantRegions={colorNonSignificantRegions}
+              onChangeColorNonSignificantRegions={setColorNonSignificantRegions}
               colorRegion={colorRegion}
               highlightedResidueRanges={highlightedResidueRanges}
               regionalMissenseConstraint={regionalMissenseConstraint}

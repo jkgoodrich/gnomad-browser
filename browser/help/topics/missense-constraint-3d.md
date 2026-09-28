@@ -21,9 +21,9 @@ AlphaFold structures are predictions. Regions of low predicted confidence (pLDDT
 
 - **Missense o/e**: each region is colored by its missense o/e ratio, from dark red (most constrained) to light yellow.
 - **o/e upper bound**: each region is colored by the upper bound of its o/e confidence interval using the same scale.
-- **Regions**: the 10 regions with the lowest o/e among those with p ≤ 1e-3 are shown in distinct colors, ranked from most to least constrained. The legend lists each colored region's rank and o/e. All other residues are gray.
+- **Regions**: the 10 regions with the lowest o/e among those with p ≤ 1e-3 are shown in distinct colors, ranked from most to least constrained. The legend lists each colored region's rank and o/e. Other regions are gray.
 
-Unassigned residues are gray unless "Color unassigned residues" is selected.
+Regions that are not significant (p > 1e-3) are colored by their o/e or upper bound too, unless "Color non-significant regions" is cleared, which makes them gray. Unassigned residues are gray with hatching on the track, and alternate between light and dark gray on the structure, unless "Color unassigned residues" is selected.
 
 The structure can also be colored by:
 

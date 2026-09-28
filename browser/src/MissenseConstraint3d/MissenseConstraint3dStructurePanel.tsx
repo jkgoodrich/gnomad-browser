@@ -459,6 +459,8 @@ type PanelProps = {
   onChangeColorBy: (colorBy: StructureColorBy) => void
   colorCatchAllRegion: boolean
   onChangeColorCatchAllRegion: (colorCatchAllRegion: boolean) => void
+  colorNonSignificantRegions: boolean
+  onChangeColorNonSignificantRegions: (colorNonSignificantRegions: boolean) => void
   colorRegion: (region: MissenseConstraint3dRegion) => string
   highlightedResidueRanges: ResidueRange[]
   regionalMissenseConstraint: RegionalMissenseConstraint | null
@@ -485,6 +487,8 @@ const StructurePanel = ({
   onChangeColorBy,
   colorCatchAllRegion,
   onChangeColorCatchAllRegion,
+  colorNonSignificantRegions,
+  onChangeColorNonSignificantRegions,
   colorRegion,
   highlightedResidueRanges,
   regionalMissenseConstraint,
@@ -839,6 +843,13 @@ const StructurePanel = ({
           />
         </LabeledControl>
         <Checkbox
+          id="missense-constraint-3d-color-non-significant-regions"
+          label="Color non-significant regions"
+          checked={colorNonSignificantRegions}
+          disabled={colorBy !== 'obs_exp' && colorBy !== 'oe_upper'}
+          onChange={onChangeColorNonSignificantRegions}
+        />
+        <Checkbox
           id="missense-constraint-3d-color-catch-all-region"
           label="Color unassigned residues"
           checked={colorCatchAllRegion}
@@ -846,9 +857,12 @@ const StructurePanel = ({
           onChange={onChangeColorCatchAllRegion}
         />
         <Button
-          disabled={colorBy === DEFAULT_COLOR_BY && !colorCatchAllRegion}
+          disabled={
+            colorBy === DEFAULT_COLOR_BY && colorNonSignificantRegions && !colorCatchAllRegion
+          }
           onClick={() => {
             onChangeColorBy(DEFAULT_COLOR_BY)
+            onChangeColorNonSignificantRegions(true)
             onChangeColorCatchAllRegion(false)
           }}
         >

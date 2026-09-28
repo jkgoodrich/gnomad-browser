@@ -64,13 +64,13 @@ function regionColor(region: RegionalMissenseConstraintRegion) {
 
 type LegendProps = {
   title?: string
-  // No swatch is shown for null
-  notSignificantLabel?: string | null
+  // Fills used besides the scale, like the gray of regions that aren't significant
+  swatches?: { label: string; fill: string }[]
 }
 
 const Legend = ({
   title = 'Missense observed/expected',
-  notSignificantLabel = 'Not significant (p > 1e-3)',
+  swatches = [{ label: 'Not significant (p > 1e-3)', fill: colorScale.not_significant }],
 }: LegendProps) => {
   return (
     <>
@@ -100,21 +100,14 @@ const Legend = ({
           1.0+
         </text>
       </svg>
-      {notSignificantLabel !== null && (
-        <svg width={170} height={25}>
-          <rect
-            x={10}
-            y={1}
-            width={20}
-            height={10}
-            stroke="#000"
-            fill={colorScale.not_significant}
-          />
+      {swatches.map(({ label, fill }) => (
+        <svg key={label} width={170} height={25}>
+          <rect x={10} y={1} width={20} height={10} stroke="#000" fill={fill} />
           <text x={35} y={1} fontSize="10" dy="1em" textAnchor="start">
-            {notSignificantLabel}
+            {label}
           </text>
         </svg>
-      )}
+      ))}
     </>
   )
 }

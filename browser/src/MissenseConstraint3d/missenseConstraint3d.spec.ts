@@ -13,6 +13,8 @@ import {
   NO_REGION_COLOR,
   PLDDT_BANDS,
   RANKED_REGION_COLORS,
+  UNASSIGNED_RESIDUE_FILL,
+  UNASSIGNED_RESIDUE_HATCH_COLOR,
   codingSequenceLength,
   clinicalSignificanceCategoryOverlays,
   consequenceCategoryOverlays,
@@ -180,7 +182,11 @@ describe('rankConstrainedRegions', () => {
 })
 
 describe('regionColor', () => {
-  const options = { colorCatchAllRegion: false, regionRanks: new Map([[1, 0]]) }
+  const options = {
+    colorCatchAllRegion: false,
+    colorNonSignificantRegions: true,
+    regionRanks: new Map([[1, 0]]),
+  }
 
   test.each([
     [0, missenseObsExpColorScale.darkest],
@@ -199,12 +205,34 @@ describe('regionColor', () => {
     ).toBe(missenseObsExpColorScale.lightest)
   })
 
-  test('grays out the catch-all region unless it is colored', () => {
-    const catchAll = region({ is_catch_all: true })
-    expect(regionColor(catchAll, { ...options, colorBy: 'obs_exp' })).toBe(NO_REGION_COLOR)
+  test('hatches unassigned residues unless they are colored', () => {
+    const catchAll = region({ is_catch_all: true, p_value: 0.5 })
+    expect(regionColor(catchAll, { ...options, colorBy: 'obs_exp' })).toBe(UNASSIGNED_RESIDUE_FILL)
     expect(
-      regionColor(catchAll, { ...options, colorBy: 'obs_exp', colorCatchAllRegion: true })
+      regionColor(catchAll, {
+        ...options,
+        colorBy: 'obs_exp',
+        colorCatchAllRegion: true,
+        colorNonSignificantRegions: false,
+      })
     ).toBe(missenseObsExpColorScale.darkest)
+    expect(
+      regionColor(catchAll, { ...options, colorBy: 'ranked_regions', colorCatchAllRegion: true })
+    ).toBe(UNASSIGNED_RESIDUE_FILL)
+  })
+
+  test('grays out regions that are not significant only when they are not colored', () => {
+    const notSignificant = region({ p_value: 0.01 })
+    expect(regionColor(notSignificant, { ...options, colorBy: 'obs_exp' })).toBe(
+      missenseObsExpColorScale.darkest
+    )
+    const withoutNonSignificant = { ...options, colorNonSignificantRegions: false }
+    expect(regionColor(notSignificant, { ...withoutNonSignificant, colorBy: 'oe_upper' })).toBe(
+      NO_REGION_COLOR
+    )
+    expect(regionColor(region({}), { ...withoutNonSignificant, colorBy: 'obs_exp' })).toBe(
+      missenseObsExpColorScale.darkest
+    )
   })
 
   test('colors ranked regions by rank', () => {
@@ -233,6 +261,16 @@ test('residue colors are indexed by residue number, counted from 1', () => {
     'constrained',
     NO_REGION_COLOR,
     'catch-all',
+  ])
+})
+
+test('unassigned residues alternate between gray and the color of its hatching', () => {
+  const catchAll = region({ is_catch_all: true, segments: [{ aa_start: 1, aa_stop: 3 }] })
+  expect(residueColors(regionsByResidue([catchAll], 3), () => UNASSIGNED_RESIDUE_FILL)).toEqual([
+    NO_REGION_COLOR,
+    UNASSIGNED_RESIDUE_HATCH_COLOR,
+    NO_REGION_COLOR,
+    UNASSIGNED_RESIDUE_HATCH_COLOR,
   ])
 })
 

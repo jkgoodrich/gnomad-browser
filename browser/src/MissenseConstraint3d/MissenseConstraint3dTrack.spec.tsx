@@ -23,6 +23,9 @@ import {
   StructureSelection,
   StructureViewerHandle,
   StructureViewerProps,
+  UNASSIGNED_RESIDUE_FILL,
+  UNASSIGNED_RESIDUE_HATCH_COLOR,
+  UNASSIGNED_RESIDUE_PATTERN_ID,
   UNIPROT_FEATURE_OVERLAY_STYLES,
   alphafoldStructureUrl,
   uniprotEntryUrl,
@@ -307,7 +310,7 @@ describe('MissenseConstraint3dTrack', () => {
       NO_REGION_COLOR,
       missenseObsExpColorScale.darkest,
       missenseObsExpColorScale.darkest,
-      NO_REGION_COLOR,
+      UNASSIGNED_RESIDUE_HATCH_COLOR,
       NO_REGION_COLOR,
     ])
   })
@@ -609,16 +612,48 @@ describe('MissenseConstraint3dTrack', () => {
       screen.getByText('Significant regions (p ≤ 1e-3), most constrained first')
     ).not.toBeNull()
     expect(screen.getByText('1 · o/e 0.05')).not.toBeNull()
-    expect(screen.getByText('Not significant (p > 1e-3), or unassigned')).not.toBeNull()
+    expect(screen.getByText('Not significant (p > 1e-3)')).not.toBeNull()
+    expect(screen.getByText('Unassigned residue')).not.toBeNull()
   })
 
-  test('keys unassigned residues only while they are gray', async () => {
-    render(<TrackInRegionViewer />)
+  test('hatches unassigned residues while they are gray', async () => {
+    const { container } = render(<TrackInRegionViewer />)
     await showStructure()
+    expect(container.querySelector(`pattern#${UNASSIGNED_RESIDUE_PATTERN_ID}`)).not.toBeNull()
+    expect(trackRegionFills(container)).toContain(UNASSIGNED_RESIDUE_FILL)
     expect(screen.getByText('Unassigned residue')).not.toBeNull()
 
     await userEvent.click(screen.getByLabelText('Color unassigned residues'))
+    expect(trackRegionFills(container)).not.toContain(UNASSIGNED_RESIDUE_FILL)
     expect(screen.queryByText('Unassigned residue')).toBeNull()
+  })
+
+  test('colors regions that are not significant unless asked not to', async () => {
+    const [constrainedRegion, catchAllRegion] = missenseConstraint3d.regions
+    setMockApiResponses({
+      MissenseConstraint3d: () => ({
+        gene: {
+          missense_constraint_3d: {
+            ...missenseConstraint3d,
+            regions: [{ ...constrainedRegion, p_value: 0.01 }, catchAllRegion],
+          },
+        },
+      }),
+      MissenseConstraint3dVariants: () => variantsResponse,
+    })
+    const { container } = render(<TrackInRegionViewer />)
+    await showStructure()
+    expect(trackRegionFills(container)).toContain(missenseObsExpColorScale.darkest)
+    expect(lastViewerProps(StructureViewer3Dmol).residueColors[1]).toBe(
+      missenseObsExpColorScale.darkest
+    )
+    expect(screen.queryByText('Not significant (p > 1e-3)')).toBeNull()
+
+    await userEvent.click(screen.getByLabelText('Color non-significant regions'))
+    expect(trackRegionFills(container)).not.toContain(missenseObsExpColorScale.darkest)
+    expect(trackRegionFills(container)).toContain(NO_REGION_COLOR)
+    expect(lastViewerProps(StructureViewer3Dmol).residueColors[1]).toBe(NO_REGION_COLOR)
+    expect(screen.getByText('Not significant (p > 1e-3)')).not.toBeNull()
   })
 
   test('resets the coloring', async () => {
@@ -628,9 +663,13 @@ describe('MissenseConstraint3dTrack', () => {
     expect(resetColors.disabled).toBe(true)
 
     await userEvent.click(screen.getByLabelText('o/e upper bound'))
+    await userEvent.click(screen.getByLabelText('Color non-significant regions'))
     await userEvent.click(screen.getByLabelText('Color unassigned residues'))
     await userEvent.click(resetColors)
     expect((screen.getByLabelText('Missense o/e') as HTMLInputElement).checked).toBe(true)
+    expect(
+      (screen.getByLabelText('Color non-significant regions') as HTMLInputElement).checked
+    ).toBe(true)
     expect((screen.getByLabelText('Color unassigned residues') as HTMLInputElement).checked).toBe(
       false
     )

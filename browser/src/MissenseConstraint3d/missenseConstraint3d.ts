@@ -230,6 +230,12 @@ export const RANKED_REGION_MAX_P_VALUE = 1e-3
 
 export const NO_REGION_COLOR = missenseObsExpColorScale.not_significant
 
+// Unassigned residues are gray with darker hatching. The track defines the pattern once, for its
+// regions and its legend.
+export const UNASSIGNED_RESIDUE_PATTERN_ID = 'missense-constraint-3d-unassigned-residue'
+export const UNASSIGNED_RESIDUE_FILL = `url(#${UNASSIGNED_RESIDUE_PATTERN_ID})`
+export const UNASSIGNED_RESIDUE_HATCH_COLOR = '#999999'
+
 export type UniprotFeatureLevel = 'residue' | 'region'
 
 // In the order that the structure's legend lists them
@@ -599,18 +605,22 @@ export const obsExpBinColor = (value: number) => {
 export type RegionColorOptions = {
   colorBy: RegionColorBy
   colorCatchAllRegion: boolean
+  colorNonSignificantRegions: boolean
   regionRanks: Map<number, number>
 }
 
 export const regionColor = (
   region: MissenseConstraint3dRegion,
-  { colorBy, colorCatchAllRegion, regionRanks }: RegionColorOptions
+  { colorBy, colorCatchAllRegion, colorNonSignificantRegions, regionRanks }: RegionColorOptions
 ) => {
+  if (region.is_catch_all && (colorBy === 'ranked_regions' || !colorCatchAllRegion)) {
+    return UNASSIGNED_RESIDUE_FILL
+  }
   if (colorBy === 'ranked_regions') {
     const rank = regionRanks.get(region.region_index)
     return rank === undefined ? NO_REGION_COLOR : RANKED_REGION_COLORS[rank]
   }
-  if (region.is_catch_all && !colorCatchAllRegion) {
+  if (!region.is_catch_all && !isSignificantRegion(region) && !colorNonSignificantRegions) {
     return NO_REGION_COLOR
   }
   return obsExpBinColor(colorBy === 'obs_exp' ? region.obs_exp : region.oe_upper)
@@ -662,14 +672,20 @@ export const residueColors = <R extends object>(
   colorRegion: (region: R) => string
 ) => {
   const colorByRegion = new Map<R, string>()
-  return Array.from(regionByResidue, (region) => {
+  return Array.from(regionByResidue, (region, residue) => {
     if (!region) {
       return NO_REGION_COLOR
     }
     if (!colorByRegion.has(region)) {
       colorByRegion.set(region, colorRegion(region))
     }
-    return colorByRegion.get(region)!
+    const color = colorByRegion.get(region)!
+    // The structure can't be hatched, so unassigned residues alternate between the gray and the
+    // hatching's color instead
+    if (color === UNASSIGNED_RESIDUE_FILL) {
+      return residue % 2 === 0 ? NO_REGION_COLOR : UNASSIGNED_RESIDUE_HATCH_COLOR
+    }
+    return color
   })
 }
 

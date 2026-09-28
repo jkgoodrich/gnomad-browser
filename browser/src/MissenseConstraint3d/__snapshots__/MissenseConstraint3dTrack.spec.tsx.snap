@@ -82,6 +82,36 @@ exports[`MissenseConstraint3dTrack has no unexpected changes 1`] = `
           <div
             className="ConstraintTrack__LegendWrapper-sc-113yvfg-4 gzMZWg"
           >
+            <svg
+              height={0}
+              style={
+                {
+                  "position": "absolute",
+                }
+              }
+              width={0}
+            >
+              <defs>
+                <pattern
+                  height={4}
+                  id="missense-constraint-3d-unassigned-residue"
+                  patternTransform="rotate(45)"
+                  patternUnits="userSpaceOnUse"
+                  width={4}
+                >
+                  <rect
+                    fill="#e2e2e2"
+                    height={4}
+                    width={4}
+                  />
+                  <rect
+                    fill="#999999"
+                    height={4}
+                    width={1.5}
+                  />
+                </pattern>
+              </defs>
+            </svg>
             <span>
               Missense observed/expected
             </span>
@@ -189,7 +219,7 @@ exports[`MissenseConstraint3dTrack has no unexpected changes 1`] = `
               width={170}
             >
               <rect
-                fill="#e2e2e2"
+                fill="url(#missense-constraint-3d-unassigned-residue)"
                 height={10}
                 stroke="#000"
                 width={20}
@@ -233,7 +263,7 @@ exports[`MissenseConstraint3dTrack has no unexpected changes 1`] = `
               onMouseLeave={[Function]}
             >
               <rect
-                fill="#e2e2e2"
+                fill="url(#missense-constraint-3d-unassigned-residue)"
                 height={15}
                 stroke="black"
                 width={19.84126984126982}
