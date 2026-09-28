@@ -64,7 +64,9 @@ import {
   variantOverlay,
   variantsInCategories,
 } from './missenseConstraint3d'
-import MissenseConstraint3dRegionAttributes from './MissenseConstraint3dRegionAttributes'
+import MissenseConstraint3dRegionAttributes, {
+  regionDescription,
+} from './MissenseConstraint3dRegionAttributes'
 
 type StructureViewerComponent = React.ComponentType<
   StructureViewerProps & React.RefAttributes<StructureViewerHandle>
@@ -233,6 +235,10 @@ const OverlayCategoryFilter = styled(CategoryFilterControl)`
 const UnplacedVariantsNote = styled.p`
   margin: 0.25em 0 0;
   font-size: 0.85em;
+`
+
+const RegionsNote = styled.p`
+  margin: 0 0 0.5em;
 `
 
 const StructureLegend = styled.div`
@@ -473,6 +479,9 @@ type PanelProps = {
   colorRegion: (region: MissenseConstraint3dRegion) => string
   highlightedResidueRanges: ResidueRange[]
   onHighlightResidues: (residueRanges: ResidueRange[]) => void
+  onHoverRegion: (region: MissenseConstraint3dRegion | null) => void
+  pinnedRegion: MissenseConstraint3dRegion | null
+  onChangePinnedRegion: (region: MissenseConstraint3dRegion | null) => void
   regionalMissenseConstraint: RegionalMissenseConstraint | null
   visibleOverlayIds: Set<string>
   onToggleOverlay: (overlayId: string) => void
@@ -502,6 +511,9 @@ const StructurePanel = ({
   colorRegion,
   highlightedResidueRanges,
   onHighlightResidues,
+  onHoverRegion,
+  pinnedRegion,
+  onChangePinnedRegion,
   regionalMissenseConstraint,
   visibleOverlayIds,
   onToggleOverlay,
@@ -599,7 +611,23 @@ const StructurePanel = ({
     [colors, selectedResidues]
   )
 
+  const hoverResidue = (residue: HoveredResidue | null) => {
+    setHoveredResidue(residue)
+    // In Regions mode, hovering a residue shows its whole region, unless one is pinned
+    if (colorBy === 'ranked_regions') {
+      onHoverRegion(
+        residue && !pinnedRegion ? regionByResidue[residue.residueNumber] || null : null
+      )
+    }
+  }
+
   const onClickResidue = (residueNumber: number) => {
+    if (selectionMode === 'off' && colorBy === 'ranked_regions') {
+      const region = regionByResidue[residueNumber]
+      if (region) {
+        onChangePinnedRegion(region === pinnedRegion ? null : region)
+      }
+    }
     if (selectionMode === 'residue') {
       onSelectResidues(toggleResidues(selectedResidues, [residueNumber]))
     }
@@ -907,7 +935,7 @@ const StructurePanel = ({
             }))}
             value={structureViewer}
             onChange={(value) => {
-              setHoveredResidue(null)
+              hoverResidue(null)
               setStructureViewer(value)
             }}
           />
@@ -923,6 +951,23 @@ const StructurePanel = ({
           onSelectResidues
         )}
       />
+      {colorBy === 'ranked_regions' && (
+        <RegionsNote>
+          {pinnedRegion ? (
+            <>
+              {`Pinned: ${regionDescription(
+                pinnedRegion,
+                regionRanks.get(pinnedRegion.region_index)
+              )}, o/e ${pinnedRegion.obs_exp.toFixed(2)}, ${
+                regionResidues(pinnedRegion).length
+              } residues. `}
+              <TextButton onClick={() => onChangePinnedRegion(null)}>Unpin</TextButton>
+            </>
+          ) : (
+            'Hover over a residue to see its whole 3D region. Click a region in the track, or a residue while Select is Off, to keep it highlighted.'
+          )}
+        </RegionsNote>
+      )}
       <SelectionToolbar>
         <LabeledControl>
           <span>Select</span>
@@ -943,7 +988,7 @@ const StructurePanel = ({
         </span>
       </SelectionToolbar>
       <ViewerLayout>
-        <ViewerWrapper ref={viewerWrapper} onMouseLeave={() => setHoveredResidue(null)}>
+        <ViewerWrapper ref={viewerWrapper} onMouseLeave={() => hoverResidue(null)}>
           <Suspense
             fallback={
               <Delayed>
@@ -962,7 +1007,7 @@ const StructurePanel = ({
               overlayOpacity={1 - overlayTransparency}
               overlaySize={overlaySize}
               resetViewCount={resetViewCount}
-              onHoverResidue={setHoveredResidue}
+              onHoverResidue={hoverResidue}
               onClickResidue={onClickResidue}
               onLoadStructure={setPlddtByResidue}
             />

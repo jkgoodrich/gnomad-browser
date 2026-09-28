@@ -20,6 +20,7 @@ import {
   MissenseConstraint3d,
   NO_REGION_COLOR,
   PLDDT_BANDS,
+  STRUCTURE_HIGHLIGHT_COLOR,
   StructureSelection,
   StructureViewerHandle,
   StructureViewerProps,
@@ -260,6 +261,16 @@ const structureSelectionShown = () => {
   return output ? JSON.parse(output) : null
 }
 
+const hoverResidue = (residueNumber: number | null) =>
+  act(() =>
+    lastViewerProps(StructureViewer3Dmol).onHoverResidue(
+      residueNumber === null ? null : { residueNumber, residueName: 'ALA', plddt: 90, x: 0, y: 0 }
+    )
+  )
+
+const highlightedResidueRanges = () =>
+  lastViewerProps(StructureViewer3Dmol).highlightedResidueRanges
+
 const trackRegionFills = (container: HTMLElement) =>
   Array.from(container.querySelectorAll('rect[stroke="black"]'), (rect) =>
     rect.getAttribute('fill')
@@ -355,6 +366,98 @@ describe('MissenseConstraint3dTrack', () => {
 
     await userEvent.unhover(constrainedRegion)
     expect(lastViewerProps(StructureViewer3Dmol).highlightedResidueRanges).toEqual([])
+  })
+
+  test('outlines every segment of a highlighted region on the track', async () => {
+    const [constrainedRegion, catchAllRegion] = missenseConstraint3d.regions
+    setMockApiResponses({
+      MissenseConstraint3d: () => ({
+        gene: {
+          missense_constraint_3d: {
+            ...missenseConstraint3d,
+            // Residues 1 and 3 are close together in 3D
+            regions: [
+              {
+                ...constrainedRegion,
+                segments: [
+                  { aa_start: 1, aa_stop: 1 },
+                  { aa_start: 3, aa_stop: 3 },
+                ],
+              },
+              {
+                ...catchAllRegion,
+                segments: [
+                  { aa_start: 2, aa_stop: 2 },
+                  { aa_start: 4, aa_stop: 4 },
+                ],
+              },
+            ],
+          },
+        },
+      }),
+      MissenseConstraint3dVariants: () => variantsResponse,
+    })
+    const { container } = render(<TrackInRegionViewer />)
+    await showStructure()
+    const outlinedSegments = () =>
+      container.querySelectorAll(`rect[stroke="${STRUCTURE_HIGHLIGHT_COLOR}"]`).length
+
+    const [firstSegment] = Array.from(container.querySelectorAll('rect[stroke="black"]'))
+    await userEvent.hover(firstSegment)
+    expect(highlightedResidueRanges()).toEqual([
+      [1, 1],
+      [3, 3],
+    ])
+    expect(outlinedSegments()).toBe(2)
+
+    await userEvent.unhover(firstSegment)
+    expect(outlinedSegments()).toBe(0)
+  })
+
+  test('shows the whole region of a residue hovered in Regions mode', async () => {
+    render(<TrackInRegionViewer />)
+    await showStructure()
+
+    hoverResidue(1)
+    expect(highlightedResidueRanges()).toEqual([])
+
+    await userEvent.click(screen.getByLabelText('Regions'))
+    hoverResidue(1)
+    expect(highlightedResidueRanges()).toEqual([[1, 2]])
+    hoverResidue(null)
+    expect(highlightedResidueRanges()).toEqual([])
+  })
+
+  test('pins a region clicked in Regions mode', async () => {
+    const { container } = render(<TrackInRegionViewer />)
+    await showStructure()
+
+    // Only in Regions mode
+    act(() => lastViewerProps(StructureViewer3Dmol).onClickResidue(1))
+    expect(screen.queryByText(/^Pinned/)).toBeNull()
+
+    await userEvent.click(screen.getByLabelText('Regions'))
+    act(() => lastViewerProps(StructureViewer3Dmol).onClickResidue(1))
+    expect(screen.getByText('Pinned: #1 most constrained, o/e 0.05, 2 residues.')).not.toBeNull()
+    expect(highlightedResidueRanges()).toEqual([[1, 2]])
+    // Hovering other residues, like while rotating the structure, keeps it highlighted
+    hoverResidue(3)
+    expect(highlightedResidueRanges()).toEqual([[1, 2]])
+
+    await userEvent.click(screen.getByRole('button', { name: 'Unpin' }))
+    expect(screen.queryByText(/^Pinned/)).toBeNull()
+    expect(highlightedResidueRanges()).toEqual([])
+
+    const catchAllSegment = Array.from(container.querySelectorAll('rect[stroke="black"]')).find(
+      (rect) => rect.getAttribute('fill') === UNASSIGNED_RESIDUE_FILL
+    )!
+    await userEvent.click(catchAllSegment)
+    await userEvent.unhover(catchAllSegment)
+    expect(screen.getByText('Pinned: Unassigned residue, o/e 0.90, 2 residues.')).not.toBeNull()
+    expect(highlightedResidueRanges()).toEqual([[3, 4]])
+
+    await userEvent.click(screen.getByLabelText('Missense o/e'))
+    expect(highlightedResidueRanges()).toEqual([])
   })
 
   test('shows variants and UniProt features on the structure', async () => {

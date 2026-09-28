@@ -33,6 +33,7 @@ import {
   RegionColorBy,
   ResidueRange,
   DEFAULT_COLOR_BY,
+  STRUCTURE_HIGHLIGHT_COLOR,
   StructureColorBy,
   StructureSelection,
   UNASSIGNED_RESIDUE_FILL,
@@ -44,11 +45,10 @@ import {
   rankConstrainedRegions,
   regionColor,
   regionResidueRanges,
-  regionsByResidue,
-  residueFills,
-  residueLegendInteraction,
+  regionResidues,
   residuesOnGenome,
   segmentsOnGenome,
+  toggleResidues,
 } from './missenseConstraint3d'
 import MissenseConstraint3dRegionAttributes from './MissenseConstraint3dRegionAttributes'
 import MissenseConstraint3dStructurePanel from './MissenseConstraint3dStructurePanel'
@@ -90,6 +90,16 @@ query ${operationName}($geneId: String!, $referenceGenome: ReferenceGenomeId!) {
 `
 
 type TrackRegion = MissenseConstraint3dTrackRegion & { rank: number | undefined }
+
+// Residues highlighted on the structure. Highlighted regions are also outlined on the track.
+type Highlight = { regions: MissenseConstraint3dRegion[]; residueRanges: ResidueRange[] }
+
+const NO_HIGHLIGHT: Highlight = { regions: [], residueRanges: NO_HIGHLIGHTED_RESIDUES }
+
+const regionsHighlight = (regions: MissenseConstraint3dRegion[]): Highlight =>
+  regions.length > 0
+    ? { regions, residueRanges: regions.flatMap(regionResidueRanges) }
+    : NO_HIGHLIGHT
 
 const TrackRegionTooltip = ({ region }: { region: RegionWithUnclamped<TrackRegion> }) => (
   <RegionAttributeList>
@@ -221,8 +231,10 @@ const MissenseConstraint3dView = ({
   const [colorBy, setColorBy] = useState<StructureColorBy>(DEFAULT_COLOR_BY)
   const [colorCatchAllRegion, setColorCatchAllRegion] = useState(false)
   const [colorNonSignificantRegions, setColorNonSignificantRegions] = useState(true)
-  const [highlightedResidueRanges, setHighlightedResidueRanges] =
-    useState<ResidueRange[]>(NO_HIGHLIGHTED_RESIDUES)
+  // Shown while something is hovered, and otherwise the pinned region, if any
+  const [hoverHighlight, setHoverHighlight] = useState<Highlight>(NO_HIGHLIGHT)
+  // In Regions mode, a region clicked to keep it highlighted, like while rotating the structure
+  const [pinnedRegion, setPinnedRegion] = useState<MissenseConstraint3dRegion | null>(null)
   // Variants and features shown on the structure
   const [visibleOverlayIds, setVisibleOverlayIds] = useState<Set<string>>(new Set())
 
@@ -234,10 +246,6 @@ const MissenseConstraint3dView = ({
       : colorBy
 
   const regionRanks = useMemo(() => rankConstrainedRegions(constraint.regions), [constraint])
-  const regionByResidue = useMemo(
-    () => regionsByResidue(constraint.regions, constraint.protein_sequence.length),
-    [constraint]
-  )
   const rankedRegions = useMemo(
     () =>
       constraint.regions
@@ -273,13 +281,36 @@ const MissenseConstraint3dView = ({
     [regionColorBy, colorCatchAllRegion, colorNonSignificantRegions, regionRanks]
   )
 
-  const onHoverRegion = useCallback(
-    (trackRegion: TrackRegion | null) =>
-      setHighlightedResidueRanges(
-        trackRegion ? regionResidueRanges(trackRegion.region) : NO_HIGHLIGHTED_RESIDUES
+  const highlight = useMemo(
+    () =>
+      hoverHighlight.residueRanges.length > 0 || !pinnedRegion
+        ? hoverHighlight
+        : regionsHighlight([pinnedRegion]),
+    [hoverHighlight, pinnedRegion]
+  )
+
+  const highlightRegion = useCallback(
+    (region: MissenseConstraint3dRegion | null) =>
+      // Moving between the residues or segments of one region keeps its highlight
+      setHoverHighlight((previous) =>
+        region && previous.regions.length === 1 && previous.regions[0] === region
+          ? previous
+          : regionsHighlight(region ? [region] : [])
       ),
     []
   )
+
+  const highlightResidues = useCallback(
+    (residueRanges: ResidueRange[]) =>
+      setHoverHighlight(residueRanges.length > 0 ? { regions: [], residueRanges } : NO_HIGHLIGHT),
+    []
+  )
+
+  const changeColorBy = useCallback((nextColorBy: StructureColorBy) => {
+    setColorBy(nextColorBy)
+    setHoverHighlight(NO_HIGHLIGHT)
+    setPinnedRegion(null)
+  }, [])
 
   // The page shows only variants in the selected residues, so they're placed on the genome here
   const selectResidues = useCallback(
@@ -296,27 +327,30 @@ const MissenseConstraint3dView = ({
     [onChangeStructureSelection, gene, transcript]
   )
 
-  // Hovering a color in the legend highlights its residues on the structure, and clicking it selects
-  // them
-  const legendInteraction = useMemo(
-    () =>
-      isStructureShown
-        ? residueLegendInteraction(
-            residueFills(regionByResidue, colorRegion),
+  // Hovering a color in the legend highlights its regions, and clicking it selects their residues
+  const legendInteraction = useMemo(() => {
+    if (!isStructureShown) {
+      return undefined
+    }
+    const regionsWithFill = (fill: string) =>
+      constraint.regions.filter((region) => colorRegion(region) === fill)
+    return {
+      onHoverFill: (fill: string | null) =>
+        setHoverHighlight(regionsHighlight(fill ? regionsWithFill(fill) : [])),
+      onClickFill: (fill: string) =>
+        selectResidues(
+          toggleResidues(
             structureSelection && structureSelection.residues,
-            setHighlightedResidueRanges,
-            selectResidues
+            regionsWithFill(fill).flatMap(regionResidues)
           )
-        : undefined,
-    [isStructureShown, regionByResidue, colorRegion, structureSelection, selectResidues]
-  )
+        ),
+    }
+  }, [isStructureShown, constraint, colorRegion, structureSelection, selectResidues])
 
   const onHoverFeature = useCallback(
     (feature: UniprotFeature | null) =>
-      setHighlightedResidueRanges(
-        feature ? [[feature.start, feature.stop]] : NO_HIGHLIGHTED_RESIDUES
-      ),
-    []
+      highlightResidues(feature ? [[feature.start, feature.stop]] : NO_HIGHLIGHTED_RESIDUES),
+    [highlightResidues]
   )
 
   const hideOverlays = useCallback((overlayIds: string[]) => {
@@ -384,6 +418,9 @@ const MissenseConstraint3dView = ({
         legend={legend}
         tooltipComponent={TrackRegionTooltip}
         colorFn={(trackRegion: TrackRegion) => colorRegion(trackRegion.region)}
+        outlineFn={(trackRegion: TrackRegion) =>
+          highlight.regions.includes(trackRegion.region) ? STRUCTURE_HIGHLIGHT_COLOR : null
+        }
         valueFn={(trackRegion: TrackRegion) => trackRegion.region.obs_exp.toFixed(2)}
         leftPanelControl={
           <ToggleStructureButton
@@ -391,7 +428,8 @@ const MissenseConstraint3dView = ({
               if (!isStructureShown) {
                 logButtonClick('User showed 3D missense constraint structure')
               }
-              setHighlightedResidueRanges(NO_HIGHLIGHTED_RESIDUES)
+              setHoverHighlight(NO_HIGHLIGHT)
+              setPinnedRegion(null)
               if (isStructureShown) {
                 selectResidues(null)
               }
@@ -401,7 +439,20 @@ const MissenseConstraint3dView = ({
             {isStructureShown ? 'Hide' : 'Show'} structure
           </ToggleStructureButton>
         }
-        onHoverRegion={isStructureShown ? onHoverRegion : undefined}
+        onHoverRegion={
+          isStructureShown
+            ? (trackRegion: TrackRegion | null) =>
+                highlightRegion(trackRegion && trackRegion.region)
+            : undefined
+        }
+        onClickRegion={
+          isStructureShown && colorBy === 'ranked_regions'
+            ? (trackRegion: TrackRegion) =>
+                setPinnedRegion((pinned) =>
+                  pinned === trackRegion.region ? null : trackRegion.region
+                )
+            : undefined
+        }
       />
       {isStructureShown && (
         <>
@@ -421,14 +472,17 @@ const MissenseConstraint3dView = ({
               constraint={constraint}
               regionRanks={regionRanks}
               colorBy={colorBy}
-              onChangeColorBy={setColorBy}
+              onChangeColorBy={changeColorBy}
               colorCatchAllRegion={colorCatchAllRegion}
               onChangeColorCatchAllRegion={setColorCatchAllRegion}
               colorNonSignificantRegions={colorNonSignificantRegions}
               onChangeColorNonSignificantRegions={setColorNonSignificantRegions}
               colorRegion={colorRegion}
-              highlightedResidueRanges={highlightedResidueRanges}
-              onHighlightResidues={setHighlightedResidueRanges}
+              highlightedResidueRanges={highlight.residueRanges}
+              onHighlightResidues={highlightResidues}
+              onHoverRegion={highlightRegion}
+              pinnedRegion={pinnedRegion}
+              onChangePinnedRegion={setPinnedRegion}
               regionalMissenseConstraint={regionalMissenseConstraint}
               visibleOverlayIds={visibleOverlayIds}
               onToggleOverlay={toggleOverlay}

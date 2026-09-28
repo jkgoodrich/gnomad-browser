@@ -6,7 +6,7 @@ import {
   RANKED_REGION_MAX_P_VALUE,
 } from './missenseConstraint3d'
 
-const regionDescription = (region: MissenseConstraint3dRegion, rank: number | undefined) => {
+export const regionDescription = (region: MissenseConstraint3dRegion, rank: number | undefined) => {
   if (region.is_catch_all) {
     return 'Unassigned residue'
   }

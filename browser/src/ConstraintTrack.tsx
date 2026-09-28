@@ -94,6 +94,9 @@ type Props<R extends GenericRegion> = {
   valueFn: (region: R) => string
   leftPanelControl?: ReactNode
   onHoverRegion?: (region: RegionWithUnclamped<R> | null) => void
+  onClickRegion?: (region: RegionWithUnclamped<R>) => void
+  // Color to outline a region with, over the others, or null for none
+  outlineFn?: (region: R) => string | null
 }
 
 export const regionsInExons = <R extends GenericRegion>(
@@ -146,6 +149,8 @@ const ConstraintTrack = <R extends GenericRegion>({
   valueFn,
   leftPanelControl,
   onHoverRegion,
+  onClickRegion,
+  outlineFn,
 }: Props<R>) => (
   <Wrapper>
     <Track
@@ -198,11 +203,33 @@ const ConstraintTrack = <R extends GenericRegion>({
                         stroke="black"
                         onMouseEnter={onHoverRegion && (() => onHoverRegion(region))}
                         onMouseLeave={onHoverRegion && (() => onHoverRegion(null))}
+                        onClick={onClickRegion && (() => onClickRegion(region))}
+                        style={onClickRegion && { cursor: 'pointer' }}
                       />
                     </g>
                   </TooltipAnchor>
                 )
               })}
+              {outlineFn &&
+                constrainedRegions.map((region: RegionWithUnclamped<R>) => {
+                  const outline = outlineFn(region)
+                  const startX = scalePosition(region.start)
+                  return (
+                    outline && (
+                      <rect
+                        key={`${region.start}-${region.stop}`}
+                        x={startX}
+                        y={1}
+                        width={scalePosition(region.stop) - startX}
+                        height={15}
+                        fill="none"
+                        stroke={outline}
+                        strokeWidth={2}
+                        pointerEvents="none"
+                      />
+                    )
+                  )
+                })}
               {allRegions && (
                 <g transform="translate(0,20)">
                   {allRegions.map((region: R, index: number) => {

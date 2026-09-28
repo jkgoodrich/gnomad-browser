@@ -298,11 +298,13 @@ class StructureViewerMolstar
     const spec = DefaultPluginSpec()
     const plugin = new PluginContext({
       ...spec,
-      // Clicks select residues, rather than focusing on them
+      // Clicks select residues, rather than focusing on them, and the panel decides what's
+      // highlighted, like a pinned region that hovering the structure mustn't replace
       behaviors: spec.behaviors.filter(
         ({ transformer }) =>
           transformer !== PluginBehaviors.Camera.FocusLoci &&
-          transformer !== PluginBehaviors.Representation.FocusLoci
+          transformer !== PluginBehaviors.Representation.FocusLoci &&
+          transformer !== PluginBehaviors.Representation.HighlightLoci
       ),
       config: [[PluginConfig.VolumeStreaming.Enabled, false]],
     })
@@ -322,6 +324,10 @@ class StructureViewerMolstar
       },
       camera: { helper: { axes: { name: 'off', params: {} } } },
     })
+    // Draws the highlights that the panel asks for, which Mol*'s hover highlighting would otherwise do
+    plugin.managers.interactivity.lociHighlights.addProvider((loci, action) =>
+      plugin.canvas3d!.mark(loci, action)
+    )
     plugin.representation.structure.themes.colorThemeRegistry.add(ResidueColorThemeProvider)
 
     const data = await plugin.builders.data.download({ url: structureUrl, isBinary: true })

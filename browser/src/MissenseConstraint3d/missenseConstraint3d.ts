@@ -668,35 +668,27 @@ export const regionalMissenseConstraintByResidue = (
     sequenceLength
   )
 
-// Fill of each residue, like the track draws its region
-export const residueFills = <R extends object>(
-  regionByResidue: (R | undefined)[],
-  colorRegion: (region: R) => string
-) => {
-  const fillByRegion = new Map<R, string>()
-  return Array.from(regionByResidue, (region) => {
-    if (!region) {
-      return NO_REGION_COLOR
-    }
-    if (!fillByRegion.has(region)) {
-      fillByRegion.set(region, colorRegion(region))
-    }
-    return fillByRegion.get(region)!
-  })
-}
-
-// The structure can't be hatched, so its unassigned residues alternate between the gray and the
-// hatching's color instead
 export const residueColors = <R extends object>(
   regionByResidue: (R | undefined)[],
   colorRegion: (region: R) => string
-) =>
-  residueFills(regionByResidue, colorRegion).map((fill, residue) => {
-    if (fill !== UNASSIGNED_RESIDUE_FILL) {
-      return fill
+) => {
+  const colorByRegion = new Map<R, string>()
+  return Array.from(regionByResidue, (region, residue) => {
+    if (!region) {
+      return NO_REGION_COLOR
     }
-    return residue % 2 === 0 ? NO_REGION_COLOR : UNASSIGNED_RESIDUE_HATCH_COLOR
+    if (!colorByRegion.has(region)) {
+      colorByRegion.set(region, colorRegion(region))
+    }
+    const color = colorByRegion.get(region)!
+    // The structure can't be hatched, so unassigned residues alternate between the gray and the
+    // hatching's color instead
+    if (color === UNASSIGNED_RESIDUE_FILL) {
+      return residue % 2 === 0 ? NO_REGION_COLOR : UNASSIGNED_RESIDUE_HATCH_COLOR
+    }
+    return color
   })
+}
 
 export const NO_HIGHLIGHTED_RESIDUES: ResidueRange[] = []
 
