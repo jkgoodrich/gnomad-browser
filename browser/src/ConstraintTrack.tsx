@@ -97,6 +97,8 @@ type Props<R extends GenericRegion> = {
   onClickRegion?: (region: RegionWithUnclamped<R>) => void
   // Color to outline a region with, over the others, or null for none
   outlineFn?: (region: R) => string | null
+  // Regions narrower than this, in pixels, have no border, which would hide their color
+  minWidthForBorder?: number
 }
 
 export const regionsInExons = <R extends GenericRegion>(
@@ -151,6 +153,7 @@ const ConstraintTrack = <R extends GenericRegion>({
   onHoverRegion,
   onClickRegion,
   outlineFn,
+  minWidthForBorder,
 }: Props<R>) => (
   <Wrapper>
     <Track
@@ -200,7 +203,11 @@ const ConstraintTrack = <R extends GenericRegion>({
                         width={regionWidth}
                         height={15}
                         fill={colorFn(region)}
-                        stroke="black"
+                        stroke={
+                          minWidthForBorder !== undefined && regionWidth < minWidthForBorder
+                            ? undefined
+                            : 'black'
+                        }
                         onMouseEnter={onHoverRegion && (() => onHoverRegion(region))}
                         onMouseLeave={onHoverRegion && (() => onHoverRegion(null))}
                         onClick={onClickRegion && (() => onClickRegion(region))}

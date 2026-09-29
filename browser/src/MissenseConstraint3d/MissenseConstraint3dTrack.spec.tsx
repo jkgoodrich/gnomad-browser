@@ -293,6 +293,27 @@ describe('MissenseConstraint3dTrack', () => {
     expect(renderer.create(<TrackInRegionViewer />)).toMatchSnapshot()
   })
 
+  test('draws segments too narrow to show their color without borders', () => {
+    // Zoomed out, so that each residue is less than a pixel wide
+    const zoomedOutRegions = [{ start: 1, stop: 5000 }]
+    const { container } = render(
+      <MemoryRouter>
+        <RegionViewerContext.Provider
+          value={{
+            ...regionViewer,
+            regions: zoomedOutRegions,
+            scalePosition: regionViewerScale(zoomedOutRegions, [0, 500]),
+          }}
+        >
+          <MissenseConstraint3dTrack datasetId="gnomad_r4" gene={gene} />
+        </RegionViewerContext.Provider>
+      </MemoryRouter>
+    )
+    const segments = container.querySelectorAll('rect[height="15"]')
+    expect(segments).toHaveLength(2)
+    segments.forEach((segment) => expect(segment.getAttribute('stroke')).toBeNull())
+  })
+
   test('says when 3D missense constraint is not available', () => {
     setMockApiResponses({
       MissenseConstraint3d: () => ({ gene: { missense_constraint_3d: null } }),

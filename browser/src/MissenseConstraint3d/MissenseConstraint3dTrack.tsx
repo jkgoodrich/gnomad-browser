@@ -56,6 +56,8 @@ import UniprotFeatureTracks from './UniprotFeatureTracks'
 
 const TRACK_TITLE = '3D missense constraint'
 const HELP_TOPIC = 'missense-constraint-3d'
+// Many segments are a few residues long, and borders would make them look black
+const MIN_SEGMENT_WIDTH_FOR_BORDER = 4
 
 const operationName = 'MissenseConstraint3d'
 const query = `
@@ -422,6 +424,7 @@ const MissenseConstraint3dView = ({
           highlight.regions.includes(trackRegion.region) ? STRUCTURE_HIGHLIGHT_COLOR : null
         }
         valueFn={(trackRegion: TrackRegion) => trackRegion.region.obs_exp.toFixed(2)}
+        minWidthForBorder={MIN_SEGMENT_WIDTH_FOR_BORDER}
         leftPanelControl={
           <ToggleStructureButton
             onClick={() => {
