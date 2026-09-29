@@ -62,7 +62,7 @@ import UniprotFeatureTracks from './UniprotFeatureTracks'
 
 const TRACK_TITLE = '3D missense constraint'
 const HELP_TOPIC = 'missense-constraint-3d'
-// Many segments are a few residues long, and borders would make them look black
+// Many segments are a few residues long, and borders at their sides would make them look black
 const MIN_SEGMENT_WIDTH_FOR_BORDER = 4
 
 const operationName = 'MissenseConstraint3d'

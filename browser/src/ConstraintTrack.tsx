@@ -97,7 +97,8 @@ type Props<R extends GenericRegion> = {
   onClickRegion?: (region: RegionWithUnclamped<R>) => void
   // Color to outline a region with, over the others, or null for none
   outlineFn?: (region: R) => string | null
-  // Regions narrower than this, in pixels, have no border, which would hide their color
+  // Regions narrower than this, in pixels, have borders only at the top and bottom, since borders
+  // at their sides would hide their color
   minWidthForBorder?: number
 }
 
@@ -186,6 +187,8 @@ const ConstraintTrack = <R extends GenericRegion>({
                 const startX = scalePosition(region.start)
                 const stopX = scalePosition(region.stop)
                 const regionWidth = stopX - startX
+                const hasSideBorders =
+                  minWidthForBorder === undefined || regionWidth >= minWidthForBorder
 
                 return (
                   <TooltipAnchor
@@ -203,16 +206,20 @@ const ConstraintTrack = <R extends GenericRegion>({
                         width={regionWidth}
                         height={15}
                         fill={colorFn(region)}
-                        stroke={
-                          minWidthForBorder !== undefined && regionWidth < minWidthForBorder
-                            ? undefined
-                            : 'black'
-                        }
+                        stroke={hasSideBorders ? 'black' : undefined}
                         onMouseEnter={onHoverRegion && (() => onHoverRegion(region))}
                         onMouseLeave={onHoverRegion && (() => onHoverRegion(null))}
                         onClick={onClickRegion && (() => onClickRegion(region))}
                         style={onClickRegion && { cursor: 'pointer' }}
                       />
+                      {!hasSideBorders && (
+                        <path
+                          d={`M${startX},1H${stopX}M${startX},16H${stopX}`}
+                          fill="none"
+                          stroke="black"
+                          pointerEvents="none"
+                        />
+                      )}
                     </g>
                   </TooltipAnchor>
                 )

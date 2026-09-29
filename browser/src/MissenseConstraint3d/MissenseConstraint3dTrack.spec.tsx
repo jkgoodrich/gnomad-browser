@@ -324,7 +324,7 @@ describe('MissenseConstraint3dTrack', () => {
     expect(renderer.create(<TrackInRegionViewer />)).toMatchSnapshot()
   })
 
-  test('draws segments too narrow to show their color without borders', () => {
+  test('draws segments too narrow to show their color with borders only at the top and bottom', () => {
     // Zoomed out, so that each residue is less than a pixel wide
     const zoomedOutRegions = [{ start: 1, stop: 5000 }]
     const { container } = render(
@@ -342,7 +342,20 @@ describe('MissenseConstraint3dTrack', () => {
     )
     const segments = container.querySelectorAll('rect[height="15"]')
     expect(segments).toHaveLength(2)
-    segments.forEach((segment) => expect(segment.getAttribute('stroke')).toBeNull())
+    segments.forEach((segment) => {
+      expect(segment.getAttribute('stroke')).toBeNull()
+      const borders = segment.nextElementSibling!
+      expect(borders.getAttribute('stroke')).toBe('black')
+      // Lines along the segment's top (y = 1) and bottom (y = 16)
+      const [, topStart, topStop, bottomStart, bottomStop] = borders
+        .getAttribute('d')!
+        .match(/^M([\d.]+),1H([\d.]+)M([\d.]+),16H([\d.]+)$/)!
+        .map(Number)
+      const x = Number(segment.getAttribute('x'))
+      expect([topStart, bottomStart]).toEqual([x, x])
+      expect(topStop).toBe(bottomStop)
+      expect(topStop).toBeCloseTo(x + Number(segment.getAttribute('width')))
+    })
   })
 
   test('lists the size and constraint of each region', async () => {

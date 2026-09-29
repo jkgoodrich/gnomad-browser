@@ -15,7 +15,7 @@ import {
   plddtRunsOnGenome,
 } from './missenseConstraint3d'
 
-// Many runs are a few residues long, and borders would make them look black
+// Many runs are a few residues long, and borders at their sides would make them look black
 const MIN_RUN_WIDTH_FOR_BORDER = 4
 
 const PlddtRunTooltip = ({ region }: { region: RegionWithUnclamped<PlddtRunOnGenome> }) => (
