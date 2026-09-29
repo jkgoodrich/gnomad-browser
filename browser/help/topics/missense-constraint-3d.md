@@ -19,19 +19,19 @@ AlphaFold structures are predictions. Regions of low predicted confidence (pLDDT
 
 ### Colors
 
-- **Missense o/e**: each region is colored by its missense o/e ratio, from dark red (most constrained) to light yellow.
-- **o/e upper bound**: each region is colored by the upper bound of its o/e confidence interval using the same scale.
-- **Regions**: the 10 regions with the lowest o/e among those with p ≤ 1e-3 are shown in distinct colors, ranked from most to least constrained. The legend lists each colored region's rank and o/e. Other regions are gray.
+The track colors each region by the upper bound of its missense o/e confidence interval, from dark red (most constrained) to light yellow. The structure is colored the same way at first, and can be colored by:
 
-Regions that are not significant (p > 1e-3) are colored by their o/e or upper bound too, unless "Color non-significant regions" is cleared, which makes them gray. Unassigned residues are gray with hatching on the track, and alternate between light and dark gray on the structure, unless "Color unassigned residues" is selected.
-
-The structure can also be colored by:
-
-- **RMC o/e** (when regional missense constraint is available for the gene): each residue is colored by the missense o/e of the [regional missense constraint](/help/regional-constraint) region containing it, using the same colors as the regional missense constraint track.
+- **Missense o/e**: each region's missense o/e ratio, with the same colors.
+- **o/e upper bound**: like the track.
+- **Regions**: the 10 regions with the lowest o/e among those with p ≤ 1e-3 in distinct colors, ranked from most to least constrained. The legend lists each colored region's rank and o/e. Other regions are gray.
+- **RMC o/e** (when regional missense constraint is available for the gene): the missense o/e of the [regional missense constraint](/help/regional-constraint) region containing each residue, using the same colors as the regional missense constraint track.
 - **RMC o/e upper** (when the upper bounds of regional missense constraint are available): the same, using the upper bound of each region's o/e confidence interval.
-- **pLDDT**: each residue is colored by AlphaFold's confidence in its predicted position, using the AlphaFold Protein Structure Database's colors.
+- **pLDDT**: AlphaFold's confidence in each residue's predicted position, using the AlphaFold Protein Structure Database's colors.
+- **None**: no colors, so that the variants and features shown on the structure stand out.
 
-With these options, the track keeps showing the missense o/e of each 3D region.
+With Missense o/e, Regions, RMC o/e upper and pLDDT, another track below the 3D missense constraint track shows those colors along the gene too. The regional missense constraint track already shows RMC o/e.
+
+Regions that are not significant (p > 1e-3) are colored by their o/e or upper bound too, unless "Color non-significant regions" is cleared, which makes them gray. Unassigned residues are gray with hatching on the tracks, and alternate between light and dark gray on the structure, unless "Color unassigned residues" is selected.
 
 ### Listing the regions
 
@@ -39,7 +39,7 @@ Select "Show regions" to list every region below the track, with the number of i
 
 ### Showing the structure
 
-Select "Show structure" to view the AlphaFold structure colored the same way as the track. Drag to rotate the structure, and scroll or use the zoom buttons to zoom in and out. "Reset colors" and "Reset rotation and zoom" go back to the starting coloring and view, and each section of the legend beside the structure has its own "Reset" once it has been changed. Hover over a region in the track to highlight all of its residues in the structure and outline all of its segments in the track, or over a residue in the structure to see its region, predicted confidence, and any features shown on the structure. With the "Regions" colors, hovering over a residue also highlights its whole region, and clicking a region in the track, or a residue while "Select" is Off, keeps the region highlighted while you rotate the structure, until you click it again or select "Unpin". With the "pLDDT" colors, an "AlphaFold pLDDT" track also shows AlphaFold's confidence in each residue along the gene, and hovering over it highlights those residues in the structure. The panel beside the structure can also show:
+Select "Show structure" to view the AlphaFold structure colored the same way as the track. Drag to rotate the structure, and scroll or use the zoom buttons to zoom in and out. "Reset colors" and "Reset rotation and zoom" go back to the starting coloring and view, and each section of the legend beside the structure has its own "Reset" once it has been changed. Hover over a region in the track to highlight all of its residues in the structure and outline all of its segments in the track, or over a residue in the structure to see its region, predicted confidence, and any features shown on the structure. With the "Regions" colors, hovering over a residue also highlights its whole region, and clicking a region in the track, or a residue while "Select" is Off, keeps the region highlighted while you rotate the structure, until you click it again or select "Unpin". The panel beside the structure can also show:
 
 - **UniProt features**: residues and regions annotated in UniProtKB, such as binding sites and transmembrane regions. Selected features are also shown as rows between the track and the structure. See [UniProt features](/help/uniprot-features).
 - **Current selection in the ClinVar track**: the ClinVar variants shown in the ClinVar track below, after its filters, colored by clinical significance like the ClinVar track. Residues with several variants take the color of the most pathogenic. The legend has the track's clinical significance and review status filters too, so they can be changed in either place.

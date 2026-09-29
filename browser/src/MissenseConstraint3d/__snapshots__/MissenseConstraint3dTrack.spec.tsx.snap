@@ -123,7 +123,7 @@ exports[`MissenseConstraint3dTrack has no unexpected changes 1`] = `
               </defs>
             </svg>
             <span>
-              Missense observed/expected
+              Missense o/e upper bound
             </span>
             <svg
               height={25}
@@ -260,7 +260,7 @@ exports[`MissenseConstraint3dTrack has no unexpected changes 1`] = `
               onMouseLeave={[Function]}
             >
               <rect
-                fill="#9b001f"
+                fill="#de351b"
                 height={15}
                 stroke="black"
                 width={19.841269841269835}

@@ -404,8 +404,8 @@ describe('MissenseConstraint3dTrack', () => {
     expect(viewerProps.expectedSequence).toBe('MAGK')
     expect(viewerProps.residueColors).toEqual([
       NO_REGION_COLOR,
-      missenseObsExpColorScale.darkest,
-      missenseObsExpColorScale.darkest,
+      missenseObsExpColorScale.darker,
+      missenseObsExpColorScale.darker,
       UNASSIGNED_RESIDUE_HATCH_COLOR,
       NO_REGION_COLOR,
     ])
@@ -415,7 +415,6 @@ describe('MissenseConstraint3dTrack', () => {
     const { container } = render(<TrackInRegionViewer />)
     await showStructure()
 
-    await userEvent.click(screen.getByLabelText('o/e upper bound'))
     expect(trackRegionFills(container)).toContain(missenseObsExpColorScale.darker)
     expect(lastViewerProps(StructureViewer3Dmol).residueColors[1]).toBe(
       missenseObsExpColorScale.darker
@@ -430,7 +429,7 @@ describe('MissenseConstraint3dTrack', () => {
 
   test('adds a key for structure colors that the track legend does not describe', async () => {
     render(<TrackInRegionViewer regionalMissenseConstraint={regionalMissenseConstraint} />)
-    expect(screen.getByText('Missense observed/expected')).not.toBeNull()
+    expect(screen.getByText('Missense o/e upper bound')).not.toBeNull()
 
     await showStructure()
     expect(screen.queryByText('Regional missense constraint o/e')).toBeNull()
@@ -444,7 +443,7 @@ describe('MissenseConstraint3dTrack', () => {
     await showStructure()
 
     const constrainedRegion = Array.from(container.querySelectorAll('rect[stroke="black"]')).find(
-      (rect) => rect.getAttribute('fill') === missenseObsExpColorScale.darkest
+      (rect) => rect.getAttribute('fill') === missenseObsExpColorScale.darker
     )!
     await userEvent.hover(constrainedRegion)
     expect(lastViewerProps(StructureViewer3Dmol).highlightedResidueRanges).toEqual([[1, 2]])
@@ -714,7 +713,9 @@ describe('MissenseConstraint3dTrack', () => {
     expect(lastViewerProps(StructureViewer3Dmol).residueColors.slice(1)).toEqual(
       Array(4).fill(missenseObsExpColorScale.lighter)
     )
-    expect(screen.getByText('Regional missense constraint o/e upper bound')).not.toBeNull()
+    // In the key above the structure, and on a track of its own
+    expect(screen.getAllByText('Regional missense constraint o/e upper bound')).toHaveLength(2)
+    expect(screen.getByText('RMC o/e upper bound')).not.toBeNull()
   })
 
   test('offers the upper bound of regional missense constraint only when it is known', async () => {
@@ -831,8 +832,8 @@ describe('MissenseConstraint3dTrack', () => {
     expect(screen.getByText('1 residue selected.')).not.toBeNull()
     // Residues outside the selection are faded
     const { residueColors } = lastViewerProps(StructureViewer3Dmol)
-    expect(residueColors[2]).toBe(missenseObsExpColorScale.darkest)
-    expect(residueColors[1]).not.toBe(missenseObsExpColorScale.darkest)
+    expect(residueColors[2]).toBe(missenseObsExpColorScale.darker)
+    expect(residueColors[1]).not.toBe(missenseObsExpColorScale.darker)
 
     act(() => lastViewerProps(StructureViewer3Dmol).onClickResidue(2))
     expect(structureSelectionShown()).toBeNull()
@@ -890,12 +891,34 @@ describe('MissenseConstraint3dTrack', () => {
     await showStructure()
 
     await userEvent.click(screen.getByLabelText('Regions'))
+    // On a track of its own, below the track of o/e upper bounds
+    expect(screen.getByText('Ranked 3D regions')).not.toBeNull()
     expect(
       screen.getByText('Significant regions (p ≤ 1e-3), most constrained first')
     ).not.toBeNull()
     expect(screen.getByText('1 · o/e 0.05')).not.toBeNull()
     expect(screen.getByText('Not significant (p > 1e-3)')).not.toBeNull()
-    expect(screen.getByText('Unassigned residue')).not.toBeNull()
+    expect(screen.getAllByText('Unassigned residue')).toHaveLength(2)
+  })
+
+  test('shows the structure’s other colors of regions on a track of their own', async () => {
+    const { container } = render(<TrackInRegionViewer />)
+    await showStructure()
+    expect(screen.queryByText('3D missense o/e')).toBeNull()
+
+    await userEvent.click(screen.getByLabelText('Missense o/e'))
+    expect(screen.getByText('3D missense o/e')).not.toBeNull()
+    // The track of 3D regions keeps their o/e upper bounds
+    expect(trackRegionFills(container)).toEqual([
+      missenseObsExpColorScale.darker,
+      UNASSIGNED_RESIDUE_FILL,
+      missenseObsExpColorScale.darkest,
+      UNASSIGNED_RESIDUE_FILL,
+    ])
+
+    // RMC o/e is on the regional missense constraint track already
+    await userEvent.click(screen.getByLabelText('None'))
+    expect(screen.queryByText('3D missense o/e')).toBeNull()
   })
 
   test('hatches unassigned residues while they are gray', async () => {
@@ -925,14 +948,14 @@ describe('MissenseConstraint3dTrack', () => {
     })
     const { container } = render(<TrackInRegionViewer />)
     await showStructure()
-    expect(trackRegionFills(container)).toContain(missenseObsExpColorScale.darkest)
+    expect(trackRegionFills(container)).toContain(missenseObsExpColorScale.darker)
     expect(lastViewerProps(StructureViewer3Dmol).residueColors[1]).toBe(
-      missenseObsExpColorScale.darkest
+      missenseObsExpColorScale.darker
     )
     expect(screen.queryByText('Not significant (p > 1e-3)')).toBeNull()
 
     await userEvent.click(screen.getByLabelText('Color non-significant regions'))
-    expect(trackRegionFills(container)).not.toContain(missenseObsExpColorScale.darkest)
+    expect(trackRegionFills(container)).not.toContain(missenseObsExpColorScale.darker)
     expect(trackRegionFills(container)).toContain(NO_REGION_COLOR)
     expect(lastViewerProps(StructureViewer3Dmol).residueColors[1]).toBe(NO_REGION_COLOR)
     expect(screen.getByText('Not significant (p > 1e-3)')).not.toBeNull()
@@ -940,14 +963,15 @@ describe('MissenseConstraint3dTrack', () => {
 
   test('highlights and selects the residues of a color in the legend', async () => {
     render(<TrackWithStructureSelection />)
-    const darkestBinName = 'Missense observed/expected 0.0–0.2'
-    expect(screen.queryByRole('button', { name: darkestBinName })).toBeNull()
+    // Region 0's o/e upper bound is 0.3
+    const binName = 'Missense o/e upper bound 0.2–0.4'
+    expect(screen.queryByRole('button', { name: binName })).toBeNull()
     await showStructure()
 
-    const darkestBin = screen.getByRole('button', { name: darkestBinName })
-    await userEvent.hover(darkestBin)
+    const bin = screen.getByRole('button', { name: binName })
+    await userEvent.hover(bin)
     expect(lastViewerProps(StructureViewer3Dmol).highlightedResidueRanges).toEqual([[1, 2]])
-    await userEvent.unhover(darkestBin)
+    await userEvent.unhover(bin)
     expect(lastViewerProps(StructureViewer3Dmol).highlightedResidueRanges).toEqual([])
 
     const unassignedResidues = screen.getByRole('button', { name: 'Unassigned residue' })
@@ -970,11 +994,11 @@ describe('MissenseConstraint3dTrack', () => {
     const resetColors = screen.getByRole('button', { name: 'Reset colors' }) as HTMLButtonElement
     expect(resetColors.disabled).toBe(true)
 
-    await userEvent.click(screen.getByLabelText('o/e upper bound'))
+    await userEvent.click(screen.getByLabelText('Missense o/e'))
     await userEvent.click(screen.getByLabelText('Color non-significant regions'))
     await userEvent.click(screen.getByLabelText('Color unassigned residues'))
     await userEvent.click(resetColors)
-    expect((screen.getByLabelText('Missense o/e') as HTMLInputElement).checked).toBe(true)
+    expect((screen.getByLabelText('o/e upper bound') as HTMLInputElement).checked).toBe(true)
     expect(
       (screen.getByLabelText('Color non-significant regions') as HTMLInputElement).checked
     ).toBe(true)

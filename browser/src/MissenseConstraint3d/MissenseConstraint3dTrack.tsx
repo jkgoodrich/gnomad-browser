@@ -57,6 +57,7 @@ import MissenseConstraint3dRegionAttributes from './MissenseConstraint3dRegionAt
 import MissenseConstraint3dRegionTable from './MissenseConstraint3dRegionTable'
 import MissenseConstraint3dStructurePanel from './MissenseConstraint3dStructurePanel'
 import PlddtTrack from './PlddtTrack'
+import RegionalMissenseConstraintUpperTrack from './RegionalMissenseConstraintUpperTrack'
 import UniprotFeatureTracks from './UniprotFeatureTracks'
 
 const TRACK_TITLE = '3D missense constraint'
@@ -97,6 +98,10 @@ query ${operationName}($geneId: String!, $referenceGenome: ReferenceGenomeId!) {
 `
 
 type TrackRegion = MissenseConstraint3dTrackRegion & { rank: number | undefined }
+
+// The track colors regions by the upper bound of their o/e. The structure's other colors, other than
+// RMC o/e, which the regional missense constraint track shows, get a track of their own below it.
+const TRACK_COLOR_BY: RegionColorBy = 'oe_upper'
 
 // Residues highlighted on the structure. Highlighted regions are also outlined on the track.
 type Highlight = { regions: MissenseConstraint3dRegion[]; residueRanges: ResidueRange[] }
@@ -252,15 +257,11 @@ const MissenseConstraint3dView = ({
   // Variants and features shown on the structure
   const [visibleOverlayIds, setVisibleOverlayIds] = useState<Set<string>>(new Set())
 
-  // The track shows 3D regions, so it keeps their o/e colors while the structure shows RMC, pLDDT or
-  // no colors
+  // The structure's colors of 3D regions, or the track's while it isn't colored by 3D regions
   const regionColorBy: RegionColorBy =
-    colorBy === 'regional_missense_constraint' ||
-    colorBy === 'regional_missense_constraint_upper' ||
-    colorBy === 'plddt' ||
-    colorBy === 'none'
-      ? 'obs_exp'
-      : colorBy
+    colorBy === 'obs_exp' || colorBy === 'oe_upper' || colorBy === 'ranked_regions'
+      ? colorBy
+      : TRACK_COLOR_BY
 
   const regionRanks = useMemo(() => rankConstrainedRegions(constraint.regions), [constraint])
   const rankedRegions = useMemo(
@@ -296,6 +297,17 @@ const MissenseConstraint3dView = ({
         regionRanks,
       }),
     [regionColorBy, colorCatchAllRegion, colorNonSignificantRegions, regionRanks]
+  )
+
+  const colorTrackRegion = useCallback(
+    (region: MissenseConstraint3dRegion) =>
+      regionColor(region, {
+        colorBy: TRACK_COLOR_BY,
+        colorCatchAllRegion,
+        colorNonSignificantRegions,
+        regionRanks,
+      }),
+    [colorCatchAllRegion, colorNonSignificantRegions, regionRanks]
   )
 
   const highlight = useMemo(
@@ -344,13 +356,15 @@ const MissenseConstraint3dView = ({
     [onChangeStructureSelection, gene, transcript]
   )
 
-  // Hovering a color in the legend highlights its regions, and clicking it selects their residues
-  const legendInteraction = useMemo(() => {
+  // Hovering a color in a legend of regions highlights them, and clicking it selects their residues
+  const regionLegendInteraction = (
+    colorFn: (region: MissenseConstraint3dRegion) => string
+  ): LegendInteraction | undefined => {
     if (!isStructureShown) {
       return undefined
     }
     const regionsWithFill = (fill: string) =>
-      constraint.regions.filter((region) => colorRegion(region) === fill)
+      constraint.regions.filter((region) => colorFn(region) === fill)
     return {
       onHoverFill: (fill: string | null) =>
         setHoverHighlight(regionsHighlight(fill ? regionsWithFill(fill) : [])),
@@ -362,7 +376,7 @@ const MissenseConstraint3dView = ({
           )
         ),
     }
-  }, [isStructureShown, constraint, colorRegion, structureSelection, selectResidues])
+  }
 
   const onHoverFeature = useCallback(
     (feature: UniprotFeature | null) =>
@@ -390,56 +404,103 @@ const MissenseConstraint3dView = ({
     })
   }, [])
 
-  const legend = (
-    <>
-      <UnassignedResiduePattern />
-      {regionColorBy === 'ranked_regions' ? (
-        <RankedRegionsLegend
-          rankedRegions={rankedRegions}
-          significantRegionCount={significantRegionCount}
-          interaction={legendInteraction}
-        />
-      ) : (
-        <MissenseObsExpLegend
-          title={
-            regionColorBy === 'obs_exp' ? 'Missense observed/expected' : 'Missense o/e upper bound'
-          }
-          // For the regions that aren't colored by the scale
-          swatches={[
-            ...(colorNonSignificantRegions
-              ? []
-              : [
-                  {
-                    label: `Not significant (p > ${RANKED_REGION_P_VALUE})`,
-                    fill: NO_REGION_COLOR,
-                  },
-                ]),
-            ...(colorCatchAllRegion
-              ? []
-              : [{ label: 'Unassigned residue', fill: UNASSIGNED_RESIDUE_FILL }]),
-          ]}
-          interaction={legendInteraction}
-        />
-      )}
-    </>
+  const obsExpLegend = (title: string, colorFn: (region: MissenseConstraint3dRegion) => string) => (
+    <MissenseObsExpLegend
+      title={title}
+      // For the regions that aren't colored by the scale
+      swatches={[
+        ...(colorNonSignificantRegions
+          ? []
+          : [
+              {
+                label: `Not significant (p > ${RANKED_REGION_P_VALUE})`,
+                fill: NO_REGION_COLOR,
+              },
+            ]),
+        ...(colorCatchAllRegion
+          ? []
+          : [{ label: 'Unassigned residue', fill: UNASSIGNED_RESIDUE_FILL }]),
+      ]}
+      interaction={regionLegendInteraction(colorFn)}
+    />
   )
+
+  // The track of 3D regions, and the one below it for the structure's other colors of regions
+  const regionTrackProps = {
+    allRegions: [] as TrackRegion[],
+    constrainedRegions,
+    infobuttonTopic: HELP_TOPIC,
+    tooltipComponent: TrackRegionTooltip,
+    outlineFn: (trackRegion: TrackRegion) =>
+      highlight.regions.includes(trackRegion.region) ? STRUCTURE_HIGHLIGHT_COLOR : null,
+    valueFn: (trackRegion: TrackRegion) => trackRegion.region.obs_exp.toFixed(2),
+    minWidthForBorder: MIN_SEGMENT_WIDTH_FOR_BORDER,
+    onHoverRegion: isStructureShown
+      ? (trackRegion: TrackRegion | null) => highlightRegion(trackRegion && trackRegion.region)
+      : undefined,
+    onClickRegion:
+      isStructureShown && colorBy === 'ranked_regions'
+        ? (trackRegion: TrackRegion) =>
+            setPinnedRegion((pinned) => (pinned === trackRegion.region ? null : trackRegion.region))
+        : undefined,
+  }
+
+  let structureColorsTrack = null
+  if (colorBy === 'obs_exp') {
+    structureColorsTrack = (
+      <ConstraintTrack
+        {...regionTrackProps}
+        trackTitle="3D missense o/e"
+        legend={obsExpLegend('Missense observed/expected', colorRegion)}
+        colorFn={(trackRegion: TrackRegion) => colorRegion(trackRegion.region)}
+      />
+    )
+  } else if (colorBy === 'ranked_regions') {
+    structureColorsTrack = (
+      <ConstraintTrack
+        {...regionTrackProps}
+        trackTitle="Ranked 3D regions"
+        legend={
+          <RankedRegionsLegend
+            rankedRegions={rankedRegions}
+            significantRegionCount={significantRegionCount}
+            interaction={regionLegendInteraction(colorRegion)}
+          />
+        }
+        colorFn={(trackRegion: TrackRegion) => colorRegion(trackRegion.region)}
+      />
+    )
+  } else if (colorBy === 'plddt' && plddtByResidue) {
+    structureColorsTrack = (
+      <PlddtTrack
+        plddtByResidue={plddtByResidue}
+        chrom={gene.chrom}
+        strand={gene.strand}
+        transcript={transcript}
+        onHighlightResidues={highlightResidues}
+      />
+    )
+  } else if (colorBy === 'regional_missense_constraint_upper' && regionalMissenseConstraint) {
+    structureColorsTrack = (
+      <RegionalMissenseConstraintUpperTrack
+        regionalMissenseConstraint={regionalMissenseConstraint}
+        transcript={transcript}
+      />
+    )
+  }
 
   return (
     <>
       <ConstraintTrack
+        {...regionTrackProps}
         trackTitle={TRACK_TITLE}
-        // An empty list, unlike null, draws neither region brackets nor a line through the track
-        allRegions={[]}
-        constrainedRegions={constrainedRegions}
-        infobuttonTopic={HELP_TOPIC}
-        legend={legend}
-        tooltipComponent={TrackRegionTooltip}
-        colorFn={(trackRegion: TrackRegion) => colorRegion(trackRegion.region)}
-        outlineFn={(trackRegion: TrackRegion) =>
-          highlight.regions.includes(trackRegion.region) ? STRUCTURE_HIGHLIGHT_COLOR : null
+        legend={
+          <>
+            <UnassignedResiduePattern />
+            {obsExpLegend('Missense o/e upper bound', colorTrackRegion)}
+          </>
         }
-        valueFn={(trackRegion: TrackRegion) => trackRegion.region.obs_exp.toFixed(2)}
-        minWidthForBorder={MIN_SEGMENT_WIDTH_FOR_BORDER}
+        colorFn={(trackRegion: TrackRegion) => colorTrackRegion(trackRegion.region)}
         leftPanelControl={
           <>
             <LeftPanelButton
@@ -470,27 +531,13 @@ const MissenseConstraint3dView = ({
             </LeftPanelButton>
           </>
         }
-        onHoverRegion={
-          isStructureShown
-            ? (trackRegion: TrackRegion | null) =>
-                highlightRegion(trackRegion && trackRegion.region)
-            : undefined
-        }
-        onClickRegion={
-          isStructureShown && colorBy === 'ranked_regions'
-            ? (trackRegion: TrackRegion) =>
-                setPinnedRegion((pinned) =>
-                  pinned === trackRegion.region ? null : trackRegion.region
-                )
-            : undefined
-        }
       />
       {isRegionTableShown && (
         <TrackPageSection>
           <MissenseConstraint3dRegionTable
             regions={constraint.regions}
             regionRanks={regionRanks}
-            colorRegion={colorRegion}
+            colorRegion={colorTrackRegion}
             onHoverRegion={highlightRegion}
           />
           <Button
@@ -505,15 +552,7 @@ const MissenseConstraint3dView = ({
       )}
       {isStructureShown && (
         <>
-          {colorBy === 'plddt' && plddtByResidue && (
-            <PlddtTrack
-              plddtByResidue={plddtByResidue}
-              chrom={gene.chrom}
-              strand={gene.strand}
-              transcript={transcript}
-              onHighlightResidues={highlightResidues}
-            />
-          )}
+          {structureColorsTrack}
           <UniprotFeatureTracks
             uniprotId={constraint.uniprot_id}
             transcriptId={constraint.transcript_id}

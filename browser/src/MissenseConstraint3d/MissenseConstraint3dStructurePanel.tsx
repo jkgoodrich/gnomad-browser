@@ -876,14 +876,12 @@ const StructurePanel = ({
           id="missense-constraint-3d-color-non-significant-regions"
           label="Color non-significant regions"
           checked={colorNonSignificantRegions}
-          disabled={colorBy !== 'obs_exp' && colorBy !== 'oe_upper'}
           onChange={onChangeColorNonSignificantRegions}
         />
         <Checkbox
           id="missense-constraint-3d-color-catch-all-region"
           label="Color unassigned residues"
           checked={colorCatchAllRegion}
-          disabled={colorBy !== 'obs_exp' && colorBy !== 'oe_upper'}
           onChange={onChangeColorCatchAllRegion}
         />
         <Button
