@@ -25,8 +25,14 @@ import {
 
 const ROW_HEIGHT = 16
 const FEATURE_HEIGHT = 10
-// Features of a single residue would otherwise be too narrow to see or hover over
+// Short features would otherwise be too narrow to see or hover over
 const MIN_FEATURE_WIDTH = 2
+
+// Features of a single residue are diamonds, centered on the residue
+const diamondPath = (x: number, y: number) => {
+  const radius = FEATURE_HEIGHT / 2
+  return `M${x},${y - radius}L${x + radius},${y}L${x},${y + radius}L${x - radius},${y}Z`
+}
 
 const HELP_TOPIC = 'uniprot-features'
 
@@ -173,27 +179,38 @@ const UniprotFeatureTracks = ({
               <svg width={width} height={ROW_HEIGHT}>
                 {row.featuresOnGenome.map((featureOnGenome) => {
                   const x = scalePosition(featureOnGenome.start)
+                  const stopX = scalePosition(featureOnGenome.stop)
+                  const { feature } = featureOnGenome
+                  const hoverHandlers = {
+                    onMouseEnter: () => onHoverFeature(feature),
+                    onMouseLeave: () => onHoverFeature(null),
+                  }
                   return (
                     <TooltipAnchor
-                      key={`${featureOnGenome.feature.start}-${featureOnGenome.feature.stop}-${featureOnGenome.start}`}
+                      key={`${feature.start}-${feature.stop}-${featureOnGenome.start}`}
                       // @ts-expect-error need to redefine TooltipAnchor to allow arbitrary props for the children type-safely
                       region={featureOnGenome}
                       tooltipComponent={FeatureTooltip}
                     >
                       <g>
-                        {/* Hover handlers go on the rect because TooltipAnchor replaces its child's */}
-                        <rect
-                          x={x}
-                          y={(ROW_HEIGHT - FEATURE_HEIGHT) / 2}
-                          width={Math.max(
-                            scalePosition(featureOnGenome.stop) - x,
-                            MIN_FEATURE_WIDTH
-                          )}
-                          height={FEATURE_HEIGHT}
-                          fill={row.color}
-                          onMouseEnter={() => onHoverFeature(featureOnGenome.feature)}
-                          onMouseLeave={() => onHoverFeature(null)}
-                        />
+                        {/* Hover handlers go on the shape because TooltipAnchor replaces its child's */}
+                        {feature.start === feature.stop ? (
+                          <path
+                            d={diamondPath((x + stopX) / 2, ROW_HEIGHT / 2)}
+                            fill={row.color}
+                            stroke="white"
+                            {...hoverHandlers}
+                          />
+                        ) : (
+                          <rect
+                            x={x}
+                            y={(ROW_HEIGHT - FEATURE_HEIGHT) / 2}
+                            width={Math.max(stopX - x, MIN_FEATURE_WIDTH)}
+                            height={FEATURE_HEIGHT}
+                            fill={row.color}
+                            {...hoverHandlers}
+                          />
+                        )}
                       </g>
                     </TooltipAnchor>
                   )

@@ -648,6 +648,34 @@ describe('MissenseConstraint3dTrack', () => {
     expect(lastViewerProps(StructureViewer3Dmol).highlightedResidueRanges).toEqual([[2, 3]])
   })
 
+  test('shows UniProt features of single residues as diamonds', async () => {
+    setMockApiResponses({
+      MissenseConstraint3d: () => ({
+        gene: {
+          missense_constraint_3d: {
+            ...missenseConstraint3d,
+            uniprot_features: [{ feature_type: 'binding site', start: 1, stop: 1, note: 'Zinc' }],
+          },
+        },
+      }),
+      MissenseConstraint3dVariants: () => variantsResponse,
+    })
+    const { container } = render(<TrackInRegionViewer />)
+    await showStructure()
+    await userEvent.click(screen.getByLabelText('Binding site (1)'))
+
+    const diamonds = container.querySelectorAll(
+      `path[fill="${UNIPROT_FEATURE_OVERLAY_STYLES['binding site'].color}"]`
+    )
+    expect(diamonds).toHaveLength(1)
+    // Centered on the residue's codon, bases 100-102, in the middle of its row
+    const x = (regionViewer.scalePosition(100) + regionViewer.scalePosition(102)) / 2
+    expect(diamonds[0].getAttribute('d')).toBe(`M${x},3L${x + 5},8L${x},13L${x - 5},8Z`)
+
+    await userEvent.hover(diamonds[0])
+    expect(lastViewerProps(StructureViewer3Dmol).highlightedResidueRanges).toEqual([[1, 1]])
+  })
+
   test('shows the variants listed in the variant table on the structure', async () => {
     render(
       <TrackInRegionViewer

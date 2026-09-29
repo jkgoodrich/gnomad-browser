@@ -5,7 +5,7 @@ title: 'UniProt features'
 
 UniProt features are residues and regions of a protein annotated in [UniProtKB](https://www.uniprot.org/), such as binding sites, transmembrane regions and domains. The browser shows features from UniProtKB release 2021_04 for the UniProt entry used for 3D missense constraint, and only when that entry's sequence exactly matches the protein encoded by the 3D missense constraint transcript.
 
-Select feature types in the legend beside the structure to show them on the structure, and as rows between the 3D missense constraint track and the structure. Hover over a feature in a row to highlight its residues in the structure.
+Select feature types in the legend beside the structure to show them on the structure, and as rows between the 3D missense constraint track and the structure. In the rows, features of a single residue are diamonds, and longer features are bars. Hover over a feature in a row to highlight its residues in the structure.
 
 The descriptions below are adapted from UniProt's documentation. Select a feature type for UniProt's full description.
 
