@@ -764,10 +764,9 @@ describe('MissenseConstraint3dTrack', () => {
     expect(lastViewerProps(StructureViewer3Dmol).highlightedResidueRanges).toEqual([[1, 1]])
   })
 
-  test('shows the pLDDT of the loaded structure along the gene', async () => {
+  test('shows the pLDDT of the loaded structure along the gene while coloring by it', async () => {
     const { container } = render(<TrackInRegionViewer />)
     await showStructure()
-    expect(screen.queryByText('AlphaFold pLDDT')).toBeNull()
 
     const plddtByResidue: number[] = []
     plddtByResidue[1] = 95
@@ -775,6 +774,9 @@ describe('MissenseConstraint3dTrack', () => {
     plddtByResidue[3] = 60
     plddtByResidue[4] = 30
     act(() => lastViewerProps(StructureViewer3Dmol).onLoadStructure(plddtByResidue))
+    expect(screen.queryByText('AlphaFold pLDDT')).toBeNull()
+
+    await userEvent.click(screen.getByLabelText('pLDDT'))
     expect(screen.getByText('AlphaFold pLDDT')).not.toBeNull()
 
     // Residues 1 and 2 are both very high, and residues 3 and 4 are in the other coding exon
@@ -789,6 +791,9 @@ describe('MissenseConstraint3dTrack', () => {
 
     await userEvent.hover(plddtRuns[0])
     expect(lastViewerProps(StructureViewer3Dmol).highlightedResidueRanges).toEqual([[1, 2]])
+
+    await userEvent.click(screen.getByLabelText('Missense o/e'))
+    expect(screen.queryByText('AlphaFold pLDDT')).toBeNull()
   })
 
   test('can show the structure without colors', async () => {

@@ -505,7 +505,7 @@ const MissenseConstraint3dView = ({
       )}
       {isStructureShown && (
         <>
-          {plddtByResidue && (
+          {colorBy === 'plddt' && plddtByResidue && (
             <PlddtTrack
               plddtByResidue={plddtByResidue}
               chrom={gene.chrom}
