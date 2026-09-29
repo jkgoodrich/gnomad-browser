@@ -161,15 +161,11 @@ const variantsResponse = {
         variant_id: '12-103-C-T',
         consequence: 'missense_variant',
         hgvsp: 'p.Ala2Val',
-        exome: { ac: 1, an: 100, filters: [] },
-        genome: null,
       },
       {
         variant_id: '12-201-G-A',
         consequence: 'missense_variant',
         hgvsp: 'p.Gly2Asp',
-        exome: { ac: 1, an: 100, filters: [] },
-        genome: null,
       },
     ],
     clinvar_variants: [
@@ -481,27 +477,18 @@ describe('MissenseConstraint3dTrack', () => {
     expect(highlightedResidueRanges()).toEqual([])
   })
 
-  test('shows variants and UniProt features on the structure', async () => {
+  test('lists the UniProt features that can be shown on the structure', async () => {
     render(<TrackInRegionViewer />)
     await showStructure()
 
-    expect(screen.getByRole('heading', { name: 'Missense variants' })).not.toBeNull()
     expect(screen.getByRole('heading', { name: /^UniProt features/ })).not.toBeNull()
     expect(screen.getByRole('heading', { name: 'Regions' })).not.toBeNull()
     expect(screen.queryByRole('heading', { name: 'Residues' })).toBeNull()
-    expect(screen.getByText(/1 missense variant could not be placed/)).not.toBeNull()
     expect(screen.getByLabelText('Transmembrane (1)')).not.toBeNull()
 
+    // Variants come from the page's variant table and ClinVar track, once they're listed there
     expect(screen.queryByText('gnomAD variants table')).toBeNull()
     expect(screen.queryByText('ClinVar track')).toBeNull()
-
-    await userEvent.click(screen.getByLabelText('gnomAD (1)'))
-    expect(
-      lastViewerProps(StructureViewer3Dmol).overlays.map(({ id, residueRanges }) => [
-        id,
-        residueRanges,
-      ])
-    ).toEqual([['gnomad-missense', [[2, 2]]]])
   })
 
   test('shows UniProt features selected in the legend in rows and on the structure', async () => {
@@ -829,23 +816,23 @@ describe('MissenseConstraint3dTrack', () => {
   })
 
   test('resets each section of the legend separately', async () => {
-    render(<TrackInRegionViewer />)
+    render(<TrackInRegionViewer variantIdsInTable={new Set(['12-103-C-T'])} />)
     await showStructure()
     expect(screen.queryByRole('button', { name: 'Reset UniProt features' })).toBeNull()
 
     await userEvent.click(screen.getByLabelText('Transmembrane (1)'))
-    await userEvent.click(screen.getByLabelText('gnomAD (1)'))
+    await userEvent.click(screen.getByLabelText('Current selection (1 of 1)'))
     fireEvent.change(screen.getByLabelText('Transparency'), { target: { value: '0.5' } })
 
     await userEvent.click(screen.getByRole('button', { name: 'Reset UniProt features' }))
     expect(lastViewerProps(StructureViewer3Dmol).overlays.map(({ id }) => id)).toEqual([
-      'gnomad-missense',
+      'gnomad-table-missense',
     ])
 
     await userEvent.click(screen.getByRole('button', { name: 'Reset display' }))
     expect(lastViewerProps(StructureViewer3Dmol).overlayOpacity).toBe(1)
     expect(lastViewerProps(StructureViewer3Dmol).overlays.map(({ id }) => id)).toEqual([
-      'gnomad-missense',
+      'gnomad-table-missense',
     ])
   })
 

@@ -24,7 +24,6 @@ import {
   CLINVAR_TRACK_VARIANTS_OVERLAY_ID,
   CONSEQUENCE_CATEGORY_OVERLAYS,
   DEFAULT_COLOR_BY,
-  GNOMAD_MISSENSE_OVERLAY,
   HoveredResidue,
   MissenseConstraint3d,
   MissenseConstraint3dClinvarVariant,
@@ -47,8 +46,6 @@ import {
   consequenceCategoryOverlays,
   fadeUnselectedResidues,
   formatResidue,
-  isPassingGnomadMissenseVariant,
-  parseProteinChangeHgvsp,
   placeVariantsOnSequence,
   plddtResidueColors,
   regionalMissenseConstraintByResidue,
@@ -61,7 +58,6 @@ import {
   uniprotFeatureOverlayId,
   uniprotFeatureOverlays,
   variantConsequenceCategory,
-  variantOverlay,
   variantsInCategories,
 } from './missenseConstraint3d'
 import MissenseConstraint3dRegionAttributes, {
@@ -106,16 +102,6 @@ query ${variantsOperationName}($transcriptId: String!, $datasetId: DatasetId!, $
       variant_id
       consequence
       hgvsp
-      exome {
-        ac
-        an
-        filters
-      }
-      genome {
-        ac
-        an
-        filters
-      }
     }
     clinvar_variants {
       variant_id
@@ -230,11 +216,6 @@ const OverlaySwatch = styled(LegendSwatch)`
 // applies to stack their categories in the narrow overlay panel.
 const OverlayCategoryFilter = styled(CategoryFilterControl)`
   padding-left: 1.5em;
-`
-
-const UnplacedVariantsNote = styled.p`
-  margin: 0.25em 0 0;
-  font-size: 0.85em;
 `
 
 const RegionsNote = styled.p`
@@ -399,7 +380,6 @@ type ResidueTooltipProps = {
   region: MissenseConstraint3dRegion | undefined
   rank: number | undefined
   regionalMissenseConstraintRegion: RegionalMissenseConstraintRegion | undefined
-  gnomadVariants: MissenseConstraint3dVariant[]
   clinvarVariants: MissenseConstraint3dClinvarVariant[]
   tableVariants: MissenseConstraint3dVariant[]
   uniprotFeatureDescriptions: string[]
@@ -410,7 +390,6 @@ const ResidueTooltip = ({
   region,
   rank,
   regionalMissenseConstraintRegion,
-  gnomadVariants,
   clinvarVariants,
   tableVariants,
   uniprotFeatureDescriptions,
@@ -435,12 +414,6 @@ const ResidueTooltip = ({
       <dt>AlphaFold pLDDT:</dt>
       <dd>{residue.plddt.toFixed(1)}</dd>
     </div>
-    {gnomadVariants.length > 0 && (
-      <div>
-        <dt>gnomAD missense:</dt>
-        <dd>{gnomadVariants.map((variant) => variant.hgvsp).join(', ')}</dd>
-      </div>
-    )}
     {clinvarVariants.length > 0 && (
       <div>
         <dt>ClinVar:</dt>
@@ -659,29 +632,16 @@ const StructurePanel = ({
     }
   }
 
-  const gnomadMissense = useMemo(
-    () => placeVariantsOnSequence(variants.filter(isPassingGnomadMissenseVariant), sequence),
-    [variants, sequence]
-  )
-
   const uniprotOverlays = useMemo(
     () => uniprotFeatureOverlays(constraint.uniprot_features),
     [constraint]
   )
-  const overlays = useMemo(
-    () => [
-      variantOverlay(GNOMAD_MISSENSE_OVERLAY, gnomadMissense.variantsByResidue),
-      ...uniprotOverlays,
-    ],
-    [gnomadMissense, uniprotOverlays]
-  )
-  const tableVariants = useMemo(
+  const tableVariantsByResidue = useMemo(
     () =>
       variantIdsInTable &&
       placeVariantsOnSequence(
         variants.filter((variant) => variantIdsInTable.has(variant.variant_id)),
-        sequence,
-        parseProteinChangeHgvsp
+        sequence
       ),
     [variants, variantIdsInTable, sequence]
   )
@@ -689,25 +649,22 @@ const StructurePanel = ({
   const selectedTableVariantsByResidue = useMemo(
     () =>
       variantsInCategories(
-        tableVariants
-          ? tableVariants.variantsByResidue
-          : new Map<number, MissenseConstraint3dVariant[]>(),
+        tableVariantsByResidue || new Map<number, MissenseConstraint3dVariant[]>(),
         variantConsequenceCategory,
         consequenceSelections
       ),
-    [tableVariants, consequenceSelections]
+    [tableVariantsByResidue, consequenceSelections]
   )
   const tableOverlays = useMemo(
     () => consequenceCategoryOverlays(selectedTableVariantsByResidue),
     [selectedTableVariantsByResidue]
   )
-  const clinvarTrackVariants = useMemo(
+  const clinvarTrackVariantsByResidue = useMemo(
     () =>
       clinvarVariantIdsInTrack &&
       placeVariantsOnSequence(
         clinvarVariants.filter((variant) => clinvarVariantIdsInTrack.has(variant.variant_id)),
-        sequence,
-        parseProteinChangeHgvsp
+        sequence
       ),
     [clinvarVariants, clinvarVariantIdsInTrack, sequence]
   )
@@ -715,13 +672,11 @@ const StructurePanel = ({
   const selectedClinvarTrackVariantsByResidue = useMemo(
     () =>
       variantsInCategories(
-        clinvarTrackVariants
-          ? clinvarTrackVariants.variantsByResidue
-          : new Map<number, MissenseConstraint3dClinvarVariant[]>(),
+        clinvarTrackVariantsByResidue || new Map<number, MissenseConstraint3dClinvarVariant[]>(),
         clinvarVariantClinicalSignificanceCategory,
         clinicalSignificanceSelections
       ),
-    [clinvarTrackVariants, clinicalSignificanceSelections]
+    [clinvarTrackVariantsByResidue, clinicalSignificanceSelections]
   )
   const clinvarTrackOverlays = useMemo(
     () => clinicalSignificanceCategoryOverlays(selectedClinvarTrackVariantsByResidue),
@@ -732,15 +687,11 @@ const StructurePanel = ({
   const visibleOverlays = useMemo(
     () => [
       ...(visibleOverlayIds.has(TABLE_VARIANTS_OVERLAY_ID) ? tableOverlays : []),
-      ...overlays.filter((overlay) => visibleOverlayIds.has(overlay.id)),
+      ...uniprotOverlays.filter((overlay) => visibleOverlayIds.has(overlay.id)),
       ...(visibleOverlayIds.has(CLINVAR_TRACK_VARIANTS_OVERLAY_ID) ? clinvarTrackOverlays : []),
     ],
-    [overlays, tableOverlays, clinvarTrackOverlays, visibleOverlayIds]
+    [uniprotOverlays, tableOverlays, clinvarTrackOverlays, visibleOverlayIds]
   )
-
-  const variantOverlays = overlays.filter((overlay) => overlay.style === 'variant')
-
-  const { unplacedVariantCount } = gnomadMissense
 
   const renderOverlayList = (groupOverlays: StructureOverlay[]) => (
     <OverlayList>
@@ -778,10 +729,10 @@ const StructurePanel = ({
   const renderListedVariantsToggle = (
     overlayId: string,
     listedVariantIds: Set<string>,
-    placedVariants: { variantsByResidue: Map<number, unknown[]> },
+    placedVariantsByResidue: Map<number, unknown[]>,
     categoryControl: React.ReactNode
   ) => {
-    const placedVariantCount = Array.from(placedVariants.variantsByResidue.values()).reduce(
+    const placedVariantCount = Array.from(placedVariantsByResidue.values()).reduce(
       (count, variantsAtResidue) => count + variantsAtResidue.length,
       0
     )
@@ -827,11 +778,6 @@ const StructurePanel = ({
             regionalMissenseConstraintRegionByResidue
               ? regionalMissenseConstraintRegionByResidue[residue.residueNumber]
               : undefined
-          }
-          gnomadVariants={
-            isVisible(GNOMAD_MISSENSE_OVERLAY.id)
-              ? gnomadMissense.variantsByResidue.get(residue.residueNumber) || []
-              : []
           }
           clinvarVariants={
             isVisible(CLINVAR_TRACK_VARIANTS_OVERLAY_ID)
@@ -1086,22 +1032,7 @@ const StructurePanel = ({
               onChange={(event) => setOverlaySize(Number(event.target.value))}
             />
           </SliderControl>
-          <OverlayGroupHeading>
-            Missense variants
-            {isAnyOverlayVisible(variantOverlays.map(({ id }) => id)) &&
-              renderSectionReset('missense variants', () =>
-                onHideOverlays(variantOverlays.map(({ id }) => id))
-              )}
-          </OverlayGroupHeading>
-          {renderOverlayList(variantOverlays)}
-          {unplacedVariantCount > 0 && (
-            <UnplacedVariantsNote>
-              {unplacedVariantCount} missense variant{unplacedVariantCount === 1 ? '' : 's'} could
-              not be placed on the structure because the HGVSp reference amino acid does not match
-              the protein sequence.
-            </UnplacedVariantsNote>
-          )}
-          {clinvarVariantIdsInTrack && clinvarTrackVariants && (
+          {clinvarVariantIdsInTrack && clinvarTrackVariantsByResidue && (
             <>
               <OverlayGroupHeading>
                 ClinVar track
@@ -1117,7 +1048,7 @@ const StructurePanel = ({
               {renderListedVariantsToggle(
                 CLINVAR_TRACK_VARIANTS_OVERLAY_ID,
                 clinvarVariantIdsInTrack,
-                clinvarTrackVariants,
+                clinvarTrackVariantsByResidue,
                 <OverlayCategoryFilter
                   breakpoint={Number.MAX_SAFE_INTEGER}
                   categories={CLINICAL_SIGNIFICANCE_CATEGORY_OVERLAYS}
@@ -1128,7 +1059,7 @@ const StructurePanel = ({
               )}
             </>
           )}
-          {variantIdsInTable && tableVariants && (
+          {variantIdsInTable && tableVariantsByResidue && (
             <>
               <OverlayGroupHeading>
                 gnomAD variants table
@@ -1142,7 +1073,7 @@ const StructurePanel = ({
               {renderListedVariantsToggle(
                 TABLE_VARIANTS_OVERLAY_ID,
                 variantIdsInTable,
-                tableVariants,
+                tableVariantsByResidue,
                 <OverlayCategoryFilter
                   breakpoint={Number.MAX_SAFE_INTEGER}
                   categories={CONSEQUENCE_CATEGORY_OVERLAYS}

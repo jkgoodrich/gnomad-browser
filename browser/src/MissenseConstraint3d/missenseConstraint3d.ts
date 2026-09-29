@@ -47,18 +47,10 @@ export type MissenseConstraint3d = {
   uniprot_features: UniprotFeature[]
 }
 
-type VariantDataset = {
-  ac: number
-  an: number
-  filters: string[]
-}
-
 export type MissenseConstraint3dVariant = {
   variant_id: string
   consequence: string | null
   hgvsp: string | null
-  exome: VariantDataset | null
-  genome: VariantDataset | null
 }
 
 export type MissenseConstraint3dClinvarVariant = {
@@ -433,8 +425,6 @@ const AMINO_ACID_CODES: Record<string, string> = {
   Pyl: 'O',
 }
 
-const MISSENSE_CONSEQUENCE = 'missense_variant'
-
 // Structures name residues in upper case (GLY); HGVS uses title case (Gly)
 const titleCase = (residueName: string) =>
   `${residueName.charAt(0).toUpperCase()}${residueName.slice(1).toLowerCase()}`
@@ -722,24 +712,6 @@ export const regionResidues = (region: MissenseConstraint3dRegion) =>
     Array.from({ length: stop - start + 1 }, (_, i) => start + i)
   )
 
-export const parseMissenseHgvsp = (hgvsp: string | null) => {
-  const match = hgvsp ? /^p\.([A-Z][a-z]{2})(\d+)([A-Z][a-z]{2})$/.exec(hgvsp) : null
-  if (!match || match[1] === match[3] || match[3] === 'Ter') {
-    return null
-  }
-  return {
-    referenceAminoAcid: match[1],
-    residueNumber: Number(match[2]),
-    alternateAminoAcid: match[3],
-  }
-}
-
-const passesFilters = (data: VariantDataset | null) => data !== null && data.filters.length === 0
-
-export const isPassingGnomadMissenseVariant = (variant: MissenseConstraint3dVariant) =>
-  variant.consequence === MISSENSE_CONSEQUENCE &&
-  (passesFilters(variant.exome) || passesFilters(variant.genome))
-
 // The first residue changed by any protein change, like p.Arg540His, p.Leu10=, p.Gly50AlafsTer10 or
 // p.Lys5_Leu7del
 export const parseProteinChangeHgvsp = (hgvsp: string | null) => {
@@ -747,55 +719,26 @@ export const parseProteinChangeHgvsp = (hgvsp: string | null) => {
   return match ? { referenceAminoAcid: match[1], residueNumber: Number(match[2]) } : null
 }
 
-// Variants whose HGVSp reference amino acid doesn't match the protein sequence can't be placed
+// Variants, by residue. Variants whose HGVSp reference amino acid doesn't match the protein
+// sequence can't be placed.
 export const placeVariantsOnSequence = <V extends { hgvsp: string | null }>(
   variants: V[],
-  sequence: string,
-  parseHgvsp: (
-    hgvsp: string | null
-  ) => { referenceAminoAcid: string; residueNumber: number } | null = parseMissenseHgvsp
+  sequence: string
 ) => {
   const variantsByResidue = new Map<number, V[]>()
-  let unplacedVariantCount = 0
   variants.forEach((variant) => {
-    const change = parseHgvsp(variant.hgvsp)
+    const change = parseProteinChangeHgvsp(variant.hgvsp)
     if (
-      !change ||
-      AMINO_ACID_CODES[change.referenceAminoAcid] !== sequence[change.residueNumber - 1]
+      change &&
+      AMINO_ACID_CODES[change.referenceAminoAcid] === sequence[change.residueNumber - 1]
     ) {
-      unplacedVariantCount += 1
-      return
+      variantsByResidue.set(change.residueNumber, [
+        ...(variantsByResidue.get(change.residueNumber) || []),
+        variant,
+      ])
     }
-    variantsByResidue.set(change.residueNumber, [
-      ...(variantsByResidue.get(change.residueNumber) || []),
-      variant,
-    ])
   })
-  return { variantsByResidue, unplacedVariantCount }
-}
-
-export const variantOverlay = (
-  { id, label, color }: { id: string; label: string; color: string },
-  variantsByResidue: Map<number, unknown[]>
-): StructureOverlay => ({
-  id,
-  label,
-  color,
-  count: Array.from(variantsByResidue.values()).reduce(
-    (count, variants) => count + variants.length,
-    0
-  ),
-  residueRanges: Array.from(
-    variantsByResidue.keys(),
-    (residue): ResidueRange => [residue, residue]
-  ),
-  style: 'variant',
-})
-
-export const GNOMAD_MISSENSE_OVERLAY = {
-  id: 'gnomad-missense',
-  label: 'gnomAD',
-  color: VEP_CONSEQUENCE_CATEGORY_COLORS.missense,
+  return variantsByResidue
 }
 
 type OverlayCategory = { id: string; label: string; color: string }

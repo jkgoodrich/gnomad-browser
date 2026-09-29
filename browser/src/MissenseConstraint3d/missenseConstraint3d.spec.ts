@@ -7,7 +7,6 @@ import {
 import {
   CLINICAL_SIGNIFICANCE_CATEGORY_OVERLAYS,
   CONSEQUENCE_CATEGORY_OVERLAYS,
-  GNOMAD_MISSENSE_OVERLAY,
   MissenseConstraint3dRegion,
   MissenseConstraint3dVariant,
   NO_REGION_COLOR,
@@ -20,9 +19,7 @@ import {
   consequenceCategoryOverlays,
   fadeUnselectedResidues,
   formatResidue,
-  isPassingGnomadMissenseVariant,
   obsExpBinColor,
-  parseMissenseHgvsp,
   parseProteinChangeHgvsp,
   placeVariantsOnSequence,
   plddtColor,
@@ -38,7 +35,6 @@ import {
   toggleResidues,
   uniprotFeatureOverlays,
   uniprotFeaturesOnGenome,
-  variantOverlay,
 } from './missenseConstraint3d'
 
 const region = (params: Partial<MissenseConstraint3dRegion>): MissenseConstraint3dRegion => ({
@@ -57,8 +53,6 @@ const variant = (params: Partial<MissenseConstraint3dVariant>): MissenseConstrai
   variant_id: '1-100-A-G',
   consequence: 'missense_variant',
   hgvsp: 'p.Ala2Val',
-  exome: { ac: 1, an: 100, filters: [] },
-  genome: null,
   ...params,
 })
 
@@ -291,23 +285,6 @@ test('regional missense constraint regions are placed by their amino acids', () 
   ])
 })
 
-describe('parseMissenseHgvsp', () => {
-  test('parses a missense change', () => {
-    expect(parseMissenseHgvsp('p.Gly826Glu')).toEqual({
-      referenceAminoAcid: 'Gly',
-      residueNumber: 826,
-      alternateAminoAcid: 'Glu',
-    })
-  })
-
-  test.each(['p.Leu123Leu', 'p.Leu123=', 'p.Arg12Ter', 'p.Ser32IlefsTer9', null])(
-    'ignores %s',
-    (hgvsp) => {
-      expect(parseMissenseHgvsp(hgvsp)).toBeNull()
-    }
-  )
-})
-
 describe('placeVariantsOnSequence', () => {
   test('groups variants by residue and skips reference amino acid mismatches', () => {
     const variants = [
@@ -316,9 +293,8 @@ describe('placeVariantsOnSequence', () => {
       variant({ variant_id: 'c', hgvsp: 'p.Gly3Asp' }),
       variant({ variant_id: 'd', hgvsp: 'p.Gly2Asp' }),
     ]
-    const { variantsByResidue, unplacedVariantCount } = placeVariantsOnSequence(variants, 'MAG')
     expect(
-      Array.from(variantsByResidue.entries(), ([residue, residueVariants]) => [
+      Array.from(placeVariantsOnSequence(variants, 'MAG'), ([residue, residueVariants]) => [
         residue,
         residueVariants.map((v) => v.variant_id),
       ])
@@ -326,49 +302,15 @@ describe('placeVariantsOnSequence', () => {
       [2, ['a', 'b']],
       [3, ['c']],
     ])
-    expect(unplacedVariantCount).toBe(1)
   })
 
   test('places no variants when positions are off by one', () => {
-    const { variantsByResidue, unplacedVariantCount } = placeVariantsOnSequence(
-      [variant({ hgvsp: 'p.Met2Val' }), variant({ hgvsp: 'p.Ala3Val' })],
-      'MAG'
-    )
-    expect(variantsByResidue.size).toBe(0)
-    expect(unplacedVariantCount).toBe(2)
-  })
-
-  test('counts overlay variants and residues', () => {
-    const { variantsByResidue } = placeVariantsOnSequence(
-      [variant({ hgvsp: 'p.Ala2Val' }), variant({ hgvsp: 'p.Ala2Thr' })],
-      'MAG'
-    )
-    expect(variantOverlay(GNOMAD_MISSENSE_OVERLAY, variantsByResidue)).toEqual({
-      ...GNOMAD_MISSENSE_OVERLAY,
-      count: 2,
-      residueRanges: [[2, 2]],
-      style: 'variant',
-    })
-  })
-})
-
-describe('variant filters', () => {
-  test('gnomAD missense variants must pass filters in the exomes or genomes', () => {
-    expect(isPassingGnomadMissenseVariant(variant({}))).toBe(true)
     expect(
-      isPassingGnomadMissenseVariant(variant({ exome: { ac: 1, an: 100, filters: ['AC0'] } }))
-    ).toBe(false)
-    expect(
-      isPassingGnomadMissenseVariant(
-        variant({
-          exome: { ac: 1, an: 100, filters: ['AC0'] },
-          genome: { ac: 1, an: 100, filters: [] },
-        })
-      )
-    ).toBe(true)
-    expect(isPassingGnomadMissenseVariant(variant({ consequence: 'synonymous_variant' }))).toBe(
-      false
-    )
+      placeVariantsOnSequence(
+        [variant({ hgvsp: 'p.Met2Val' }), variant({ hgvsp: 'p.Ala3Val' })],
+        'MAG'
+      ).size
+    ).toBe(0)
   })
 })
 
@@ -420,17 +362,15 @@ describe('parseProteinChangeHgvsp', () => {
   })
 
   test('places variants of any consequence on the sequence', () => {
-    const { variantsByResidue, unplacedVariantCount } = placeVariantsOnSequence(
+    const variantsByResidue = placeVariantsOnSequence(
       [
         variant({ hgvsp: 'p.Ala2=', consequence: 'synonymous_variant' }),
         variant({ hgvsp: 'p.Gly3Ter', consequence: 'stop_gained' }),
         variant({ hgvsp: null, consequence: 'intron_variant' }),
       ],
-      'MAG',
-      parseProteinChangeHgvsp
+      'MAG'
     )
     expect(Array.from(variantsByResidue.keys())).toEqual([2, 3])
-    expect(unplacedVariantCount).toBe(1)
   })
 })
 
