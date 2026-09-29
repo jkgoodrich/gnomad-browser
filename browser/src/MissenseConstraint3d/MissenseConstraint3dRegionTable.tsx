@@ -1,16 +1,30 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import styled from 'styled-components'
 
-import { BaseTable } from '@gnomad/ui'
+import { BaseTable, Button } from '@gnomad/ui'
 
+import { logButtonClick } from '../analytics'
 import useTableSort, { ColumnSpecifier, numericCompareFunction } from '../useTableSort'
 import { regionDescription } from './MissenseConstraint3dRegionAttributes'
+import MissenseConstraint3dRegionPlots from './MissenseConstraint3dRegionPlots'
 import {
   MissenseConstraint3dRegion,
   RANKED_REGION_MAX_P_VALUE,
   isSignificantRegion,
+  plural,
   regionResidues,
 } from './missenseConstraint3d'
+
+const SummaryWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1em;
+
+  button {
+    flex-shrink: 0;
+  }
+`
 
 const TableWrapper = styled.div`
   overflow-x: auto;
@@ -95,9 +109,6 @@ const median = (values: number[]) => {
   return Number.isInteger(value) ? value : value.toFixed(1)
 }
 
-const plural = (count: number, singular: string, pluralForm = `${singular}s`) =>
-  `${count} ${count === 1 ? singular : pluralForm}`
-
 // Like "11-371 residues (median 18)"
 const distribution = (values: number[], pluralNoun: string) =>
   `${Math.min(...values)}-${Math.max(...values)} ${pluralNoun} (median ${median(values)})`
@@ -147,13 +158,14 @@ type Props = {
   onHoverRegion: (region: MissenseConstraint3dRegion | null) => void
 }
 
-// The size and missense constraint of each 3D region
+// The size and missense constraint of each 3D region, which can also be plotted
 const MissenseConstraint3dRegionTable = ({
   regions,
   regionRanks,
   colorRegion,
   onHoverRegion,
 }: Props) => {
+  const [arePlotsShown, setArePlotsShown] = useState(false)
   const rows = useMemo(
     () =>
       regions.map((region): RegionRow => {
@@ -176,7 +188,26 @@ const MissenseConstraint3dRegionTable = ({
 
   return (
     <>
-      <RegionSummary rows={rows} />
+      <SummaryWrapper>
+        <RegionSummary rows={rows} />
+        <Button
+          onClick={() => {
+            if (!arePlotsShown) {
+              logButtonClick('User showed 3D missense constraint region plots')
+            }
+            setArePlotsShown(!arePlotsShown)
+          }}
+        >
+          {arePlotsShown ? 'Hide' : 'Show'} plots
+        </Button>
+      </SummaryWrapper>
+      {arePlotsShown && (
+        <MissenseConstraint3dRegionPlots
+          regions={regions}
+          regionRanks={regionRanks}
+          onHoverRegion={onHoverRegion}
+        />
+      )}
       <TableWrapper>
         <BaseTable style={{ minWidth: '100%' }}>
           <thead>

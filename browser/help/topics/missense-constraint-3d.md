@@ -35,7 +35,12 @@ Regions that are not significant (p > 1e-3) are colored by their o/e or upper bo
 
 ### Listing the regions
 
-Select "Show regions" to list every region below the track, with the number of its residues, the number of separate stretches of sequence they form, its first and last residues, and its missense constraint, above a summary of how many regions there are and how large they are. Select a column heading to sort by it, and hover over a region to outline its segments in the track and highlight its residues in the structure.
+Select "Show regions" to list every region below the track, with the number of its residues, the number of separate stretches of sequence they form, its first and last residues, and its missense constraint, below a summary of how many regions there are and how large they are. Select a column heading to sort by it, and hover over a region to outline its segments in the track and highlight its residues in the structure.
+
+Select "Show plots" beside the summary to plot the regions above the list:
+
+- **Residues per region** and **Stretches of sequence per region**: how many regions have each number of residues or of separate stretches of sequence, in bins that grow wider with the number, split into significant regions (p ≤ 1e-3) and the others.
+- **Missense o/e by region size**: each region's missense o/e against its number of residues, on a log scale, with a line up to its o/e upper bound. The most constrained regions are numbered by rank, the unassigned residues are shown as a hatched square, and the dashed line is the o/e of all residues together. Hover over a region to see its details, outline its segments in the track and highlight its residues in the structure.
 
 ### Showing the structure
 

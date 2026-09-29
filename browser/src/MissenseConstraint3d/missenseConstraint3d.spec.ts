@@ -14,6 +14,7 @@ import {
   RANKED_REGION_COLORS,
   UNASSIGNED_RESIDUE_FILL,
   UNASSIGNED_RESIDUE_HATCH_COLOR,
+  binByCount,
   codingSequenceLength,
   clinicalSignificanceCategoryOverlays,
   consequenceCategoryOverlays,
@@ -151,6 +152,54 @@ test('residues outside a selection are faded', () => {
 
 test('codingSequenceLength counts only coding bases', () => {
   expect(codingSequenceLength(codingExons)).toBe(12)
+})
+
+describe('binByCount', () => {
+  test('bins counts from the smallest to the largest, including empty bins between them', () => {
+    expect(binByCount([285, 11, 20, 19, 371], (count) => count)).toEqual([
+      { label: '10-19', items: [11, 19] },
+      { label: '20-49', items: [20] },
+      { label: '50-99', items: [] },
+      { label: '100-199', items: [] },
+      { label: '200-499', items: [285, 371] },
+    ])
+  })
+
+  test('bins of a single count are labeled by it, and the last bin has no end', () => {
+    expect(binByCount([1, 5, 12000], (count) => count).map(({ label }) => label)).toEqual([
+      '1',
+      '2-4',
+      '5-9',
+      '10-19',
+      '20-49',
+      '50-99',
+      '100-199',
+      '200-499',
+      '500-999',
+      '1000-1999',
+      '2000-4999',
+      '5000-9999',
+      '10000+',
+    ])
+  })
+
+  test('bins items by their count', () => {
+    const regions = [
+      region({ region_index: 0, segments: [{ aa_start: 1, aa_stop: 1 }] }),
+      region({
+        region_index: 1,
+        segments: [
+          { aa_start: 2, aa_stop: 2 },
+          { aa_start: 4, aa_stop: 4 },
+        ],
+      }),
+    ]
+    expect(binByCount(regions, (item) => item.segments.length)).toEqual([
+      { label: '1', items: [regions[0]] },
+      { label: '2-4', items: [regions[1]] },
+    ])
+    expect(binByCount([], (item) => item)).toEqual([])
+  })
 })
 
 describe('rankConstrainedRegions', () => {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import renderer from 'react-test-renderer'
 import { jest, describe, expect, test, beforeEach, afterEach } from '@jest/globals'
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { RegionViewerContext, regionViewerScale } from '@gnomad/region-viewer'
@@ -389,6 +389,37 @@ describe('MissenseConstraint3dTrack', () => {
     const [, hideRegionsBelowTable] = screen.getAllByRole('button', { name: 'Hide regions' })
     await userEvent.click(hideRegionsBelowTable)
     expect(screen.queryByRole('row')).toBeNull()
+  })
+
+  test('plots the size and constraint of the regions', async () => {
+    const { container } = render(<TrackInRegionViewer />)
+    await userEvent.click(screen.getByRole('button', { name: 'Show regions' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Show plots' }))
+    expect(logButtonClick).toHaveBeenCalledWith('User showed 3D missense constraint region plots')
+
+    // The region has 2 residues
+    const residuesPlot = screen.getByRole('heading', { name: 'Residues per region' }).parentElement!
+    expect(within(residuesPlot).getByText('2-4')).not.toBeNull()
+    expect(screen.getByRole('heading', { name: 'Stretches of sequence per region' })).not.toBeNull()
+
+    // The region and the unassigned residues, whose o/e together is (1 + 9) / (20 + 10)
+    const obsExpPlot = screen.getByRole('heading', { name: 'Missense o/e by region size' })
+      .parentElement!
+    expect(within(obsExpPlot).getByText('All residues: 0.33')).not.toBeNull()
+    expect(obsExpPlot.querySelectorAll('circle')).toHaveLength(1)
+    expect(obsExpPlot.querySelectorAll(`rect[fill="${UNASSIGNED_RESIDUE_FILL}"]`)).toHaveLength(1)
+
+    // Hovering a region shows its details and outlines it on the track
+    await userEvent.hover(obsExpPlot.querySelector('circle')!)
+    expect(screen.getByText('2, in 1 stretch of sequence')).not.toBeNull()
+    expect(container.querySelectorAll(`rect[stroke="${STRUCTURE_HIGHLIGHT_COLOR}"]`)).toHaveLength(
+      1
+    )
+
+    await userEvent.click(screen.getByRole('button', { name: 'Hide plots' }))
+    expect(screen.queryByRole('heading', { name: 'Residues per region' })).toBeNull()
+    // The table is still shown
+    expect(screen.getAllByRole('row')).toHaveLength(3)
   })
 
   test('says when 3D missense constraint is not available', () => {

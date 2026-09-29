@@ -449,6 +449,9 @@ const titleCase = (residueName: string) =>
 export const formatResidue = (residueName: string, residueNumber: number) =>
   `${titleCase(residueName)}${residueNumber}`
 
+export const plural = (count: number, singular: string, pluralForm = `${singular}s`) =>
+  `${count} ${count === 1 ? singular : pluralForm}`
+
 export const residueNamesMatchSequence = (residues: [number, string][], sequence: string) =>
   residues.length === sequence.length &&
   residues.every(
@@ -774,6 +777,35 @@ export const regionResidues = (region: MissenseConstraint3dRegion) =>
   region.segments.flatMap(({ aa_start: start, aa_stop: stop }) =>
     Array.from({ length: stop - start + 1 }, (_, i) => start + i)
   )
+
+// Bins of 1, 2-4, 5-9, 10-19, 20-49 and so on, for counts that span orders of magnitude, like the
+// numbers of residues in regions
+export const COUNT_BIN_EDGES = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000]
+
+const countBinLabel = (binIndex: number) => {
+  const start = COUNT_BIN_EDGES[binIndex]
+  if (binIndex === COUNT_BIN_EDGES.length - 1) {
+    return `${start}+`
+  }
+  const stop = COUNT_BIN_EDGES[binIndex + 1] - 1
+  return stop === start ? `${start}` : `${start}-${stop}`
+}
+
+// The items in each bin of their counts, which must be at least 1, from the bin of the smallest
+// count to that of the largest, including any empty bins between them
+export const binByCount = <T>(items: T[], count: (item: T) => number) => {
+  if (items.length === 0) {
+    return []
+  }
+  const binIndices = items.map(
+    (item) => COUNT_BIN_EDGES.filter((edge) => edge <= count(item)).length - 1
+  )
+  const firstBinIndex = Math.min(...binIndices)
+  return Array.from({ length: Math.max(...binIndices) - firstBinIndex + 1 }, (_, i) => ({
+    label: countBinLabel(firstBinIndex + i),
+    items: items.filter((_item, itemIndex) => binIndices[itemIndex] === firstBinIndex + i),
+  }))
+}
 
 // The first residue changed by any protein change, like p.Arg540His, p.Leu10=, p.Gly50AlafsTer10 or
 // p.Lys5_Leu7del
