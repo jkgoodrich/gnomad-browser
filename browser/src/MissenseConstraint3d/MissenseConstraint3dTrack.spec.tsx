@@ -12,13 +12,19 @@ import { logButtonClick } from '../analytics'
 import geneFactory from '../__factories__/Gene'
 import { Gene } from '../GenePage/GenePage'
 import {
+  ClinvarTrackFilter,
+  DEFAULT_CLINVAR_TRACK_FILTER,
+} from '../ClinvarVariantsTrack/ClinvarVariantTrack'
+import {
   RegionalMissenseConstraint,
   missenseObsExpColorScale,
 } from '../RegionalMissenseConstraintTrack'
+import { DEFAULT_VARIANT_FILTER, VariantFilterState } from '../VariantList/filterVariants'
 import MissenseConstraint3dTrack from './MissenseConstraint3dTrack'
 import {
   MissenseConstraint3d,
   NO_REGION_COLOR,
+  PageFilter,
   PLDDT_BANDS,
   STRUCTURE_HIGHLIGHT_COLOR,
   StructureSelection,
@@ -159,16 +165,12 @@ const variantsResponse = {
     variants: [
       {
         variant_id: '12-103-C-T',
-        rsids: ['rs1'],
         consequence: 'missense_variant',
-        hgvsc: 'c.5C>T',
         hgvsp: 'p.Ala2Val',
       },
       {
         variant_id: '12-201-G-A',
-        rsids: null,
         consequence: 'missense_variant',
-        hgvsc: null,
         hgvsp: 'p.Gly2Asp',
       },
     ],
@@ -219,6 +221,8 @@ const TrackInRegionViewer = (props: {
   regionalMissenseConstraint?: RegionalMissenseConstraint
   variantIdsInTable?: Set<string>
   clinvarVariantIdsInTrack?: Set<string>
+  clinvarTrackFilter?: PageFilter<ClinvarTrackFilter>
+  variantTableFilter?: PageFilter<VariantFilterState>
   structureSelection?: StructureSelection | null
   onChangeStructureSelection?: (selection: StructureSelection | null) => void
 }) => (
@@ -248,6 +252,32 @@ const TrackWithStructureSelection = () => {
     </>
   )
 }
+
+// Like the gene page, which shares the filters of its ClinVar track and variant table with the
+// structure's legend
+const TrackWithPageFilters = ({
+  initialClinvarTrackFilter = DEFAULT_CLINVAR_TRACK_FILTER,
+  initialVariantTableFilter = DEFAULT_VARIANT_FILTER,
+}: {
+  initialClinvarTrackFilter?: ClinvarTrackFilter
+  initialVariantTableFilter?: VariantFilterState
+}) => {
+  const [clinvarTrackFilter, setClinvarTrackFilter] = useState(initialClinvarTrackFilter)
+  const [variantTableFilter, setVariantTableFilter] = useState(initialVariantTableFilter)
+  return (
+    <>
+      <TrackInRegionViewer
+        variantIdsInTable={new Set(['12-103-C-T'])}
+        clinvarVariantIdsInTrack={new Set(['12-104-A-G'])}
+        clinvarTrackFilter={{ filter: clinvarTrackFilter, onChangeFilter: setClinvarTrackFilter }}
+        variantTableFilter={{ filter: variantTableFilter, onChangeFilter: setVariantTableFilter }}
+      />
+      <output>{JSON.stringify({ clinvarTrackFilter, variantTableFilter })}</output>
+    </>
+  )
+}
+
+const pageFiltersShown = () => JSON.parse(screen.getByRole('status').textContent!)
 
 const viewerRender = (viewer: unknown) => (viewer as { render: jest.Mock }).render
 
@@ -550,70 +580,58 @@ describe('MissenseConstraint3dTrack', () => {
     ).toEqual([['clinvar-track-pathogenic', [[3, 3]]]])
   })
 
-  test('filters the variant table variants on the structure by consequence', async () => {
-    render(<TrackInRegionViewer variantIdsInTable={new Set(['12-103-C-T'])} />)
+  test('changes the variant table filter from the legend', async () => {
+    render(<TrackWithPageFilters />)
     await showStructure()
-    await userEvent.click(screen.getByLabelText('Current selection (1 of 1)'))
 
-    await userEvent.click(screen.getByLabelText('Missense / Inframe indel'))
-    expect(lastViewerProps(StructureViewer3Dmol).overlays).toEqual([])
-
-    await userEvent.click(screen.getByRole('button', { name: 'all' }))
-    expect(lastViewerProps(StructureViewer3Dmol).overlays.map(({ id }) => id)).toEqual([
-      'gnomad-table-missense',
-    ])
-  })
-
-  test('searches the variant table variants on the structure', async () => {
-    render(<TrackInRegionViewer variantIdsInTable={new Set(['12-103-C-T'])} />)
-    await showStructure()
-    await userEvent.click(screen.getByLabelText('Current selection (1 of 1)'))
-
-    const search = screen.getByPlaceholderText('Search variants')
-    await userEvent.type(search, 'p.Gly')
-    expect(lastViewerProps(StructureViewer3Dmol).overlays).toEqual([])
-
-    await userEvent.clear(search)
-    await userEvent.type(search, 'RS1')
-    expect(lastViewerProps(StructureViewer3Dmol).overlays.map(({ id }) => id)).toEqual([
-      'gnomad-table-missense',
-    ])
+    await userEvent.click(screen.getByLabelText('Synonymous'))
+    await userEvent.type(screen.getByPlaceholderText('Search variant table'), 'p.Ala2')
+    expect(pageFiltersShown().variantTableFilter).toEqual({
+      ...DEFAULT_VARIANT_FILTER,
+      includeCategories: { ...DEFAULT_VARIANT_FILTER.includeCategories, synonymous: false },
+      searchText: 'p.Ala2',
+    })
 
     await userEvent.click(screen.getByRole('button', { name: 'Reset gnomAD variants table' }))
-    expect((screen.getByPlaceholderText('Search variants') as HTMLInputElement).value).toBe('')
+    expect(pageFiltersShown().variantTableFilter).toEqual(DEFAULT_VARIANT_FILTER)
   })
 
-  test('filters the ClinVar track variants on the structure by review status', async () => {
-    render(<TrackInRegionViewer clinvarVariantIdsInTrack={new Set(['12-104-A-G'])} />)
+  test('changes the ClinVar track filter from the legend', async () => {
+    render(<TrackWithPageFilters />)
     await showStructure()
-    await userEvent.click(screen.getByLabelText('Current selection (1 of 1)'))
-    const reviewStatusFilter = () => screen.getByLabelText(/review status/) as HTMLSelectElement
-
-    // The variant has 2 stars
-    await userEvent.selectOptions(reviewStatusFilter(), '3')
-    expect(lastViewerProps(StructureViewer3Dmol).overlays).toEqual([])
-    await userEvent.selectOptions(reviewStatusFilter(), '2')
-    expect(lastViewerProps(StructureViewer3Dmol).overlays.map(({ id }) => id)).toEqual([
-      'clinvar-track-pathogenic',
-    ])
-
-    await userEvent.selectOptions(reviewStatusFilter(), '4')
-    await userEvent.click(screen.getByRole('button', { name: 'Reset ClinVar track' }))
-    expect(reviewStatusFilter().value).toBe('0')
-  })
-
-  test('filters the ClinVar track variants on the structure by clinical significance', async () => {
-    render(<TrackInRegionViewer clinvarVariantIdsInTrack={new Set(['12-104-A-G'])} />)
-    await showStructure()
-    await userEvent.click(screen.getByLabelText('Current selection (1 of 1)'))
 
     await userEvent.click(screen.getByLabelText('Pathogenic / likely pathogenic'))
-    expect(lastViewerProps(StructureViewer3Dmol).overlays).toEqual([])
+    await userEvent.selectOptions(screen.getByLabelText(/review status/), '2')
+    expect(pageFiltersShown().clinvarTrackFilter).toEqual({
+      includedClinicalSignificanceCategories: {
+        ...DEFAULT_CLINVAR_TRACK_FILTER.includedClinicalSignificanceCategories,
+        pathogenic: false,
+      },
+      starFilter: 2,
+    })
 
-    await userEvent.click(screen.getByRole('button', { name: 'all' }))
-    expect(lastViewerProps(StructureViewer3Dmol).overlays.map(({ id }) => id)).toEqual([
-      'clinvar-track-pathogenic',
-    ])
+    await userEvent.click(screen.getByRole('button', { name: 'Reset ClinVar track' }))
+    expect(pageFiltersShown().clinvarTrackFilter).toEqual(DEFAULT_CLINVAR_TRACK_FILTER)
+  })
+
+  test('shows the filters of the ClinVar track and variant table in the legend', async () => {
+    render(
+      <TrackWithPageFilters
+        initialClinvarTrackFilter={{ ...DEFAULT_CLINVAR_TRACK_FILTER, starFilter: 3 }}
+        initialVariantTableFilter={{
+          ...DEFAULT_VARIANT_FILTER,
+          includeCategories: { ...DEFAULT_VARIANT_FILTER.includeCategories, lof: false },
+          searchText: 'rs123',
+        }}
+      />
+    )
+    await showStructure()
+
+    expect((screen.getByLabelText(/review status/) as HTMLSelectElement).value).toBe('3')
+    expect((screen.getByLabelText('pLoF') as HTMLInputElement).checked).toBe(false)
+    expect((screen.getByPlaceholderText('Search variant table') as HTMLInputElement).value).toBe(
+      'rs123'
+    )
   })
 
   test('lists UniProt features before the variants of other sections of the page', async () => {

@@ -60,9 +60,11 @@ import TissueExpressionTrack, { TranscriptWithTissueExpression } from './TissueE
 import VariantsInGene from './VariantsInGene'
 import {
   GenePageSelectionsProvider,
+  useClinvarTrackFilter,
   useListedVariants,
   useSetStructureSelection,
   useStructureSelection,
+  useVariantTableFilter,
 } from './GenePageSelections'
 
 import { GnomadConstraint } from '../ConstraintTable/GnomadConstraintTable'
@@ -328,19 +330,24 @@ type Props = {
   geneId: string
 }
 
-// The structure can show the variants listed in the variant table and the ClinVar track, and those
-// sections show only the variants of residues selected on the structure
+// The structure can show the variants listed in the variant table and the ClinVar track, and its
+// legend has their filters too. Those sections show only the variants of residues selected on the
+// structure.
 const MissenseConstraint3dTrackWithPageSelections = (
   props: React.ComponentProps<typeof MissenseConstraint3dTrack>
 ) => {
   const { variantIdsInTable, clinvarVariantIdsInTrack } = useListedVariants()
   const structureSelection = useStructureSelection()
   const setStructureSelection = useSetStructureSelection()
+  const clinvarTrackFilter = useClinvarTrackFilter()
+  const variantTableFilter = useVariantTableFilter()
   return (
     <MissenseConstraint3dTrack
       {...props}
       variantIdsInTable={variantIdsInTable}
       clinvarVariantIdsInTrack={clinvarVariantIdsInTrack}
+      clinvarTrackFilter={clinvarTrackFilter}
+      variantTableFilter={variantTableFilter}
       structureSelection={structureSelection}
       onChangeStructureSelection={setStructureSelection}
     />

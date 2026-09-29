@@ -1,6 +1,11 @@
 import React, { ReactNode, createContext, useCallback, useContext, useMemo, useState } from 'react'
 
-import { StructureSelection } from '../MissenseConstraint3d/missenseConstraint3d'
+import {
+  ClinvarTrackFilter,
+  DEFAULT_CLINVAR_TRACK_FILTER,
+} from '../ClinvarVariantsTrack/ClinvarVariantTrack'
+import { PageFilter, StructureSelection } from '../MissenseConstraint3d/missenseConstraint3d'
+import { DEFAULT_VARIANT_FILTER, VariantFilterState } from '../VariantList/filterVariants'
 
 type ListedVariantIds = Set<string> | null
 
@@ -47,14 +52,30 @@ const SetStructureSelectionContext = createContext<(selection: StructureSelectio
   () => {}
 )
 
+const ClinvarTrackFilterContext = createContext<PageFilter<ClinvarTrackFilter> | undefined>(
+  undefined
+)
+
+const VariantTableFilterContext = createContext<PageFilter<VariantFilterState> | undefined>(
+  undefined
+)
+
+const usePageFilter = <F,>(defaultFilter: F): PageFilter<F> => {
+  const [filter, onChangeFilter] = useState(defaultFilter)
+  return useMemo(() => ({ filter, onChangeFilter }), [filter])
+}
+
 // Shares selections between sections of the gene page: the variants that the variant table and
 // ClinVar track list, which the 3D missense constraint structure can show, and the residues selected
-// on the structure, which those sections then show only the variants of. When a selection changes,
-// only the components using it render again, not the whole page.
+// on the structure, which those sections then show only the variants of. It also holds the filters
+// of the variant table and ClinVar track, which the structure's legend can change too. When a
+// selection changes, only the components using it render again, not the whole page.
 export const GenePageSelectionsProvider = ({ children }: { children: ReactNode }) => {
   const [variantIdsInTable, onChangeVariantsInTable] = useListedVariantIds()
   const [clinvarVariantIdsInTrack, onChangeClinvarVariantsInTrack] = useListedVariantIds()
   const [structureSelection, setStructureSelection] = useState<StructureSelection | null>(null)
+  const clinvarTrackFilter = usePageFilter(DEFAULT_CLINVAR_TRACK_FILTER)
+  const variantTableFilter = usePageFilter(DEFAULT_VARIANT_FILTER)
   const listedVariants = useMemo(
     () => ({ variantIdsInTable, clinvarVariantIdsInTrack }),
     [variantIdsInTable, clinvarVariantIdsInTrack]
@@ -68,7 +89,11 @@ export const GenePageSelectionsProvider = ({ children }: { children: ReactNode }
       <StructureSelectionContext.Provider value={structureSelection}>
         <ListedVariantsCallbacksContext.Provider value={callbacks}>
           <ListedVariantsContext.Provider value={listedVariants}>
-            {children}
+            <ClinvarTrackFilterContext.Provider value={clinvarTrackFilter}>
+              <VariantTableFilterContext.Provider value={variantTableFilter}>
+                {children}
+              </VariantTableFilterContext.Provider>
+            </ClinvarTrackFilterContext.Provider>
           </ListedVariantsContext.Provider>
         </ListedVariantsCallbacksContext.Provider>
       </StructureSelectionContext.Provider>
@@ -83,3 +108,7 @@ export const useListedVariantsCallbacks = () => useContext(ListedVariantsCallbac
 export const useStructureSelection = () => useContext(StructureSelectionContext)
 
 export const useSetStructureSelection = () => useContext(SetStructureSelectionContext)
+
+export const useClinvarTrackFilter = () => useContext(ClinvarTrackFilterContext)
+
+export const useVariantTableFilter = () => useContext(VariantTableFilterContext)

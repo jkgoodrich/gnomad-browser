@@ -49,9 +49,7 @@ export type MissenseConstraint3d = {
 
 export type MissenseConstraint3dVariant = {
   variant_id: string
-  rsids: string[] | null
   consequence: string | null
-  hgvsc: string | null
   hgvsp: string | null
 }
 
@@ -125,6 +123,13 @@ export type GenomicInterval = {
 export type StructureSelection = {
   residues: ReadonlySet<number>
   intervals: GenomicInterval[]
+}
+
+// The filter of another section of the page, like the variant table, which the structure's legend
+// can also change
+export type PageFilter<F> = {
+  filter: F
+  onChangeFilter: (filter: F) => void
 }
 
 export type StructureViewerProps = {
@@ -741,37 +746,6 @@ export const placeVariantsOnSequence = <V extends { hgvsp: string | null }>(
     }
   })
   return variantsByResidue
-}
-
-// Like the variant table's search, which matches any of several comma-separated terms
-export const variantMatchesSearch = (variant: MissenseConstraint3dVariant, searchText: string) => {
-  const searchTerms = searchText
-    .toLowerCase()
-    .split(',')
-    .map((term) => term.trim())
-    .filter((term) => term.length > 0)
-  const variantTerms = [variant.variant_id, ...(variant.rsids || []), variant.hgvsc, variant.hgvsp]
-    .filter((term): term is string => Boolean(term))
-    .map((term) => term.toLowerCase())
-  return (
-    searchTerms.length === 0 ||
-    searchTerms.some((searchTerm) => variantTerms.some((term) => term.includes(searchTerm)))
-  )
-}
-
-// The variants that are included, by residue
-export const variantsIncluded = <V>(
-  variantsByResidue: Map<number, V[]>,
-  isIncluded: (variant: V) => boolean
-) => {
-  const includedVariantsByResidue = new Map<number, V[]>()
-  variantsByResidue.forEach((variantsAtResidue, residue) => {
-    const includedVariants = variantsAtResidue.filter(isIncluded)
-    if (includedVariants.length > 0) {
-      includedVariantsByResidue.set(residue, includedVariants)
-    }
-  })
-  return includedVariantsByResidue
 }
 
 type OverlayCategory = { id: string; label: string; color: string }

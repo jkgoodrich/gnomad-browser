@@ -20,6 +20,22 @@ export type VariantFilterState = {
   searchText: string
 }
 
+export const DEFAULT_VARIANT_FILTER: VariantFilterState = {
+  includeCategories: {
+    lof: true,
+    missense: true,
+    synonymous: true,
+    other: true,
+  },
+  includeFilteredVariants: false,
+  includeSNVs: true,
+  includeIndels: true,
+  includeExomes: true,
+  includeGenomes: true,
+  includeContext: true,
+  searchText: '',
+}
+
 export function getFilteredVariants(
   filter: VariantFilterState,
   variants: Variant[],

@@ -6,6 +6,7 @@ import { RegionViewerContext, regionViewerScale } from '@gnomad/region-viewer'
 import { Variant } from '../VariantPage/VariantPage'
 import geneFactory from '../__factories__/Gene'
 import { v2VariantFactory, variantTableVariantFactory } from '../__factories__/Variant'
+import { DEFAULT_VARIANT_FILTER, VariantFilterState } from './filterVariants'
 import Variants, { getFirstIndexFromSearchText } from './Variants'
 
 // The track draws on a canvas and the table's grid needs a react-sizeme component, neither of
@@ -175,6 +176,32 @@ describe('Variants', () => {
 
     await userEvent.click(screen.getByLabelText(/^Synonymous/))
     expect(reportedVariantIds()).toEqual(['1-100-A-C'])
+  })
+
+  it('can use a filter that it shares with other parts of the page', async () => {
+    const onChangeFilter = jest.fn<(filter: VariantFilterState) => void>()
+    const withoutSynonymous = {
+      ...DEFAULT_VARIANT_FILTER,
+      includeCategories: { ...DEFAULT_VARIANT_FILTER.includeCategories, synonymous: false },
+    }
+    const reportedVariantIds = renderVariants({ filter: withoutSynonymous, onChangeFilter })
+    expect(reportedVariantIds()).toEqual(['1-100-A-C'])
+
+    await userEvent.click(screen.getByLabelText(/^Missense/))
+    expect(onChangeFilter).toHaveBeenCalledWith({
+      ...withoutSynonymous,
+      includeCategories: { ...withoutSynonymous.includeCategories, missense: false },
+    })
+  })
+
+  it('reports only the variants that match its search, even while it lists their neighbors', () => {
+    const reportedVariantIds = renderVariants({
+      filter: { ...DEFAULT_VARIANT_FILTER, searchText: '1-200' },
+    })
+    expect(reportedVariantIds()).toEqual(['1-200-A-C'])
+    expect((screen.getByPlaceholderText('Search variant table') as HTMLInputElement).value).toBe(
+      '1-200'
+    )
   })
 
   it('shows only the variants at the positions of its position filter', async () => {

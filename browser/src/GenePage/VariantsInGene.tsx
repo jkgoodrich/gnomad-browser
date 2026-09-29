@@ -12,9 +12,11 @@ import Variants from '../VariantList/Variants'
 import { ClinvarVariant } from '../VariantPage/VariantPage'
 import { Gene } from './GenePage'
 import {
+  useClinvarTrackFilter,
   useListedVariantsCallbacks,
   useSetStructureSelection,
   useStructureSelection,
+  useVariantTableFilter,
 } from './GenePageSelections'
 
 type TranscriptsModalProps = {
@@ -103,6 +105,9 @@ const VariantsInGene = ({
   hasOnlyNonCodingTranscripts,
 }: VariantsInGeneProps) => {
   const { onChangeVariantsInTable, onChangeClinvarVariantsInTrack } = useListedVariantsCallbacks()
+  // Shared with the 3D missense constraint structure's legend
+  const clinvarTrackFilter = useClinvarTrackFilter()
+  const variantTableFilter = useVariantTableFilter()
   const structureSelection = useStructureSelection()
   const setStructureSelection = useSetStructureSelection()
   // Residues selected on the 3D missense constraint structure
@@ -132,6 +137,7 @@ const VariantsInGene = ({
         pageType="gene"
         onChangeFilteredVariants={onChangeClinvarVariantsInTrack}
         positionFilter={positionFilter}
+        {...clinvarTrackFilter}
       />
 
       <Variants
@@ -142,6 +148,7 @@ const VariantsInGene = ({
         variants={filterVariantsInZoomRegion(variants, zoomRegion)}
         onChangeFilteredVariants={onChangeVariantsInTable}
         positionFilter={positionFilter}
+        {...variantTableFilter}
       >
         <p>
           <Badge level={includeNonCodingTranscripts || includeUTRs ? 'warning' : 'info'}>

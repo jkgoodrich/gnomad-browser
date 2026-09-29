@@ -101,6 +101,19 @@ const FilterRow = styled.div`
   align-items: center;
 `
 
+// Filters that the track can share with other parts of the page
+export type ClinvarTrackFilter = {
+  includedClinicalSignificanceCategories: Record<string, boolean>
+  starFilter: number
+}
+
+export const DEFAULT_CLINVAR_TRACK_FILTER: ClinvarTrackFilter = {
+  includedClinicalSignificanceCategories: Object.fromEntries(
+    CLINICAL_SIGNIFICANCE_CATEGORIES.map((category) => [category, true])
+  ),
+  starFilter: 0,
+}
+
 type Props = {
   referenceGenome: 'GRCh37' | 'GRCh38'
   transcripts: Transcript[]
@@ -108,6 +121,9 @@ type Props = {
   // Lets other parts of the page show the variants that the track shows
   onChangeFilteredVariants?: (variants: ClinvarVariant[]) => void
   positionFilter?: PositionFilter | null
+  // A filter that the track shares with other parts of the page, instead of its own
+  filter?: ClinvarTrackFilter
+  onChangeFilter?: (filter: ClinvarTrackFilter) => void
 }
 
 const UnmemoizedClinvarVariantTrack = ({
@@ -116,19 +132,18 @@ const UnmemoizedClinvarVariantTrack = ({
   variants,
   onChangeFilteredVariants,
   positionFilter,
+  filter: sharedFilter,
+  onChangeFilter,
 }: Props) => {
   const [selectedVariant, setSelectedVariant] = useState(null)
 
-  const [includedClinicalSignificanceCategories, setIncludedClinicalSignificanceCategories] =
-    useState(
-      CLINICAL_SIGNIFICANCE_CATEGORIES.reduce(
-        (acc, category) => ({
-          ...acc,
-          [category]: true,
-        }),
-        {}
-      )
-    )
+  const [ownFilter, setOwnFilter] = useState(DEFAULT_CLINVAR_TRACK_FILTER)
+  const filter = sharedFilter || ownFilter
+  const setFilter = onChangeFilter || setOwnFilter
+  const { includedClinicalSignificanceCategories, starFilter } = filter
+  const setIncludedClinicalSignificanceCategories = (categories: Record<string, boolean>) =>
+    setFilter({ ...filter, includedClinicalSignificanceCategories: categories })
+  const setStarFilter = (stars: number) => setFilter({ ...filter, starFilter: stars })
 
   const [includedConsequenceCategories, setIncludedConsequenceCategories] = useState(
     VEP_CONSEQUENCE_CATEGORIES.reduce(
@@ -142,13 +157,11 @@ const UnmemoizedClinvarVariantTrack = ({
 
   const [showOnlyGnomad, setShowOnlyGnomad] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
-  const [starFilter, setStarFilter] = useState(0)
 
   const filteredVariants = useMemo(
     () =>
       variantsInPositionFilter(variants, positionFilter).filter(
         (v) =>
-          // @ts-expect-error TS(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
           includedClinicalSignificanceCategories[clinvarVariantClinicalSignificanceCategory(v)] &&
           // @ts-expect-error TS(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
           includedConsequenceCategories[getCategoryFromConsequence(v.major_consequence)] &&
@@ -323,6 +336,8 @@ type ClinvarVariantsProps = {
   pageType: PageType
   onChangeFilteredVariants?: (variants: ClinvarVariant[]) => void
   positionFilter?: PositionFilter | null
+  filter?: ClinvarTrackFilter
+  onChangeFilter?: (filter: ClinvarTrackFilter) => void
 }
 
 const ClinvarVariants = ({
@@ -334,6 +349,8 @@ const ClinvarVariants = ({
   pageType,
   onChangeFilteredVariants,
   positionFilter,
+  filter,
+  onChangeFilter,
 }: ClinvarVariantsProps) => {
   const heading = (
     <TrackPageSection>
@@ -364,6 +381,8 @@ const ClinvarVariants = ({
         variants={filterVariantsInZoomRegion(clinvarVariants, zoomRegion)}
         onChangeFilteredVariants={onChangeFilteredVariants}
         positionFilter={positionFilter}
+        filter={filter}
+        onChangeFilter={onChangeFilter}
       />
       <TrackPageSection as="p">
         Data displayed here is from ClinVar&apos;s {formatClinvarDate(clinvarReleaseDate)} release.

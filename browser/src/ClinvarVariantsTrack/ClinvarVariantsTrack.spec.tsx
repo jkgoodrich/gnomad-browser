@@ -4,7 +4,11 @@ import clinvarVariantFactory from '../__factories__/ClinvarVariant'
 import { ClinvarVariant } from '../VariantPage/VariantPage'
 import React from 'react'
 import userEvent from '@testing-library/user-event'
-import ClinvarVariants, { ClinvarVariantTrack } from './ClinvarVariantTrack'
+import ClinvarVariants, {
+  ClinvarTrackFilter,
+  ClinvarVariantTrack,
+  DEFAULT_CLINVAR_TRACK_FILTER,
+} from './ClinvarVariantTrack'
 import { Transcript } from '../TranscriptPage/TranscriptPage'
 import transcriptFactory from '../__factories__/Transcript'
 import { render, screen } from '@testing-library/react'
@@ -252,6 +256,31 @@ describe('Clinvar Variants Track selection', () => {
       screen.getByRole('option', { name: '4 Stars' }) as HTMLOptionElement
     )
     expect(reportedVariants()).toEqual([mockClinvarVariants[4]])
+  })
+
+  test('can use a filter that it shares with other parts of the page', async () => {
+    const onChangeFilter = jest.fn<(filter: ClinvarTrackFilter) => void>()
+    render(
+      <BrowserRouter>
+        <RegionViewerContext.Provider value={childProps}>
+          <ClinvarVariantTrack
+            referenceGenome="GRCh38"
+            transcripts={mockTranscripts}
+            variants={mockClinvarVariants}
+            filter={{ ...DEFAULT_CLINVAR_TRACK_FILTER, starFilter: 3 }}
+            onChangeFilter={onChangeFilter}
+          />
+        </RegionViewerContext.Provider>
+      </BrowserRouter>
+    )
+    expect(screen.getByText('ClinVar variants (2)')).not.toBeNull()
+    expect((screen.getByRole('combobox') as HTMLSelectElement).value).toBe('3')
+
+    await userEvent.selectOptions(
+      screen.getByRole('combobox'),
+      screen.getByRole('option', { name: '>=1 Stars' }) as HTMLOptionElement
+    )
+    expect(onChangeFilter).toHaveBeenCalledWith({ ...DEFAULT_CLINVAR_TRACK_FILTER, starFilter: 1 })
   })
 
   test('shows only the variants at the positions of its position filter', async () => {

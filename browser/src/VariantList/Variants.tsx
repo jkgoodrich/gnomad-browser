@@ -12,7 +12,11 @@ import StatusMessage from '../StatusMessage'
 import { TrackPageSection } from '../TrackPage'
 import userPreferences from '../userPreferences'
 import ExportVariantsButton from './ExportVariantsButton'
-import filterVariants, { VariantFilterState, getFilteredVariants } from './filterVariants'
+import filterVariants, {
+  DEFAULT_VARIANT_FILTER,
+  VariantFilterState,
+  getFilteredVariants,
+} from './filterVariants'
 import mergeExomeAndGenomeData from './mergeExomeAndGenomeData'
 import VariantFilterControls from './VariantFilterControls'
 import VariantTable from './VariantTable'
@@ -51,9 +55,13 @@ type OwnVariantsProps = {
   datasetId: DatasetId
   exportFileName?: string
   variants: Variant[]
-  // Lets other parts of the page show the variants that the table lists
+  // Lets other parts of the page show the variants that the table lists, or only those that match
+  // its search when it also lists their neighbors
   onChangeFilteredVariants?: (variants: Variant[]) => void
   positionFilter?: PositionFilter | null
+  // A filter that the table shares with other parts of the page, instead of its own
+  filter?: VariantFilterState
+  onChangeFilter?: (filter: VariantFilterState) => void
 }
 
 const variantsDefaultProps = {
@@ -93,6 +101,8 @@ const Variants = ({
   variants,
   onChangeFilteredVariants,
   positionFilter,
+  filter: sharedFilter,
+  onChangeFilter,
 }: VariantsProps) => {
   const table = useRef(null)
 
@@ -127,21 +137,9 @@ const Variants = ({
     )
   }, [clinvarReleaseDate, context, selectedColumns])
 
-  const [filter, setFilter] = useState({
-    includeCategories: {
-      lof: true,
-      missense: true,
-      synonymous: true,
-      other: true,
-    },
-    includeFilteredVariants: false,
-    includeSNVs: true,
-    includeIndels: true,
-    includeExomes: true,
-    includeGenomes: true,
-    includeContext: true,
-    searchText: '',
-  })
+  const [ownFilter, setOwnFilter] = useState(DEFAULT_VARIANT_FILTER)
+  const filter = sharedFilter || ownFilter
+  const setFilter = onChangeFilter || setOwnFilter
 
   const [sortState, setSortState] = useState({
     sortKey: 'variant_id',
@@ -177,11 +175,19 @@ const Variants = ({
     })
   }, [datasetId, variants, positionFilter, filter, renderedTableColumns])
 
+  const listedVariants = useMemo(
+    () =>
+      filter.searchText && filter.includeContext
+        ? getFilteredVariants(filter, filteredVariants, renderedTableColumns)
+        : filteredVariants,
+    [filter, filteredVariants, renderedTableColumns]
+  )
+
   useEffect(() => {
     if (onChangeFilteredVariants) {
-      onChangeFilteredVariants(filteredVariants)
+      onChangeFilteredVariants(listedVariants)
     }
-  }, [filteredVariants, onChangeFilteredVariants])
+  }, [listedVariants, onChangeFilteredVariants])
 
   const renderedVariants = useMemo(() => {
     return sortVariants(filteredVariants, sortState)
@@ -273,7 +279,12 @@ const Variants = ({
       setCurrentSearchIndex(searchIndex)
     }
 
-    // @ts-expect-error TS(2531) FIXME: Object is possibly 'null'.
+    // Other parts of the page can search the table's variants while the table isn't shown
+    if (table.current === null) {
+      return
+    }
+
+    // @ts-expect-error TS(2339) FIXME: 'scrollToDataRow' does not exist on type 'never'.
     table.current.scrollToDataRow(searchIndex)
   }, [filter.searchText]) // eslint-disable-line react-hooks/exhaustive-deps
 

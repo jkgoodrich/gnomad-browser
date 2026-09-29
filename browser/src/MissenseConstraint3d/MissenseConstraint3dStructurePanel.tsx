@@ -14,7 +14,10 @@ import { DatasetId, referenceGenome } from '@gnomad/dataset-metadata/metadata'
 import CategoryFilterControl from '../CategoryFilterControl'
 import { CheckboxInput, Label, LegendItemWrapper, LegendSwatch } from '../ChartStyles'
 import ClinvarReviewStatusFilter from '../ClinvarVariantsTrack/ClinvarReviewStatusFilter'
-import { clinvarVariantClinicalSignificanceCategory } from '../ClinvarVariantsTrack/clinvarVariantCategories'
+import {
+  ClinvarTrackFilter,
+  DEFAULT_CLINVAR_TRACK_FILTER,
+} from '../ClinvarVariantsTrack/ClinvarVariantTrack'
 import { RegionAttributeList } from '../ConstraintTrack'
 import Delayed from '../Delayed'
 import InfoButton from '../help/InfoButton'
@@ -27,6 +30,7 @@ import {
   regionalMissenseConstraintRegionColor,
 } from '../RegionalMissenseConstraintTrack'
 import StatusMessage from '../StatusMessage'
+import { DEFAULT_VARIANT_FILTER, VariantFilterState } from '../VariantList/filterVariants'
 import {
   CLINICAL_SIGNIFICANCE_CATEGORY_OVERLAYS,
   CLINVAR_TRACK_VARIANTS_OVERLAY_ID,
@@ -36,6 +40,7 @@ import {
   MissenseConstraint3d,
   MissenseConstraint3dClinvarVariant,
   MissenseConstraint3dRegion,
+  PageFilter,
   MissenseConstraint3dVariant,
   NO_REGION_COLOR,
   PLDDT_BANDS,
@@ -65,9 +70,6 @@ import {
   uniprotEntryUrl,
   uniprotFeatureOverlayId,
   uniprotFeatureOverlays,
-  variantConsequenceCategory,
-  variantMatchesSearch,
-  variantsIncluded,
 } from './missenseConstraint3d'
 import MissenseConstraint3dRegionAttributes, {
   regionDescription,
@@ -109,9 +111,7 @@ query ${variantsOperationName}($transcriptId: String!, $datasetId: DatasetId!, $
   transcript(transcript_id: $transcriptId, reference_genome: $referenceGenome) {
     variants(dataset: $datasetId) {
       variant_id
-      rsids
       consequence
-      hgvsc
       hgvsp
     }
     clinvar_variants {
@@ -314,9 +314,6 @@ const ZOOM_BUTTON_FACTOR = 1.25
 const DEFAULT_OVERLAY_TRANSPARENCY = 0
 const DEFAULT_OVERLAY_SIZE = 1
 
-const allCategoriesSelected = (categories: { id: string }[]): Record<string, boolean> =>
-  Object.fromEntries(categories.map(({ id }) => [id, true]))
-
 const areAllCategoriesSelected = (selections: Record<string, boolean>) =>
   Object.values(selections).every(Boolean)
 
@@ -479,6 +476,9 @@ type PanelProps = {
   variantIdsInTable: Set<string> | null
   // Variants listed in the gene page's ClinVar track, or null if it hasn't loaded
   clinvarVariantIdsInTrack: Set<string> | null
+  // The filters of the ClinVar track and variant table, which the legend also has
+  clinvarTrackFilter?: PageFilter<ClinvarTrackFilter>
+  variantTableFilter?: PageFilter<VariantFilterState>
   selectedResidues: ReadonlySet<number> | null
   onSelectResidues: (residues: ReadonlySet<number> | null) => void
 }
@@ -509,6 +509,8 @@ const StructurePanel = ({
   onHideOverlays,
   variantIdsInTable,
   clinvarVariantIdsInTrack,
+  clinvarTrackFilter,
+  variantTableFilter,
   selectedResidues,
   onSelectResidues,
   variants,
@@ -522,14 +524,6 @@ const StructurePanel = ({
   const viewer = useRef<StructureViewerHandle>(null)
   const [overlayTransparency, setOverlayTransparency] = useState(DEFAULT_OVERLAY_TRANSPARENCY)
   const [overlaySize, setOverlaySize] = useState(DEFAULT_OVERLAY_SIZE)
-  const [clinicalSignificanceSelections, setClinicalSignificanceSelections] = useState(() =>
-    allCategoriesSelected(CLINICAL_SIGNIFICANCE_CATEGORY_OVERLAYS)
-  )
-  const [clinvarMinimumStars, setClinvarMinimumStars] = useState(0)
-  const [consequenceSelections, setConsequenceSelections] = useState(() =>
-    allCategoriesSelected(CONSEQUENCE_CATEGORY_OVERLAYS)
-  )
-  const [tableSearchText, setTableSearchText] = useState('')
   const [hoveredResidue, setHoveredResidue] = useState<HoveredResidue | null>(null)
   const [resetViewCount, setResetViewCount] = useState(0)
   const [structureViewer, setStructureViewer] = useState(initialStructureViewer)
@@ -663,21 +657,9 @@ const StructurePanel = ({
       ),
     [variants, variantIdsInTable, sequence]
   )
-  // The table's variants in the consequence categories selected for the structure, and matching its
-  // search
-  const selectedTableVariantsByResidue = useMemo(
-    () =>
-      variantsIncluded(
-        tableVariantsByResidue || new Map<number, MissenseConstraint3dVariant[]>(),
-        (variant) =>
-          consequenceSelections[variantConsequenceCategory(variant)] &&
-          variantMatchesSearch(variant, tableSearchText)
-      ),
-    [tableVariantsByResidue, consequenceSelections, tableSearchText]
-  )
   const tableOverlays = useMemo(
-    () => consequenceCategoryOverlays(selectedTableVariantsByResidue),
-    [selectedTableVariantsByResidue]
+    () => (tableVariantsByResidue ? consequenceCategoryOverlays(tableVariantsByResidue) : []),
+    [tableVariantsByResidue]
   )
   const clinvarTrackVariantsByResidue = useMemo(
     () =>
@@ -688,22 +670,22 @@ const StructurePanel = ({
       ),
     [clinvarVariants, clinvarVariantIdsInTrack, sequence]
   )
-  // The ClinVar track's variants in the clinical significance categories selected for the
-  // structure, and with enough review status stars
-  const selectedClinvarTrackVariantsByResidue = useMemo(
-    () =>
-      variantsIncluded(
-        clinvarTrackVariantsByResidue || new Map<number, MissenseConstraint3dClinvarVariant[]>(),
-        (variant) =>
-          clinicalSignificanceSelections[clinvarVariantClinicalSignificanceCategory(variant)] &&
-          variant.gold_stars >= clinvarMinimumStars
-      ),
-    [clinvarTrackVariantsByResidue, clinicalSignificanceSelections, clinvarMinimumStars]
-  )
   const clinvarTrackOverlays = useMemo(
-    () => clinicalSignificanceCategoryOverlays(selectedClinvarTrackVariantsByResidue),
-    [selectedClinvarTrackVariantsByResidue]
+    () =>
+      clinvarTrackVariantsByResidue
+        ? clinicalSignificanceCategoryOverlays(clinvarTrackVariantsByResidue)
+        : [],
+    [clinvarTrackVariantsByResidue]
   )
+
+  // The legend changes the filters of the ClinVar track and variant table, rather than its own, so
+  // that they're the same wherever they're changed
+  const changeClinvarTrackFilter = (change: Partial<ClinvarTrackFilter>) =>
+    clinvarTrackFilter &&
+    clinvarTrackFilter.onChangeFilter({ ...clinvarTrackFilter.filter, ...change })
+  const changeVariantTableFilter = (change: Partial<VariantFilterState>) =>
+    variantTableFilter &&
+    variantTableFilter.onChangeFilter({ ...variantTableFilter.filter, ...change })
 
   // 3Dmol colors a residue in several variant overlays like the last of them, so ClinVar goes last
   const visibleOverlays = useMemo(
@@ -802,14 +784,16 @@ const StructurePanel = ({
               : undefined
           }
           clinvarVariants={
-            isVisible(CLINVAR_TRACK_VARIANTS_OVERLAY_ID)
-              ? selectedClinvarTrackVariantsByResidue.get(residue.residueNumber) || []
-              : []
+            (isVisible(CLINVAR_TRACK_VARIANTS_OVERLAY_ID) &&
+              clinvarTrackVariantsByResidue &&
+              clinvarTrackVariantsByResidue.get(residue.residueNumber)) ||
+            []
           }
           tableVariants={
-            isVisible(TABLE_VARIANTS_OVERLAY_ID)
-              ? selectedTableVariantsByResidue.get(residue.residueNumber) || []
-              : []
+            (isVisible(TABLE_VARIANTS_OVERLAY_ID) &&
+              tableVariantsByResidue &&
+              tableVariantsByResidue.get(residue.residueNumber)) ||
+            []
           }
           uniprotFeatureDescriptions={constraint.uniprot_features
             .filter(
@@ -1082,36 +1066,42 @@ const StructurePanel = ({
               <OverlayGroupHeading>
                 ClinVar track
                 {(isAnyOverlayVisible([CLINVAR_TRACK_VARIANTS_OVERLAY_ID]) ||
-                  !areAllCategoriesSelected(clinicalSignificanceSelections) ||
-                  clinvarMinimumStars > 0) &&
+                  (clinvarTrackFilter &&
+                    (!areAllCategoriesSelected(
+                      clinvarTrackFilter.filter.includedClinicalSignificanceCategories
+                    ) ||
+                      clinvarTrackFilter.filter.starFilter > 0))) &&
                   renderSectionReset('ClinVar track', () => {
                     onHideOverlays([CLINVAR_TRACK_VARIANTS_OVERLAY_ID])
-                    setClinicalSignificanceSelections(
-                      allCategoriesSelected(CLINICAL_SIGNIFICANCE_CATEGORY_OVERLAYS)
-                    )
-                    setClinvarMinimumStars(0)
+                    changeClinvarTrackFilter(DEFAULT_CLINVAR_TRACK_FILTER)
                   })}
               </OverlayGroupHeading>
               {renderListedVariantsToggle(
                 CLINVAR_TRACK_VARIANTS_OVERLAY_ID,
                 clinvarVariantIdsInTrack,
                 clinvarTrackVariantsByResidue,
-                <>
-                  <OverlayCategoryFilter
-                    breakpoint={Number.MAX_SAFE_INTEGER}
-                    categories={CLINICAL_SIGNIFICANCE_CATEGORY_OVERLAYS}
-                    categorySelections={clinicalSignificanceSelections}
-                    id="missense-constraint-3d-clinvar-track-included-categories"
-                    onChange={setClinicalSignificanceSelections}
-                  />
-                  <OverlayFilter>
-                    <ClinvarReviewStatusFilter
-                      id="missense-constraint-3d-clinvar-track-review-status"
-                      value={clinvarMinimumStars}
-                      onChange={setClinvarMinimumStars}
+                clinvarTrackFilter && (
+                  <>
+                    <OverlayCategoryFilter
+                      breakpoint={Number.MAX_SAFE_INTEGER}
+                      categories={CLINICAL_SIGNIFICANCE_CATEGORY_OVERLAYS}
+                      categorySelections={
+                        clinvarTrackFilter.filter.includedClinicalSignificanceCategories
+                      }
+                      id="missense-constraint-3d-clinvar-track-included-categories"
+                      onChange={(includedClinicalSignificanceCategories) =>
+                        changeClinvarTrackFilter({ includedClinicalSignificanceCategories })
+                      }
                     />
-                  </OverlayFilter>
-                </>
+                    <OverlayFilter>
+                      <ClinvarReviewStatusFilter
+                        id="missense-constraint-3d-clinvar-track-review-status"
+                        value={clinvarTrackFilter.filter.starFilter}
+                        onChange={(starFilter) => changeClinvarTrackFilter({ starFilter })}
+                      />
+                    </OverlayFilter>
+                  </>
+                )
               )}
             </>
           )}
@@ -1120,34 +1110,41 @@ const StructurePanel = ({
               <OverlayGroupHeading>
                 gnomAD variants table
                 {(isAnyOverlayVisible([TABLE_VARIANTS_OVERLAY_ID]) ||
-                  !areAllCategoriesSelected(consequenceSelections) ||
-                  tableSearchText !== '') &&
+                  (variantTableFilter &&
+                    (!areAllCategoriesSelected(variantTableFilter.filter.includeCategories) ||
+                      variantTableFilter.filter.searchText !== ''))) &&
                   renderSectionReset('gnomAD variants table', () => {
                     onHideOverlays([TABLE_VARIANTS_OVERLAY_ID])
-                    setConsequenceSelections(allCategoriesSelected(CONSEQUENCE_CATEGORY_OVERLAYS))
-                    setTableSearchText('')
+                    changeVariantTableFilter({
+                      includeCategories: DEFAULT_VARIANT_FILTER.includeCategories,
+                      searchText: DEFAULT_VARIANT_FILTER.searchText,
+                    })
                   })}
               </OverlayGroupHeading>
               {renderListedVariantsToggle(
                 TABLE_VARIANTS_OVERLAY_ID,
                 variantIdsInTable,
                 tableVariantsByResidue,
-                <>
-                  <OverlayCategoryFilter
-                    breakpoint={Number.MAX_SAFE_INTEGER}
-                    categories={CONSEQUENCE_CATEGORY_OVERLAYS}
-                    categorySelections={consequenceSelections}
-                    id="missense-constraint-3d-gnomad-table-included-categories"
-                    onChange={setConsequenceSelections}
-                  />
-                  <OverlayFilter>
-                    <SearchInput
-                      placeholder="Search variants"
-                      value={tableSearchText}
-                      onChange={setTableSearchText}
+                variantTableFilter && (
+                  <>
+                    <OverlayCategoryFilter
+                      breakpoint={Number.MAX_SAFE_INTEGER}
+                      categories={CONSEQUENCE_CATEGORY_OVERLAYS}
+                      categorySelections={variantTableFilter.filter.includeCategories}
+                      id="missense-constraint-3d-gnomad-table-included-categories"
+                      onChange={(includeCategories) =>
+                        changeVariantTableFilter({ includeCategories })
+                      }
                     />
-                  </OverlayFilter>
-                </>
+                    <OverlayFilter>
+                      <SearchInput
+                        placeholder="Search variant table"
+                        value={variantTableFilter.filter.searchText}
+                        onChange={(searchText) => changeVariantTableFilter({ searchText })}
+                      />
+                    </OverlayFilter>
+                  </>
+                )
               )}
             </>
           )}

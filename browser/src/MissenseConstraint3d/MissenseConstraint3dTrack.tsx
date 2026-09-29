@@ -6,6 +6,7 @@ import { Button } from '@gnomad/ui'
 import { DatasetId, referenceGenome } from '@gnomad/dataset-metadata/metadata'
 
 import { logButtonClick } from '../analytics'
+import { ClinvarTrackFilter } from '../ClinvarVariantsTrack/ClinvarVariantTrack'
 import ConstraintTrack, {
   PlotWrapper,
   RegionAttributeList,
@@ -22,12 +23,14 @@ import {
   RegionalMissenseConstraint,
 } from '../RegionalMissenseConstraintTrack'
 import { TrackPageSection } from '../TrackPage'
+import { VariantFilterState } from '../VariantList/filterVariants'
 import {
   MissenseConstraint3d,
   MissenseConstraint3dRegion,
   MissenseConstraint3dTrackRegion,
   NO_HIGHLIGHTED_RESIDUES,
   NO_REGION_COLOR,
+  PageFilter,
   RANKED_REGION_COLORS,
   RANKED_REGION_MAX_P_VALUE,
   RegionColorBy,
@@ -214,6 +217,8 @@ type ViewProps = {
   regionalMissenseConstraint: RegionalMissenseConstraint | null
   variantIdsInTable: Set<string> | null
   clinvarVariantIdsInTrack: Set<string> | null
+  clinvarTrackFilter?: PageFilter<ClinvarTrackFilter>
+  variantTableFilter?: PageFilter<VariantFilterState>
   structureSelection: StructureSelection | null
   onChangeStructureSelection?: (selection: StructureSelection | null) => void
 }
@@ -226,6 +231,8 @@ const MissenseConstraint3dView = ({
   regionalMissenseConstraint,
   variantIdsInTable,
   clinvarVariantIdsInTrack,
+  clinvarTrackFilter,
+  variantTableFilter,
   structureSelection,
   onChangeStructureSelection,
 }: ViewProps) => {
@@ -492,6 +499,8 @@ const MissenseConstraint3dView = ({
               onHideOverlays={hideOverlays}
               variantIdsInTable={variantIdsInTable}
               clinvarVariantIdsInTrack={clinvarVariantIdsInTrack}
+              clinvarTrackFilter={clinvarTrackFilter}
+              variantTableFilter={variantTableFilter}
               selectedResidues={structureSelection ? structureSelection.residues : null}
               onSelectResidues={selectResidues}
             />
@@ -510,6 +519,9 @@ type Props = {
   // structure
   variantIdsInTable?: Set<string> | null
   clinvarVariantIdsInTrack?: Set<string> | null
+  // The filters of the ClinVar track and variant table, which the structure's legend also has
+  clinvarTrackFilter?: PageFilter<ClinvarTrackFilter>
+  variantTableFilter?: PageFilter<VariantFilterState>
   // Residues selected on the structure, which the page shows only the variants of
   structureSelection?: StructureSelection | null
   onChangeStructureSelection?: (selection: StructureSelection | null) => void
@@ -521,6 +533,8 @@ const MissenseConstraint3dTrack = ({
   regionalMissenseConstraint = null,
   variantIdsInTable = null,
   clinvarVariantIdsInTrack = null,
+  clinvarTrackFilter,
+  variantTableFilter,
   structureSelection = null,
   onChangeStructureSelection,
 }: Props) => (
@@ -559,6 +573,8 @@ const MissenseConstraint3dTrack = ({
           regionalMissenseConstraint={regionalMissenseConstraint}
           variantIdsInTable={variantIdsInTable}
           clinvarVariantIdsInTrack={clinvarVariantIdsInTrack}
+          clinvarTrackFilter={clinvarTrackFilter}
+          variantTableFilter={variantTableFilter}
           structureSelection={structureSelection}
           onChangeStructureSelection={onChangeStructureSelection}
         />
