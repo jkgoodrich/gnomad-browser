@@ -6,6 +6,7 @@ import os
 import tempfile
 
 import hail as hl
+from gnomad.utils.constraint import oe_confidence_interval
 
 from data_pipeline.datasets.gnomad_v4.gnomad_v4_missense_constraint_3d import (
     prepare_gnomad_v4_missense_constraint_3d,
@@ -40,11 +41,20 @@ def export_missense_constraint_3d(residues_path, uniprot_features_path):
     return {"data": {"gene": {"missense_constraint_3d": json.loads(constraint)}}}
 
 
-# The v4 RMC is in the same gene table the earlier missense constraint demo exported from
+# The v4 RMC is in the same gene table the earlier missense constraint demo exported from. It has no
+# o/e upper bound, so one is added like the 3D regions', with the Gamma method.
 def export_regional_missense_constraint(genes_path):
     genes = hl.read_table(genes_path)
     genes = genes.filter(genes.gene_id == GENE_ID)
-    [regional_missense_constraint] = genes.aggregate(hl.agg.collect(hl.json(genes.gnomad_regional_missense_constraint)))
+    rmc = genes.gnomad_regional_missense_constraint
+    rmc = rmc.annotate(
+        regions=rmc.regions.map(
+            lambda region: region.annotate(
+                obs_exp_upper=oe_confidence_interval(region.obs_mis, region.exp_mis, method="gamma").upper
+            )
+        )
+    )
+    [regional_missense_constraint] = genes.aggregate(hl.agg.collect(hl.json(rmc)))
     regional_missense_constraint = json.loads(regional_missense_constraint)
     # The browser shows GRCh38 coordinates without the "chr" prefix
     for region in regional_missense_constraint["regions"]:
