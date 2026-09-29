@@ -648,6 +648,40 @@ describe('MissenseConstraint3dTrack', () => {
     expect(lastViewerProps(StructureViewer3Dmol).highlightedResidueRanges).toEqual([[2, 3]])
   })
 
+  test('selects all UniProt features at once', async () => {
+    setMockApiResponses({
+      MissenseConstraint3d: () => ({
+        gene: {
+          missense_constraint_3d: {
+            ...missenseConstraint3d,
+            uniprot_features: [
+              ...missenseConstraint3d.uniprot_features,
+              { feature_type: 'binding site', start: 1, stop: 1, note: 'Zinc' },
+            ],
+          },
+        },
+      }),
+      MissenseConstraint3dVariants: () => variantsResponse,
+    })
+    render(<TrackInRegionViewer />)
+    await showStructure()
+    expect(screen.queryByRole('button', { name: 'Reset UniProt features' })).toBeNull()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Select all UniProt features' }))
+    expect((screen.getByLabelText('Binding site (1)') as HTMLInputElement).checked).toBe(true)
+    expect((screen.getByLabelText('Transmembrane (1)') as HTMLInputElement).checked).toBe(true)
+    expect(lastViewerProps(StructureViewer3Dmol).overlays.map(({ id }) => id)).toEqual([
+      'uniprot-binding-site',
+      'uniprot-transmembrane-region',
+    ])
+    // With everything selected, only Reset is offered
+    expect(screen.queryByRole('button', { name: 'Select all UniProt features' })).toBeNull()
+
+    await userEvent.click(screen.getByLabelText('Binding site (1)'))
+    expect(screen.getByRole('button', { name: 'Select all UniProt features' })).not.toBeNull()
+    expect(screen.getByRole('button', { name: 'Reset UniProt features' })).not.toBeNull()
+  })
+
   test('shows UniProt features of single residues as diamonds', async () => {
     setMockApiResponses({
       MissenseConstraint3d: () => ({

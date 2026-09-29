@@ -197,11 +197,18 @@ const OverlayGroupHeading = styled.h3`
   font-size: 1em;
 `
 
-// Resets one section of the legend
-const SectionResetButton = styled(TextButton)`
+// A button at the end of the heading of a section of the legend, like its Reset
+const SectionButton = styled(TextButton)`
   margin-left: auto;
   font-size: 0.85em;
   font-weight: normal;
+`
+
+// For more than one button at the end of a heading
+const SectionButtons = styled.span`
+  display: flex;
+  gap: 0.75em;
+  margin-left: auto;
 `
 
 const OverlaySubgroupHeading = styled.h4`
@@ -487,6 +494,7 @@ type PanelProps = {
   regionalMissenseConstraint: RegionalMissenseConstraint | null
   visibleOverlayIds: Set<string>
   onToggleOverlay: (overlayId: string) => void
+  onShowOverlays: (overlayIds: string[]) => void
   onHideOverlays: (overlayIds: string[]) => void
   // Variants listed in the gene page's variant table, or null if it hasn't loaded
   variantIdsInTable: Set<string> | null
@@ -524,6 +532,7 @@ const StructurePanel = ({
   regionalMissenseConstraint,
   visibleOverlayIds,
   onToggleOverlay,
+  onShowOverlays,
   onHideOverlays,
   variantIdsInTable,
   clinvarVariantIdsInTrack,
@@ -679,6 +688,10 @@ const StructurePanel = ({
     () => uniprotFeatureOverlays(constraint.uniprot_features),
     [constraint]
   )
+  // Those that can be shown, like the checkboxes that aren't disabled
+  const selectableUniprotOverlayIds = uniprotOverlays
+    .filter((overlay) => overlay.count > 0)
+    .map(({ id }) => id)
   const tableVariantsByResidue = useMemo(
     () =>
       variantIdsInTable &&
@@ -752,9 +765,9 @@ const StructurePanel = ({
   )
 
   const renderSectionReset = (sectionLabel: string, onReset: () => void) => (
-    <SectionResetButton aria-label={`Reset ${sectionLabel}`} onClick={onReset}>
+    <SectionButton aria-label={`Reset ${sectionLabel}`} onClick={onReset}>
       Reset
-    </SectionResetButton>
+    </SectionButton>
   )
 
   const isAnyOverlayVisible = (overlayIds: string[]) =>
@@ -1080,10 +1093,22 @@ const StructurePanel = ({
               <OverlayGroupHeading>
                 UniProt features
                 <InfoButton topic="uniprot-features" />
-                {isAnyOverlayVisible(uniprotOverlays.map(({ id }) => id)) &&
-                  renderSectionReset('UniProt features', () =>
-                    onHideOverlays(uniprotOverlays.map(({ id }) => id))
+                <SectionButtons>
+                  {!selectableUniprotOverlayIds.every((overlayId) =>
+                    visibleOverlayIds.has(overlayId)
+                  ) && (
+                    <SectionButton
+                      aria-label="Select all UniProt features"
+                      onClick={() => onShowOverlays(selectableUniprotOverlayIds)}
+                    >
+                      Select all
+                    </SectionButton>
                   )}
+                  {isAnyOverlayVisible(uniprotOverlays.map(({ id }) => id)) &&
+                    renderSectionReset('UniProt features', () =>
+                      onHideOverlays(uniprotOverlays.map(({ id }) => id))
+                    )}
+                </SectionButtons>
               </OverlayGroupHeading>
               {UNIPROT_FEATURE_LEVELS.map(({ level, label }) => {
                 const levelOverlays = uniprotOverlays.filter((overlay) => overlay.level === level)

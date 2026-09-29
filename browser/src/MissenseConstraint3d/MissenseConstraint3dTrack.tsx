@@ -385,6 +385,10 @@ const MissenseConstraint3dView = ({
     [highlightResidues]
   )
 
+  const showOverlays = useCallback((overlayIds: string[]) => {
+    setVisibleOverlayIds((previousOverlayIds) => new Set([...previousOverlayIds, ...overlayIds]))
+  }, [])
+
   const hideOverlays = useCallback((overlayIds: string[]) => {
     setVisibleOverlayIds((previousOverlayIds) => {
       const nextOverlayIds = new Set(previousOverlayIds)
@@ -586,6 +590,7 @@ const MissenseConstraint3dView = ({
               regionalMissenseConstraint={regionalMissenseConstraint}
               visibleOverlayIds={visibleOverlayIds}
               onToggleOverlay={toggleOverlay}
+              onShowOverlays={showOverlays}
               onHideOverlays={hideOverlays}
               variantIdsInTable={variantIdsInTable}
               clinvarVariantIdsInTrack={clinvarVariantIdsInTrack}
