@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
 import { Track } from '@gnomad/region-viewer'
-import { Button } from '@gnomad/ui'
+import { Button, TooltipAnchor, TooltipHint } from '@gnomad/ui'
 import { DatasetId, referenceGenome } from '@gnomad/dataset-metadata/metadata'
 
 import { logButtonClick } from '../analytics'
@@ -153,31 +153,39 @@ const UnassignedResiduePattern = () => (
   </svg>
 )
 
+const RANKED_REGIONS_DESCRIPTION = `Regions with p ≤ ${RANKED_REGION_P_VALUE}, ranked by missense o/e from the most constrained (1). Up to ${RANKED_REGION_COLORS.length} are shown in color, and other regions are gray.`
+
 type RankedRegionsLegendProps = {
-  // Most constrained first
-  rankedRegions: MissenseConstraint3dRegion[]
+  rankedRegionCount: number
   significantRegionCount: number
   interaction?: LegendInteraction
 }
 
 const RankedRegionsLegend = ({
-  rankedRegions,
+  rankedRegionCount,
   significantRegionCount,
   interaction,
 }: RankedRegionsLegendProps) => (
   <>
-    <LegendTitle>{`Significant regions (p ≤ ${RANKED_REGION_P_VALUE}), most constrained first`}</LegendTitle>
+    <LegendTitle>
+      <TooltipAnchor
+        // @ts-expect-error TooltipAnchor's typings are missing its tooltip prop
+        tooltip={RANKED_REGIONS_DESCRIPTION}
+      >
+        <TooltipHint>Rank</TooltipHint>
+      </TooltipAnchor>
+    </LegendTitle>
     <Legend
       interaction={interaction}
       series={[
-        ...rankedRegions.map((region, rank) => ({
-          color: RANKED_REGION_COLORS[rank],
-          label: `${rank + 1} · o/e ${region.obs_exp.toFixed(2)}`,
+        ...RANKED_REGION_COLORS.slice(0, rankedRegionCount).map((color, rank) => ({
+          color,
+          label: `${rank + 1}`,
         })),
         {
           color: NO_REGION_COLOR,
           label:
-            significantRegionCount > rankedRegions.length
+            significantRegionCount > rankedRegionCount
               ? 'Other regions'
               : `Not significant (p > ${RANKED_REGION_P_VALUE})`,
         },
@@ -264,13 +272,6 @@ const MissenseConstraint3dView = ({
       : TRACK_COLOR_BY
 
   const regionRanks = useMemo(() => rankConstrainedRegions(constraint.regions), [constraint])
-  const rankedRegions = useMemo(
-    () =>
-      constraint.regions
-        .filter((region) => regionRanks.has(region.region_index))
-        .sort((a, b) => regionRanks.get(a.region_index)! - regionRanks.get(b.region_index)!),
-    [constraint, regionRanks]
-  )
   const significantRegionCount = constraint.regions.filter(isSignificantRegion).length
 
   const constrainedRegions = useMemo(() => {
@@ -462,7 +463,7 @@ const MissenseConstraint3dView = ({
         trackTitle="Ranked 3D regions"
         legend={
           <RankedRegionsLegend
-            rankedRegions={rankedRegions}
+            rankedRegionCount={regionRanks.size}
             significantRegionCount={significantRegionCount}
             interaction={regionLegendInteraction(colorRegion)}
           />

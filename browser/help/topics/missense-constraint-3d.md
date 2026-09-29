@@ -23,7 +23,7 @@ The track colors each region by the upper bound of its missense o/e confidence i
 
 - **Missense o/e**: each region's missense o/e ratio, with the same colors.
 - **o/e upper bound**: like the track.
-- **Regions**: the 10 regions with the lowest o/e among those with p ≤ 1e-3 in distinct colors, ranked from most to least constrained. The legend lists each colored region's rank and o/e. Other regions are gray.
+- **Regions**: the 10 regions with the lowest o/e among those with p ≤ 1e-3 in distinct colors, ranked from most to least constrained. The legend lists each colored region's rank. Other regions are gray.
 - **RMC o/e** (when regional missense constraint is available for the gene): the missense o/e of the [regional missense constraint](/help/regional-constraint) region containing each residue, using the same colors as the regional missense constraint track.
 - **RMC o/e upper** (when the upper bounds of regional missense constraint are available): the same, using the upper bound of each region's o/e confidence interval.
 - **pLDDT**: AlphaFold's confidence in each residue's predicted position, using the AlphaFold Protein Structure Database's colors.

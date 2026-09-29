@@ -893,10 +893,15 @@ describe('MissenseConstraint3dTrack', () => {
     await userEvent.click(screen.getByLabelText('Regions'))
     // On a track of its own, below the track of o/e upper bounds
     expect(screen.getByText('Ranked 3D regions')).not.toBeNull()
+    // Details of the ranking are in a tooltip, which keeps the legend short
+    expect(screen.queryByText(/ranked by missense o\/e/)).toBeNull()
+    await userEvent.hover(screen.getByText('Rank'))
     expect(
-      screen.getByText('Significant regions (p ≤ 1e-3), most constrained first')
+      screen.getByText(
+        'Regions with p ≤ 1e-3, ranked by missense o/e from the most constrained (1). Up to 10 are shown in color, and other regions are gray.'
+      )
     ).not.toBeNull()
-    expect(screen.getByText('1 · o/e 0.05')).not.toBeNull()
+    expect(screen.getByRole('button', { name: '1' })).not.toBeNull()
     expect(screen.getByText('Not significant (p > 1e-3)')).not.toBeNull()
     expect(screen.getAllByText('Unassigned residue')).toHaveLength(2)
   })
@@ -984,7 +989,7 @@ describe('MissenseConstraint3dTrack', () => {
     expect(structureSelectionShown()).toBeNull()
 
     await userEvent.click(screen.getByLabelText('Regions'))
-    await userEvent.hover(screen.getByRole('button', { name: '1 · o/e 0.05' }))
+    await userEvent.hover(screen.getByRole('button', { name: '1' }))
     expect(lastViewerProps(StructureViewer3Dmol).highlightedResidueRanges).toEqual([[1, 2]])
   })
 
