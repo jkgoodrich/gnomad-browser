@@ -697,10 +697,37 @@ describe('MissenseConstraint3dTrack', () => {
       NO_REGION_COLOR,
       ...PLDDT_BANDS.map((band) => band.color),
     ])
-    expect(screen.getByText('Very high (pLDDT > 90)')).not.toBeNull()
+    expect(screen.getByText('AlphaFold confidence')).not.toBeNull()
 
     await userEvent.hover(screen.getByRole('button', { name: 'Very high (pLDDT > 90)' }))
     expect(lastViewerProps(StructureViewer3Dmol).highlightedResidueRanges).toEqual([[1, 1]])
+  })
+
+  test('shows the pLDDT of the loaded structure along the gene', async () => {
+    const { container } = render(<TrackInRegionViewer />)
+    await showStructure()
+    expect(screen.queryByText('AlphaFold pLDDT')).toBeNull()
+
+    const plddtByResidue: number[] = []
+    plddtByResidue[1] = 95
+    plddtByResidue[2] = 92
+    plddtByResidue[3] = 60
+    plddtByResidue[4] = 30
+    act(() => lastViewerProps(StructureViewer3Dmol).onLoadStructure(plddtByResidue))
+    expect(screen.getByText('AlphaFold pLDDT')).not.toBeNull()
+
+    // Residues 1 and 2 are both very high, and residues 3 and 4 are in the other coding exon
+    const plddtRuns = Array.from(container.querySelectorAll('rect[height="15"]')).filter((rect) =>
+      PLDDT_BANDS.some((band) => band.color === rect.getAttribute('fill'))
+    )
+    expect(plddtRuns.map((rect) => rect.getAttribute('fill'))).toEqual([
+      PLDDT_BANDS[0].color,
+      PLDDT_BANDS[2].color,
+      PLDDT_BANDS[3].color,
+    ])
+
+    await userEvent.hover(plddtRuns[0])
+    expect(lastViewerProps(StructureViewer3Dmol).highlightedResidueRanges).toEqual([[1, 2]])
   })
 
   test('can show the structure without colors', async () => {

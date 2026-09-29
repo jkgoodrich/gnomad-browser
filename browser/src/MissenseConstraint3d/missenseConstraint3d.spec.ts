@@ -24,6 +24,7 @@ import {
   placeVariantsOnSequence,
   plddtColor,
   plddtResidueColors,
+  plddtRunsOnGenome,
   rankConstrainedRegions,
   regionColor,
   regionalMissenseConstraintByResidue,
@@ -457,5 +458,29 @@ describe('pLDDT colors', () => {
     plddtByResidue[1] = 95
     plddtByResidue[2] = 30
     expect(plddtResidueColors(plddtByResidue)).toEqual([NO_REGION_COLOR, veryHigh, veryLow])
+  })
+
+  test('group consecutive residues in the same band, placed on the genome', () => {
+    const plddtByResidue: number[] = []
+    plddtByResidue[1] = 95
+    plddtByResidue[2] = 92
+    plddtByResidue[3] = 60
+    plddtByResidue[4] = 61
+    expect(
+      plddtRunsOnGenome(plddtByResidue, { strand: '+', exons: codingExons }, '1').map(
+        ({ start, stop, aa_start, aa_stop, band, minPlddt, maxPlddt }) => [
+          start,
+          stop,
+          aa_start,
+          aa_stop,
+          band.color,
+          minPlddt,
+          maxPlddt,
+        ]
+      )
+    ).toEqual([
+      [100, 105, 1, 2, veryHigh, 92, 95],
+      [200, 205, 3, 4, low, 60, 61],
+    ])
   })
 })

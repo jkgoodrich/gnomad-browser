@@ -466,6 +466,9 @@ type PanelProps = {
   highlightedResidueRanges: ResidueRange[]
   onHighlightResidues: (residueRanges: ResidueRange[]) => void
   onHoverRegion: (region: MissenseConstraint3dRegion | null) => void
+  // AlphaFold's confidence in each residue of the loaded structure, which the track also shows
+  plddtByResidue: number[] | null
+  onLoadStructure: (plddtByResidue: number[]) => void
   pinnedRegion: MissenseConstraint3dRegion | null
   onChangePinnedRegion: (region: MissenseConstraint3dRegion | null) => void
   regionalMissenseConstraint: RegionalMissenseConstraint | null
@@ -501,6 +504,8 @@ const StructurePanel = ({
   highlightedResidueRanges,
   onHighlightResidues,
   onHoverRegion,
+  plddtByResidue,
+  onLoadStructure,
   pinnedRegion,
   onChangePinnedRegion,
   regionalMissenseConstraint,
@@ -527,7 +532,6 @@ const StructurePanel = ({
   const [hoveredResidue, setHoveredResidue] = useState<HoveredResidue | null>(null)
   const [resetViewCount, setResetViewCount] = useState(0)
   const [structureViewer, setStructureViewer] = useState(initialStructureViewer)
-  const [plddtByResidue, setPlddtByResidue] = useState<number[] | null>(null)
   const viewerWrapper = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -961,7 +965,7 @@ const StructurePanel = ({
               resetViewCount={resetViewCount}
               onHoverResidue={hoverResidue}
               onClickResidue={onClickResidue}
-              onLoadStructure={setPlddtByResidue}
+              onLoadStructure={onLoadStructure}
             />
           </Suspense>
           {selectionMode === 'box' && (

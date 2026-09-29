@@ -55,6 +55,7 @@ import {
 } from './missenseConstraint3d'
 import MissenseConstraint3dRegionAttributes from './MissenseConstraint3dRegionAttributes'
 import MissenseConstraint3dStructurePanel from './MissenseConstraint3dStructurePanel'
+import PlddtTrack from './PlddtTrack'
 import UniprotFeatureTracks from './UniprotFeatureTracks'
 
 const TRACK_TITLE = '3D missense constraint'
@@ -244,6 +245,8 @@ const MissenseConstraint3dView = ({
   const [hoverHighlight, setHoverHighlight] = useState<Highlight>(NO_HIGHLIGHT)
   // In Regions mode, a region clicked to keep it highlighted, like while rotating the structure
   const [pinnedRegion, setPinnedRegion] = useState<MissenseConstraint3dRegion | null>(null)
+  // AlphaFold's confidence in each residue, from the structure once it's loaded
+  const [plddtByResidue, setPlddtByResidue] = useState<number[] | null>(null)
   // Variants and features shown on the structure
   const [visibleOverlayIds, setVisibleOverlayIds] = useState<Set<string>>(new Set())
 
@@ -466,6 +469,15 @@ const MissenseConstraint3dView = ({
       />
       {isStructureShown && (
         <>
+          {plddtByResidue && (
+            <PlddtTrack
+              plddtByResidue={plddtByResidue}
+              chrom={gene.chrom}
+              strand={gene.strand}
+              transcript={transcript}
+              onHighlightResidues={highlightResidues}
+            />
+          )}
           <UniprotFeatureTracks
             uniprotId={constraint.uniprot_id}
             transcriptId={constraint.transcript_id}
@@ -491,6 +503,8 @@ const MissenseConstraint3dView = ({
               highlightedResidueRanges={highlight.residueRanges}
               onHighlightResidues={highlightResidues}
               onHoverRegion={highlightRegion}
+              plddtByResidue={plddtByResidue}
+              onLoadStructure={setPlddtByResidue}
               pinnedRegion={pinnedRegion}
               onChangePinnedRegion={setPinnedRegion}
               regionalMissenseConstraint={regionalMissenseConstraint}

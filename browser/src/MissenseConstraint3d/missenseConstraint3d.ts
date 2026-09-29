@@ -193,7 +193,11 @@ export const PLDDT_BANDS = [
   { minimum: -Infinity, label: 'Very low (pLDDT < 50)', color: '#ff7d45' },
 ]
 
-export const plddtColor = (plddt: number) => PLDDT_BANDS.find((band) => plddt > band.minimum)!.color
+export type PlddtBand = (typeof PLDDT_BANDS)[number]
+
+export const plddtBand = (plddt: number) => PLDDT_BANDS.find((band) => plddt > band.minimum)!
+
+export const plddtColor = (plddt: number) => plddtBand(plddt).color
 
 export const plddtResidueColors = (plddtByResidue: (number | undefined)[]) =>
   Array.from(plddtByResidue, (plddt) => (plddt === undefined ? NO_REGION_COLOR : plddtColor(plddt)))
@@ -493,6 +497,42 @@ export const segmentsOnGenome = (
       region,
     }))
   )
+}
+
+// Consecutive residues in the same pLDDT band, placed on the genome, for display in the region viewer
+export type PlddtRunOnGenome = {
+  chrom: string
+  start: number
+  stop: number
+  aa_start: number
+  aa_stop: number
+  band: PlddtBand
+  minPlddt: number
+  maxPlddt: number
+}
+
+export const plddtRunsOnGenome = (
+  plddtByResidue: (number | undefined)[],
+  transcript: TranscriptOnGenome,
+  chrom: string
+): PlddtRunOnGenome[] => {
+  const runs: Omit<PlddtRunOnGenome, 'chrom' | 'start' | 'stop'>[] = []
+  plddtByResidue.forEach((plddt, residue) => {
+    if (plddt === undefined) {
+      return
+    }
+    const band = plddtBand(plddt)
+    const lastRun = runs[runs.length - 1]
+    if (lastRun && lastRun.band === band && lastRun.aa_stop === residue - 1) {
+      lastRun.aa_stop = residue
+      lastRun.minPlddt = Math.min(lastRun.minPlddt, plddt)
+      lastRun.maxPlddt = Math.max(lastRun.maxPlddt, plddt)
+    } else {
+      runs.push({ aa_start: residue, aa_stop: residue, band, minPlddt: plddt, maxPlddt: plddt })
+    }
+  })
+  const onGenome = residueRangesOnGenome(transcript)
+  return runs.map((run) => ({ chrom, ...onGenome([run.aa_start, run.aa_stop]), ...run }))
 }
 
 export const uniprotFeaturesOnGenome = (
