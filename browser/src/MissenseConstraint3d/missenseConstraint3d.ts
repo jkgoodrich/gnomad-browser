@@ -9,6 +9,7 @@ import { LegendInteraction } from '../Legend'
 import {
   RegionalMissenseConstraintRegion,
   missenseObsExpColorScale,
+  regionalMissenseConstraintRegionColor,
 } from '../RegionalMissenseConstraintTrack'
 import {
   VEP_CONSEQUENCE_CATEGORY_COLORS,
@@ -83,7 +84,12 @@ export type RegionColorBy = 'obs_exp' | 'oe_upper' | 'ranked_regions'
 
 // The structure can also be colored by regional missense constraint (RMC) or AlphaFold confidence,
 // neither of which is a property of 3D regions
-export type StructureColorBy = RegionColorBy | 'regional_missense_constraint' | 'plddt' | 'none'
+export type StructureColorBy =
+  | RegionColorBy
+  | 'regional_missense_constraint'
+  | 'regional_missense_constraint_upper'
+  | 'plddt'
+  | 'none'
 
 // Inclusive range of residue numbers, counted from 1
 export type ResidueRange = [number, number]
@@ -639,6 +645,16 @@ export const obsExpBinColor = (value: number) => {
   }
   return missenseObsExpColorScale.darkest
 }
+
+// Like the regional missense constraint track's colors, by the upper bound of each region's o/e
+export const regionalMissenseConstraintUpperRegionColor = (
+  region: RegionalMissenseConstraintRegion
+) =>
+  region.obs_exp_upper === undefined ||
+  region.obs_exp_upper === null ||
+  regionalMissenseConstraintRegionColor(region) === NO_REGION_COLOR
+    ? NO_REGION_COLOR
+    : obsExpBinColor(region.obs_exp_upper)
 
 export type RegionColorOptions = {
   colorBy: RegionColorBy

@@ -199,6 +199,7 @@ const regionalMissenseConstraint: RegionalMissenseConstraint = {
       obs_mis: 5,
       exp_mis: 10,
       obs_exp: 0.5,
+      obs_exp_upper: 0.7,
       p_value: 1e-4,
       z_score: null,
       chisq_diff_null: 10,
@@ -669,6 +670,33 @@ describe('MissenseConstraint3dTrack', () => {
     render(<TrackInRegionViewer />)
     await showStructure()
     expect(screen.queryByLabelText('RMC o/e')).toBeNull()
+    expect(screen.queryByLabelText('RMC o/e upper')).toBeNull()
+  })
+
+  test('colors the structure by the upper bound of regional missense constraint', async () => {
+    render(<TrackInRegionViewer regionalMissenseConstraint={regionalMissenseConstraint} />)
+    await showStructure()
+
+    await userEvent.click(screen.getByLabelText('RMC o/e upper'))
+    expect(lastViewerProps(StructureViewer3Dmol).residueColors.slice(1)).toEqual(
+      Array(4).fill(missenseObsExpColorScale.lighter)
+    )
+    expect(screen.getByText('Regional missense constraint o/e upper bound')).not.toBeNull()
+  })
+
+  test('offers the upper bound of regional missense constraint only when it is known', async () => {
+    const [region] = regionalMissenseConstraint.regions
+    render(
+      <TrackInRegionViewer
+        regionalMissenseConstraint={{
+          ...regionalMissenseConstraint,
+          regions: [{ ...region, obs_exp_upper: undefined }],
+        }}
+      />
+    )
+    await showStructure()
+    expect(screen.getByLabelText('RMC o/e')).not.toBeNull()
+    expect(screen.queryByLabelText('RMC o/e upper')).toBeNull()
   })
 
   test('colors the structure by regional missense constraint', async () => {

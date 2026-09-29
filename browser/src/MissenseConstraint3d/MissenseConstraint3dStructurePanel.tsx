@@ -62,6 +62,7 @@ import {
   placeVariantsOnSequence,
   plddtResidueColors,
   regionalMissenseConstraintByResidue,
+  regionalMissenseConstraintUpperRegionColor,
   regionResidues,
   regionsByResidue,
   residueColors,
@@ -274,6 +275,16 @@ const StructureOnlyColorKey = ({ colorBy, interaction }: StructureOnlyColorKeyPr
       </StructureLegend>
     )
   }
+  if (colorBy === 'regional_missense_constraint_upper') {
+    return (
+      <StructureLegend>
+        <MissenseObsExpLegend
+          title="Regional missense constraint o/e upper bound"
+          interaction={interaction}
+        />
+      </StructureLegend>
+    )
+  }
   return null
 }
 
@@ -417,9 +428,11 @@ const ResidueTooltip = ({
       <div>
         <dt>RMC missense o/e:</dt>
         <dd>
-          {`${regionalMissenseConstraintRegion.obs_exp?.toPrecision(4) ?? '-'} (p = ${
-            regionalMissenseConstraintRegion.p_value?.toExponential(3) ?? '-'
-          })`}
+          {`${regionalMissenseConstraintRegion.obs_exp?.toPrecision(4) ?? '-'} (${
+            regionalMissenseConstraintRegion.obs_exp_upper
+              ? `upper bound ${regionalMissenseConstraintRegion.obs_exp_upper.toPrecision(4)}, `
+              : ''
+          }p = ${regionalMissenseConstraintRegion.p_value?.toExponential(3) ?? '-'})`}
         </dd>
       </div>
     )}
@@ -574,6 +587,11 @@ const StructurePanel = ({
         : null,
     [regionalMissenseConstraint, sequence]
   )
+  const hasRegionalMissenseConstraintUpperBounds =
+    regionalMissenseConstraint !== null &&
+    regionalMissenseConstraint.regions.some(
+      (region) => region.obs_exp_upper !== undefined && region.obs_exp_upper !== null
+    )
   const colors = useMemo(() => {
     if (colorBy === 'none') {
       return residueColors(regionByResidue, () => NO_REGION_COLOR)
@@ -585,6 +603,15 @@ const StructurePanel = ({
       return residueColors(
         regionalMissenseConstraintRegionByResidue,
         regionalMissenseConstraintRegionColor
+      )
+    }
+    if (
+      colorBy === 'regional_missense_constraint_upper' &&
+      regionalMissenseConstraintRegionByResidue
+    ) {
+      return residueColors(
+        regionalMissenseConstraintRegionByResidue,
+        regionalMissenseConstraintUpperRegionColor
       )
     }
     return residueColors(regionByResidue, colorRegion)
@@ -829,6 +856,14 @@ const StructurePanel = ({
               { value: 'ranked_regions', label: 'Regions' },
               ...(regionalMissenseConstraintRegionByResidue
                 ? [{ value: 'regional_missense_constraint' as const, label: 'RMC o/e' }]
+                : []),
+              ...(hasRegionalMissenseConstraintUpperBounds
+                ? [
+                    {
+                      value: 'regional_missense_constraint_upper' as const,
+                      label: 'RMC o/e upper',
+                    },
+                  ]
                 : []),
               { value: 'plddt', label: 'pLDDT' },
               { value: 'none', label: 'None' },

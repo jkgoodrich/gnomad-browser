@@ -28,6 +28,7 @@ Regions that are not significant (p > 1e-3) are colored by their o/e or upper bo
 The structure can also be colored by:
 
 - **RMC o/e** (when regional missense constraint is available for the gene): each residue is colored by the missense o/e of the [regional missense constraint](/help/regional-constraint) region containing it, using the same colors as the regional missense constraint track.
+- **RMC o/e upper** (when the upper bounds of regional missense constraint are available): the same, using the upper bound of each region's o/e confidence interval.
 - **pLDDT**: each residue is colored by AlphaFold's confidence in its predicted position, using the AlphaFold Protein Structure Database's colors.
 
 With these options, the track keeps showing the missense o/e of each 3D region.

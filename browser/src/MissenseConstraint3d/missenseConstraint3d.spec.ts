@@ -28,6 +28,7 @@ import {
   rankConstrainedRegions,
   regionColor,
   regionalMissenseConstraintByResidue,
+  regionalMissenseConstraintUpperRegionColor,
   regionsByResidue,
   residueColors,
   residueNamesMatchSequence,
@@ -436,6 +437,26 @@ test('structure residues are checked against the protein sequence', () => {
 
 test('formatResidue', () => {
   expect(formatResidue('GLY', 826)).toBe('Gly826')
+})
+
+test('regional missense constraint regions can be colored by their o/e upper bound', () => {
+  const rmcRegion = (params: Partial<RegionalMissenseConstraintRegion>) =>
+    ({
+      obs_exp: 0.5,
+      obs_exp_upper: 0.7,
+      p_value: 1e-4,
+      ...params,
+    } as RegionalMissenseConstraintRegion)
+  expect(regionalMissenseConstraintUpperRegionColor(rmcRegion({}))).toBe(
+    missenseObsExpColorScale.lighter
+  )
+  // Like the regional missense constraint track, regions that aren't significant are gray
+  expect(regionalMissenseConstraintUpperRegionColor(rmcRegion({ p_value: 0.5 }))).toBe(
+    NO_REGION_COLOR
+  )
+  expect(regionalMissenseConstraintUpperRegionColor(rmcRegion({ obs_exp_upper: null }))).toBe(
+    NO_REGION_COLOR
+  )
 })
 
 describe('pLDDT colors', () => {

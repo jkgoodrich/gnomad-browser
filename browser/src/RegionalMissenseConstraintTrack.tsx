@@ -24,6 +24,8 @@ export type RegionalMissenseConstraintRegion = {
   obs_mis: number | null
   exp_mis: number | null
   obs_exp: number | null
+  // The upper bound of the o/e's confidence interval, where it's known
+  obs_exp_upper?: number | null
   chisq_diff_null: number | undefined
   p_value: number
   z_score: number | null

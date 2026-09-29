@@ -253,7 +253,10 @@ const MissenseConstraint3dView = ({
   // The track shows 3D regions, so it keeps their o/e colors while the structure shows RMC, pLDDT or
   // no colors
   const regionColorBy: RegionColorBy =
-    colorBy === 'regional_missense_constraint' || colorBy === 'plddt' || colorBy === 'none'
+    colorBy === 'regional_missense_constraint' ||
+    colorBy === 'regional_missense_constraint_upper' ||
+    colorBy === 'plddt' ||
+    colorBy === 'none'
       ? 'obs_exp'
       : colorBy
 
