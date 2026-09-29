@@ -616,6 +616,21 @@ describe('MissenseConstraint3dTrack', () => {
     ])
   })
 
+  test('lists UniProt features before the variants of other sections of the page', async () => {
+    render(
+      <TrackInRegionViewer
+        variantIdsInTable={new Set(['12-103-C-T'])}
+        clinvarVariantIdsInTrack={new Set(['12-104-A-G'])}
+      />
+    )
+    await showStructure()
+
+    const headings = screen.getAllByRole('heading').map((heading) => heading.textContent!)
+    const position = (name: string) => headings.findIndex((heading) => heading.startsWith(name))
+    expect(position('UniProt features')).toBeLessThan(position('ClinVar track'))
+    expect(position('ClinVar track')).toBeLessThan(position('gnomAD variants table'))
+  })
+
   test('sets the transparency and size of variants and features on the structure', async () => {
     render(<TrackInRegionViewer />)
     await showStructure()

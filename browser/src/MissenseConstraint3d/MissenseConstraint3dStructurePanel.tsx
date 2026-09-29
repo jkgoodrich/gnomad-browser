@@ -1054,6 +1054,29 @@ const StructurePanel = ({
               onChange={(event) => setOverlaySize(Number(event.target.value))}
             />
           </SliderControl>
+          {uniprotOverlays.length > 0 && (
+            <>
+              <OverlayGroupHeading>
+                UniProt features
+                <InfoButton topic="uniprot-features" />
+                {isAnyOverlayVisible(uniprotOverlays.map(({ id }) => id)) &&
+                  renderSectionReset('UniProt features', () =>
+                    onHideOverlays(uniprotOverlays.map(({ id }) => id))
+                  )}
+              </OverlayGroupHeading>
+              {UNIPROT_FEATURE_LEVELS.map(({ level, label }) => {
+                const levelOverlays = uniprotOverlays.filter((overlay) => overlay.level === level)
+                return (
+                  levelOverlays.length > 0 && (
+                    <React.Fragment key={level}>
+                      <OverlaySubgroupHeading>{label}</OverlaySubgroupHeading>
+                      {renderOverlayList(levelOverlays)}
+                    </React.Fragment>
+                  )
+                )
+              })}
+            </>
+          )}
           {clinvarVariantIdsInTrack && clinvarTrackVariantsByResidue && (
             <>
               <OverlayGroupHeading>
@@ -1126,29 +1149,6 @@ const StructurePanel = ({
                   </OverlayFilter>
                 </>
               )}
-            </>
-          )}
-          {uniprotOverlays.length > 0 && (
-            <>
-              <OverlayGroupHeading>
-                UniProt features
-                <InfoButton topic="uniprot-features" />
-                {isAnyOverlayVisible(uniprotOverlays.map(({ id }) => id)) &&
-                  renderSectionReset('UniProt features', () =>
-                    onHideOverlays(uniprotOverlays.map(({ id }) => id))
-                  )}
-              </OverlayGroupHeading>
-              {UNIPROT_FEATURE_LEVELS.map(({ level, label }) => {
-                const levelOverlays = uniprotOverlays.filter((overlay) => overlay.level === level)
-                return (
-                  levelOverlays.length > 0 && (
-                    <React.Fragment key={level}>
-                      <OverlaySubgroupHeading>{label}</OverlaySubgroupHeading>
-                      {renderOverlayList(levelOverlays)}
-                    </React.Fragment>
-                  )
-                )
-              })}
             </>
           )}
         </OverlayPanel>
