@@ -281,6 +281,24 @@ exports[`MissenseConstraint3dTrack has no unexpected changes 1`] = `
                 y={1}
               />
             </g>
+            <rect
+              fill="none"
+              height={15}
+              pointerEvents="none"
+              stroke="black"
+              width={19.841269841269835}
+              x={39.682539682539684}
+              y={1}
+            />
+            <rect
+              fill="none"
+              height={15}
+              pointerEvents="none"
+              stroke="black"
+              width={19.84126984126982}
+              x={436.5079365079365}
+              y={1}
+            />
             <g
               transform="translate(0,20)"
             />

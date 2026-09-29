@@ -302,8 +302,9 @@ const hoverResidue = (residueNumber: number | null) =>
 const highlightedResidueRanges = () =>
   lastViewerProps(StructureViewer3Dmol).highlightedResidueRanges
 
+// Of regions wide enough for black borders, which exon outlines also have
 const trackRegionFills = (container: HTMLElement) =>
-  Array.from(container.querySelectorAll('rect[stroke="black"]'), (rect) =>
+  Array.from(container.querySelectorAll('rect[stroke="black"]:not([fill="none"])'), (rect) =>
     rect.getAttribute('fill')
   )
 
@@ -324,7 +325,7 @@ describe('MissenseConstraint3dTrack', () => {
     expect(renderer.create(<TrackInRegionViewer />)).toMatchSnapshot()
   })
 
-  test('draws segments too narrow to show their color with borders only at their tops, bottoms and exon ends', () => {
+  test('draws segments too narrow for black borders with borders of their own color, and outlines exons', () => {
     // Residues 1 and 2, in different regions, share the first exon, and 3-4 fill the second
     setMockApiResponses({
       MissenseConstraint3d: () => ({
@@ -355,28 +356,28 @@ describe('MissenseConstraint3dTrack', () => {
       </MemoryRouter>
     )
 
-    // The lines a segment's borders can have, from its left edge to its right
-    const borderLines = (segment: Element) => {
-      expect(segment.getAttribute('stroke')).toBeNull()
-      const borders = segment.nextElementSibling!
-      expect(borders.getAttribute('stroke')).toBe('black')
-      const d = borders.getAttribute('d')!
-      const [, x, stopX] = d.match(/^M([\d.]+),1H([\d.]+)/)!
-      expect(x).toBe(segment.getAttribute('x'))
-      expect(Number(stopX)).toBeCloseTo(Number(x) + Number(segment.getAttribute('width')))
-      return {
-        d,
-        topAndBottom: `M${x},1H${stopX}M${x},16H${stopX}`,
-        left: `M${x},1V16`,
-        right: `M${stopX},1V16`,
-      }
-    }
-    const segments = Array.from(container.querySelectorAll('rect[height="15"]'))
+    const segments = Array.from(container.querySelectorAll('rect[height="15"]:not([fill="none"])'))
     expect(segments).toHaveLength(3)
-    const [startOfExon, endOfExon, wholeExon] = segments.map(borderLines)
-    expect(startOfExon.d).toBe(startOfExon.topAndBottom + startOfExon.left)
-    expect(endOfExon.d).toBe(endOfExon.topAndBottom + endOfExon.right)
-    expect(wholeExon.d).toBe(wholeExon.topAndBottom + wholeExon.left + wholeExon.right)
+    segments.forEach((segment) => {
+      expect(segment.getAttribute('stroke')).toBe(segment.getAttribute('fill'))
+    })
+
+    // A black outline around each exon
+    const [firstExonStart, firstExonEnd, secondExon] = segments
+    const exonOutlines = Array.from(container.querySelectorAll('rect[fill="none"]'))
+    expect(exonOutlines.map((outline) => outline.getAttribute('stroke'))).toEqual([
+      'black',
+      'black',
+    ])
+    const edges = (rect: Element) => [
+      Number(rect.getAttribute('x')),
+      Number(rect.getAttribute('x')) + Number(rect.getAttribute('width')),
+    ]
+    const [firstExonOutline, secondExonOutline] = exonOutlines.map(edges)
+    expect(firstExonOutline[0]).toBe(edges(firstExonStart)[0])
+    expect(firstExonOutline[1]).toBeCloseTo(edges(firstExonEnd)[1])
+    expect(secondExonOutline[0]).toBe(edges(secondExon)[0])
+    expect(secondExonOutline[1]).toBeCloseTo(edges(secondExon)[1])
   })
 
   test('lists the size and constraint of each region', async () => {

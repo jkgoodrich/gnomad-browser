@@ -127,6 +127,50 @@ describe('ConstraintTrack', () => {
     expect(screen.getByRole('button', { name: 'Track control' })).not.toBeNull()
   })
 
+  test('draws regions too narrow for black borders with borders of their own color, and outlines exons in black', () => {
+    const regions = [
+      { start: 10, stop: 30 },
+      { start: 31, stop: 32 },
+      { start: 50, stop: 51 },
+    ].map((position) => ({
+      ...position,
+      unclamped_start: position.start,
+      unclamped_stop: position.stop,
+    }))
+    const { container } = renderTrack({ constrainedRegions: regions, minWidthForBorder: 10 })
+    const scalePosition = regionViewerScale(viewerRegions, [0, 500])
+    const x = (position: number) => `${scalePosition(position)}`
+
+    // Black borders are drawn last, over the borders of narrower regions
+    const regionRects = Array.from(container.querySelectorAll('rect[fill="red"]'))
+    expect(
+      regionRects.map((rect) => [rect.getAttribute('x'), rect.getAttribute('stroke')])
+    ).toEqual([
+      [x(31), 'red'],
+      [x(50), 'red'],
+      [x(10), 'black'],
+    ])
+
+    // Runs of adjacent regions, like the regions in an exon, are outlined
+    const outlines = Array.from(container.querySelectorAll('rect[fill="none"]'))
+    expect(
+      outlines.map((rect) => [
+        rect.getAttribute('x'),
+        Number(rect.getAttribute('width')),
+        rect.getAttribute('stroke'),
+      ])
+    ).toEqual([
+      [x(10), scalePosition(32) - scalePosition(10), 'black'],
+      [x(50), scalePosition(51) - scalePosition(50), 'black'],
+    ])
+  })
+
+  test('outlines only regions themselves when they are all wide enough for black borders', () => {
+    const { container } = renderTrack({})
+    expect(container.querySelector('rect[fill="red"]')!.getAttribute('stroke')).toBe('black')
+    expect(container.querySelector('rect[fill="none"]')).toBeNull()
+  })
+
   test('reports the region under the cursor', async () => {
     const onHoverRegion = jest.fn()
     const { container } = renderTrack({ onHoverRegion })

@@ -97,8 +97,8 @@ type Props<R extends GenericRegion> = {
   onClickRegion?: (region: RegionWithUnclamped<R>) => void
   // Color to outline a region with, over the others, or null for none
   outlineFn?: (region: R) => string | null
-  // Regions narrower than this, in pixels, have borders only at the top and bottom, and at the ends
-  // of runs of adjacent regions like exons, since borders at their sides would hide their color
+  // Regions narrower than this, in pixels, have borders of their own color, since black borders
+  // would hide it. Runs of adjacent regions, like exons, are then outlined in black.
   minWidthForBorder?: number
 }
 
@@ -141,17 +141,19 @@ export const regionsInExons = <R extends GenericRegion>(
   return intersections
 }
 
-// Whether each region starts or ends a run of adjacent regions, like the regions in an exon when
-// they are clamped to exons
-const withRunEnds = <R extends GenericRegion>(regions: R[]) => {
-  const starts = new Set(regions.map((region) => region.start))
-  const stops = new Set(regions.map((region) => region.stop))
-  return regions.map((region) => ({
-    region,
-    isRunStart: !stops.has(region.start - 1),
-    isRunEnd: !starts.has(region.stop + 1),
-  }))
-}
+// Runs of adjacent regions, like the regions in each exon when they are clamped to exons
+const regionRuns = (regions: GenericRegion[]) =>
+  [...regions]
+    .sort((a, b) => a.start - b.start)
+    .reduce((runs: GenericRegion[], { start, stop }) => {
+      const lastRun = runs[runs.length - 1]
+      if (lastRun && start <= lastRun.stop + 1) {
+        lastRun.stop = Math.max(lastRun.stop, stop)
+      } else {
+        runs.push({ start, stop })
+      }
+      return runs
+    }, [])
 
 const ConstraintTrack = <R extends GenericRegion>({
   trackTitle,
@@ -195,14 +197,17 @@ const ConstraintTrack = <R extends GenericRegion>({
           <PlotWrapper>
             <svg height={55} width={width}>
               {!allRegions && <rect x={0} y={7.5} width={width} height={1} />}
-              {withRunEnds(constrainedRegions).map(({ region, isRunStart, isRunEnd }) => {
-                const startX = scalePosition(region.start)
-                const stopX = scalePosition(region.stop)
-                const regionWidth = stopX - startX
-                const hasSideBorders =
-                  minWidthForBorder === undefined || regionWidth >= minWidthForBorder
-
-                return (
+              {constrainedRegions
+                .map((region: RegionWithUnclamped<R>) => {
+                  const startX = scalePosition(region.start)
+                  const regionWidth = scalePosition(region.stop) - startX
+                  const hasBlackBorder =
+                    minWidthForBorder === undefined || regionWidth >= minWidthForBorder
+                  return { region, startX, regionWidth, hasBlackBorder }
+                })
+                // Black borders are drawn over the borders of narrower regions
+                .sort((a, b) => Number(a.hasBlackBorder) - Number(b.hasBlackBorder))
+                .map(({ region, startX, regionWidth, hasBlackBorder }) => (
                   <TooltipAnchor
                     key={`${region.start}-${region.stop}`}
                     // @ts-expect-error need to redefine TooltipAnchor to allow arbitrary props for the children type-safely
@@ -218,30 +223,31 @@ const ConstraintTrack = <R extends GenericRegion>({
                         width={regionWidth}
                         height={15}
                         fill={colorFn(region)}
-                        stroke={hasSideBorders ? 'black' : undefined}
+                        stroke={hasBlackBorder ? 'black' : colorFn(region)}
                         onMouseEnter={onHoverRegion && (() => onHoverRegion(region))}
                         onMouseLeave={onHoverRegion && (() => onHoverRegion(null))}
                         onClick={onClickRegion && (() => onClickRegion(region))}
                         style={onClickRegion && { cursor: 'pointer' }}
                       />
-                      {!hasSideBorders && (
-                        <path
-                          // Borders at the top and bottom, and at the ends of a run of adjacent
-                          // regions, so that exons keep their outline
-                          d={[
-                            `M${startX},1H${stopX}M${startX},16H${stopX}`,
-                            isRunStart ? `M${startX},1V16` : '',
-                            isRunEnd ? `M${stopX},1V16` : '',
-                          ].join('')}
-                          fill="none"
-                          stroke="black"
-                          pointerEvents="none"
-                        />
-                      )}
                     </g>
                   </TooltipAnchor>
-                )
-              })}
+                ))}
+              {minWidthForBorder !== undefined &&
+                regionRuns(constrainedRegions).map((run) => {
+                  const startX = scalePosition(run.start)
+                  return (
+                    <rect
+                      key={`${run.start}-${run.stop}`}
+                      x={startX}
+                      y={1}
+                      width={scalePosition(run.stop) - startX}
+                      height={15}
+                      fill="none"
+                      stroke="black"
+                      pointerEvents="none"
+                    />
+                  )
+                })}
               {outlineFn &&
                 constrainedRegions.map((region: RegionWithUnclamped<R>) => {
                   const outline = outlineFn(region)
