@@ -33,6 +33,8 @@ import {
   residuesOnGenome,
   segmentsOnGenome,
   toggleResidues,
+  variantMatchesSearch,
+  variantsIncluded,
   uniprotFeatureOverlays,
   uniprotFeaturesOnGenome,
 } from './missenseConstraint3d'
@@ -51,7 +53,9 @@ const region = (params: Partial<MissenseConstraint3dRegion>): MissenseConstraint
 
 const variant = (params: Partial<MissenseConstraint3dVariant>): MissenseConstraint3dVariant => ({
   variant_id: '1-100-A-G',
+  rsids: null,
   consequence: 'missense_variant',
+  hgvsc: null,
   hgvsp: 'p.Ala2Val',
   ...params,
 })
@@ -283,6 +287,39 @@ test('regional missense constraint regions are placed by their amino acids', () 
     true,
     true,
   ])
+})
+
+describe('variantMatchesSearch', () => {
+  const searchedVariant = variant({
+    variant_id: '12-13615149-C-T',
+    rsids: ['rs1057519479'],
+    hgvsc: 'c.1619G>A',
+    hgvsp: 'p.Arg540His',
+  })
+
+  test.each(['', '12-13615149', 'RS1057519479', 'c.1619', 'arg540his', 'p.Gly2Asp, p.Arg540'])(
+    'matches %p',
+    (searchText) => {
+      expect(variantMatchesSearch(searchedVariant, searchText)).toBe(true)
+    }
+  )
+
+  test('matches none of the terms of another variant', () => {
+    expect(variantMatchesSearch(searchedVariant, 'p.Gly2Asp, rs123')).toBe(false)
+  })
+})
+
+test('only included variants are kept, by residue', () => {
+  const variantsByResidue = new Map([
+    [2, [variant({ variant_id: 'a' }), variant({ variant_id: 'b' })]],
+    [3, [variant({ variant_id: 'c' })]],
+  ])
+  expect(
+    Array.from(
+      variantsIncluded(variantsByResidue, ({ variant_id: variantId }) => variantId !== 'c'),
+      ([residue, residueVariants]) => [residue, residueVariants.map((v) => v.variant_id)]
+    )
+  ).toEqual([[2, ['a', 'b']]])
 })
 
 describe('placeVariantsOnSequence', () => {

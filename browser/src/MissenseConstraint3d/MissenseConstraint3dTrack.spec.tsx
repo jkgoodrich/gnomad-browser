@@ -159,12 +159,16 @@ const variantsResponse = {
     variants: [
       {
         variant_id: '12-103-C-T',
+        rsids: ['rs1'],
         consequence: 'missense_variant',
+        hgvsc: 'c.5C>T',
         hgvsp: 'p.Ala2Val',
       },
       {
         variant_id: '12-201-G-A',
+        rsids: null,
         consequence: 'missense_variant',
+        hgvsc: null,
         hgvsp: 'p.Gly2Asp',
       },
     ],
@@ -558,6 +562,44 @@ describe('MissenseConstraint3dTrack', () => {
     expect(lastViewerProps(StructureViewer3Dmol).overlays.map(({ id }) => id)).toEqual([
       'gnomad-table-missense',
     ])
+  })
+
+  test('searches the variant table variants on the structure', async () => {
+    render(<TrackInRegionViewer variantIdsInTable={new Set(['12-103-C-T'])} />)
+    await showStructure()
+    await userEvent.click(screen.getByLabelText('Current selection (1 of 1)'))
+
+    const search = screen.getByPlaceholderText('Search variants')
+    await userEvent.type(search, 'p.Gly')
+    expect(lastViewerProps(StructureViewer3Dmol).overlays).toEqual([])
+
+    await userEvent.clear(search)
+    await userEvent.type(search, 'RS1')
+    expect(lastViewerProps(StructureViewer3Dmol).overlays.map(({ id }) => id)).toEqual([
+      'gnomad-table-missense',
+    ])
+
+    await userEvent.click(screen.getByRole('button', { name: 'Reset gnomAD variants table' }))
+    expect((screen.getByPlaceholderText('Search variants') as HTMLInputElement).value).toBe('')
+  })
+
+  test('filters the ClinVar track variants on the structure by review status', async () => {
+    render(<TrackInRegionViewer clinvarVariantIdsInTrack={new Set(['12-104-A-G'])} />)
+    await showStructure()
+    await userEvent.click(screen.getByLabelText('Current selection (1 of 1)'))
+    const reviewStatusFilter = () => screen.getByLabelText(/review status/) as HTMLSelectElement
+
+    // The variant has 2 stars
+    await userEvent.selectOptions(reviewStatusFilter(), '3')
+    expect(lastViewerProps(StructureViewer3Dmol).overlays).toEqual([])
+    await userEvent.selectOptions(reviewStatusFilter(), '2')
+    expect(lastViewerProps(StructureViewer3Dmol).overlays.map(({ id }) => id)).toEqual([
+      'clinvar-track-pathogenic',
+    ])
+
+    await userEvent.selectOptions(reviewStatusFilter(), '4')
+    await userEvent.click(screen.getByRole('button', { name: 'Reset ClinVar track' }))
+    expect(reviewStatusFilter().value).toBe('0')
   })
 
   test('filters the ClinVar track variants on the structure by clinical significance', async () => {

@@ -751,7 +751,7 @@ exports[`Clinvar Variants Track renders correctly with default props 1`] = `
           Only show ClinVar variants that are in gnomAD
         </label>
         <label
-          htmlFor="star-filtering"
+          htmlFor="clinvar-star-filter"
         >
           Filter by
            
@@ -1652,7 +1652,7 @@ exports[`Clinvar Variants Track renders the collapsed binned-variants plot corre
           Only show ClinVar variants that are in gnomAD
         </label>
         <label
-          for="star-filtering"
+          for="clinvar-star-filter"
         >
           Filter by 
           <a
@@ -4958,7 +4958,7 @@ exports[`Clinvar Variants Track renders the expanded all-variants plot correctly
           Only show ClinVar variants that are in gnomAD
         </label>
         <label
-          for="star-filtering"
+          for="clinvar-star-filter"
         >
           Filter by 
           <a
@@ -5991,7 +5991,7 @@ exports[`ClinvarVariants renders the heading, the track and the release date whe
           Only show ClinVar variants that are in gnomAD
         </label>
         <label
-          for="star-filtering"
+          for="clinvar-star-filter"
         >
           Filter by 
           <a

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
 import { Track } from '@gnomad/region-viewer'
-import { Button, Checkbox, Modal, ExternalLink } from '@gnomad/ui'
+import { Button, Checkbox, Modal } from '@gnomad/ui'
 import CategoryFilterControl from '../CategoryFilterControl'
 import InfoButton from '../help/InfoButton'
 import filterVariantsInZoomRegion from '../RegionViewer/filterVariantsInZoomRegion'
@@ -26,6 +26,7 @@ import {
 } from './clinvarVariantCategories'
 import ClinvarAllVariantsPlot from './ClinvarAllVariantsPlot'
 import ClinvarBinnedVariantsPlot from './ClinvarBinnedVariantsPlot'
+import ClinvarReviewStatusFilter from './ClinvarReviewStatusFilter'
 import ClinvarVariantDetails from './ClinvarVariantDetails'
 import formatClinvarDate from './formatClinvarDate'
 import { ClinvarVariant } from '../VariantPage/VariantPage'
@@ -260,24 +261,11 @@ const UnmemoizedClinvarVariantTrack = ({
               checked={showOnlyGnomad}
               onChange={setShowOnlyGnomad}
             />
-            <label htmlFor="star-filtering">
-              Filter by{' '}
-              <ExternalLink href="https://www.ncbi.nlm.nih.gov/clinvar/docs/review_status/">
-                review status
-              </ExternalLink>
-              : &nbsp;
-              <select
-                id="clinvar-star-filter"
-                value={starFilter}
-                onChange={(e) => setStarFilter(Number(e.target.value))}
-              >
-                <option value={0}> 0-4 Stars </option>
-                <option value={1}> {'>'}=1 Stars </option>
-                <option value={2}> {'>'}=2 Stars </option>
-                <option value={3}> {'>'}=3 Stars </option>
-                <option value={4}> 4 Stars </option>
-              </select>
-            </label>
+            <ClinvarReviewStatusFilter
+              id="clinvar-star-filter"
+              value={starFilter}
+              onChange={setStarFilter}
+            />
           </FilterRow>
         </TopPanel>
       </TrackPageSection>
