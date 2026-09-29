@@ -97,8 +97,8 @@ type Props<R extends GenericRegion> = {
   onClickRegion?: (region: RegionWithUnclamped<R>) => void
   // Color to outline a region with, over the others, or null for none
   outlineFn?: (region: R) => string | null
-  // Regions narrower than this, in pixels, have borders only at the top and bottom, since borders
-  // at their sides would hide their color
+  // Regions narrower than this, in pixels, have borders only at the top and bottom, and at the ends
+  // of runs of adjacent regions like exons, since borders at their sides would hide their color
   minWidthForBorder?: number
 }
 
@@ -139,6 +139,18 @@ export const regionsInExons = <R extends GenericRegion>(
     }
   }
   return intersections
+}
+
+// Whether each region starts or ends a run of adjacent regions, like the regions in an exon when
+// they are clamped to exons
+const withRunEnds = <R extends GenericRegion>(regions: R[]) => {
+  const starts = new Set(regions.map((region) => region.start))
+  const stops = new Set(regions.map((region) => region.stop))
+  return regions.map((region) => ({
+    region,
+    isRunStart: !stops.has(region.start - 1),
+    isRunEnd: !starts.has(region.stop + 1),
+  }))
 }
 
 const ConstraintTrack = <R extends GenericRegion>({
@@ -183,7 +195,7 @@ const ConstraintTrack = <R extends GenericRegion>({
           <PlotWrapper>
             <svg height={55} width={width}>
               {!allRegions && <rect x={0} y={7.5} width={width} height={1} />}
-              {constrainedRegions.map((region: RegionWithUnclamped<R>) => {
+              {withRunEnds(constrainedRegions).map(({ region, isRunStart, isRunEnd }) => {
                 const startX = scalePosition(region.start)
                 const stopX = scalePosition(region.stop)
                 const regionWidth = stopX - startX
@@ -214,7 +226,13 @@ const ConstraintTrack = <R extends GenericRegion>({
                       />
                       {!hasSideBorders && (
                         <path
-                          d={`M${startX},1H${stopX}M${startX},16H${stopX}`}
+                          // Borders at the top and bottom, and at the ends of a run of adjacent
+                          // regions, so that exons keep their outline
+                          d={[
+                            `M${startX},1H${stopX}M${startX},16H${stopX}`,
+                            isRunStart ? `M${startX},1V16` : '',
+                            isRunEnd ? `M${stopX},1V16` : '',
+                          ].join('')}
                           fill="none"
                           stroke="black"
                           pointerEvents="none"

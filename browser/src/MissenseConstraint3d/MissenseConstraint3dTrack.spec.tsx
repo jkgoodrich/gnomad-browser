@@ -324,7 +324,21 @@ describe('MissenseConstraint3dTrack', () => {
     expect(renderer.create(<TrackInRegionViewer />)).toMatchSnapshot()
   })
 
-  test('draws segments too narrow to show their color with borders only at the top and bottom', () => {
+  test('draws segments too narrow to show their color with borders only at their tops, bottoms and exon ends', () => {
+    // Residues 1 and 2, in different regions, share the first exon, and 3-4 fill the second
+    setMockApiResponses({
+      MissenseConstraint3d: () => ({
+        gene: {
+          missense_constraint_3d: {
+            ...missenseConstraint3d,
+            regions: [
+              { ...missenseConstraint3d.regions[0], segments: [{ aa_start: 1, aa_stop: 1 }] },
+              { ...missenseConstraint3d.regions[1], segments: [{ aa_start: 2, aa_stop: 4 }] },
+            ],
+          },
+        },
+      }),
+    })
     // Zoomed out, so that each residue is less than a pixel wide
     const zoomedOutRegions = [{ start: 1, stop: 5000 }]
     const { container } = render(
@@ -340,22 +354,29 @@ describe('MissenseConstraint3dTrack', () => {
         </RegionViewerContext.Provider>
       </MemoryRouter>
     )
-    const segments = container.querySelectorAll('rect[height="15"]')
-    expect(segments).toHaveLength(2)
-    segments.forEach((segment) => {
+
+    // The lines a segment's borders can have, from its left edge to its right
+    const borderLines = (segment: Element) => {
       expect(segment.getAttribute('stroke')).toBeNull()
       const borders = segment.nextElementSibling!
       expect(borders.getAttribute('stroke')).toBe('black')
-      // Lines along the segment's top (y = 1) and bottom (y = 16)
-      const [, topStart, topStop, bottomStart, bottomStop] = borders
-        .getAttribute('d')!
-        .match(/^M([\d.]+),1H([\d.]+)M([\d.]+),16H([\d.]+)$/)!
-        .map(Number)
-      const x = Number(segment.getAttribute('x'))
-      expect([topStart, bottomStart]).toEqual([x, x])
-      expect(topStop).toBe(bottomStop)
-      expect(topStop).toBeCloseTo(x + Number(segment.getAttribute('width')))
-    })
+      const d = borders.getAttribute('d')!
+      const [, x, stopX] = d.match(/^M([\d.]+),1H([\d.]+)/)!
+      expect(x).toBe(segment.getAttribute('x'))
+      expect(Number(stopX)).toBeCloseTo(Number(x) + Number(segment.getAttribute('width')))
+      return {
+        d,
+        topAndBottom: `M${x},1H${stopX}M${x},16H${stopX}`,
+        left: `M${x},1V16`,
+        right: `M${stopX},1V16`,
+      }
+    }
+    const segments = Array.from(container.querySelectorAll('rect[height="15"]'))
+    expect(segments).toHaveLength(3)
+    const [startOfExon, endOfExon, wholeExon] = segments.map(borderLines)
+    expect(startOfExon.d).toBe(startOfExon.topAndBottom + startOfExon.left)
+    expect(endOfExon.d).toBe(endOfExon.topAndBottom + endOfExon.right)
+    expect(wholeExon.d).toBe(wholeExon.topAndBottom + wholeExon.left + wholeExon.right)
   })
 
   test('lists the size and constraint of each region', async () => {
