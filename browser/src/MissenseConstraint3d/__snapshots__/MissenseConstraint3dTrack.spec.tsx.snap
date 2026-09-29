@@ -59,12 +59,22 @@ exports[`MissenseConstraint3dTrack has no unexpected changes 1`] = `
           <button
             backgroundColor="#f8f9fa"
             borderColor="#6c757d"
-            className="Button__BaseButton-sc-1eobygi-0 Button-sc-1eobygi-1 MissenseConstraint3dTrack__ToggleStructureButton-sc-hpdmfj-1 VaScf kBqIOY"
+            className="Button__BaseButton-sc-1eobygi-0 Button-sc-1eobygi-1 MissenseConstraint3dTrack__LeftPanelButton-sc-hpdmfj-1 VaScf iExRfK"
             onClick={[Function]}
             type="button"
           >
             Show
              structure
+          </button>
+          <button
+            backgroundColor="#f8f9fa"
+            borderColor="#6c757d"
+            className="Button__BaseButton-sc-1eobygi-0 Button-sc-1eobygi-1 MissenseConstraint3dTrack__LeftPanelButton-sc-hpdmfj-1 VaScf iExRfK"
+            onClick={[Function]}
+            type="button"
+          >
+            Show
+             regions
           </button>
         </div>
       </div>

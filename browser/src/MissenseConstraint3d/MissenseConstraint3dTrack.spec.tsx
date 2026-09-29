@@ -345,6 +345,39 @@ describe('MissenseConstraint3dTrack', () => {
     segments.forEach((segment) => expect(segment.getAttribute('stroke')).toBeNull())
   })
 
+  test('lists the size and constraint of each region', async () => {
+    const { container } = render(<TrackInRegionViewer />)
+    await userEvent.click(screen.getByRole('button', { name: 'Show regions' }))
+
+    expect(
+      screen.getByText(
+        '1 region, 1 of them significant (p ≤ 1e-3), and 2 unassigned residues. The region has 2 residues, in 1 stretch of sequence.'
+      )
+    ).not.toBeNull()
+    const rowTexts = () =>
+      screen
+        .getAllByRole('row')
+        .map((row) => Array.from(row.querySelectorAll('th, td'), (cell) => cell.textContent))
+    expect(rowTexts().slice(1)).toEqual([
+      ['#1 most constrained', '2', '1', '1-2', '0.05 (1/20.0)', '0.30', '1.00e-8'],
+      ['Unassigned residue', '2', '1', '3-4', '0.90 (9/10.0)', '1.10', '5.00e-1'],
+    ])
+
+    // Sorted from the highest o/e first
+    await userEvent.click(screen.getByRole('button', { name: 'Missense o/e' }))
+    expect(rowTexts()[1][0]).toBe('Unassigned residue')
+
+    await userEvent.hover(screen.getByRole('row', { name: /^#1 most constrained/ }))
+    expect(container.querySelectorAll(`rect[stroke="${STRUCTURE_HIGHLIGHT_COLOR}"]`)).toHaveLength(
+      1
+    )
+
+    // Like the button beside the track, the one below the table hides it
+    const [, hideRegionsBelowTable] = screen.getAllByRole('button', { name: 'Hide regions' })
+    await userEvent.click(hideRegionsBelowTable)
+    expect(screen.queryByRole('row')).toBeNull()
+  })
+
   test('says when 3D missense constraint is not available', () => {
     setMockApiResponses({
       MissenseConstraint3d: () => ({ gene: { missense_constraint_3d: null } }),

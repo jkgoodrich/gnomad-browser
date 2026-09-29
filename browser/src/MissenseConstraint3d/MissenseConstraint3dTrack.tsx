@@ -54,6 +54,7 @@ import {
   toggleResidues,
 } from './missenseConstraint3d'
 import MissenseConstraint3dRegionAttributes from './MissenseConstraint3dRegionAttributes'
+import MissenseConstraint3dRegionTable from './MissenseConstraint3dRegionTable'
 import MissenseConstraint3dStructurePanel from './MissenseConstraint3dStructurePanel'
 import PlddtTrack from './PlddtTrack'
 import UniprotFeatureTracks from './UniprotFeatureTracks'
@@ -181,7 +182,7 @@ const RankedRegionsLegend = ({
   </>
 )
 
-const ToggleStructureButton = styled(Button)`
+const LeftPanelButton = styled(Button)`
   width: 100px;
   height: auto;
   padding-right: 0.25em;
@@ -238,6 +239,7 @@ const MissenseConstraint3dView = ({
   onChangeStructureSelection,
 }: ViewProps) => {
   const [isStructureShown, setIsStructureShown] = useState(false)
+  const [isRegionTableShown, setIsRegionTableShown] = useState(false)
   const [colorBy, setColorBy] = useState<StructureColorBy>(DEFAULT_COLOR_BY)
   const [colorCatchAllRegion, setColorCatchAllRegion] = useState(false)
   const [colorNonSignificantRegions, setColorNonSignificantRegions] = useState(true)
@@ -439,21 +441,34 @@ const MissenseConstraint3dView = ({
         valueFn={(trackRegion: TrackRegion) => trackRegion.region.obs_exp.toFixed(2)}
         minWidthForBorder={MIN_SEGMENT_WIDTH_FOR_BORDER}
         leftPanelControl={
-          <ToggleStructureButton
-            onClick={() => {
-              if (!isStructureShown) {
-                logButtonClick('User showed 3D missense constraint structure')
-              }
-              setHoverHighlight(NO_HIGHLIGHT)
-              setPinnedRegion(null)
-              if (isStructureShown) {
-                selectResidues(null)
-              }
-              setIsStructureShown(!isStructureShown)
-            }}
-          >
-            {isStructureShown ? 'Hide' : 'Show'} structure
-          </ToggleStructureButton>
+          <>
+            <LeftPanelButton
+              onClick={() => {
+                if (!isStructureShown) {
+                  logButtonClick('User showed 3D missense constraint structure')
+                }
+                setHoverHighlight(NO_HIGHLIGHT)
+                setPinnedRegion(null)
+                if (isStructureShown) {
+                  selectResidues(null)
+                }
+                setIsStructureShown(!isStructureShown)
+              }}
+            >
+              {isStructureShown ? 'Hide' : 'Show'} structure
+            </LeftPanelButton>
+            <LeftPanelButton
+              onClick={() => {
+                if (!isRegionTableShown) {
+                  logButtonClick('User showed 3D missense constraint regions')
+                }
+                setHoverHighlight(NO_HIGHLIGHT)
+                setIsRegionTableShown(!isRegionTableShown)
+              }}
+            >
+              {isRegionTableShown ? 'Hide' : 'Show'} regions
+            </LeftPanelButton>
+          </>
         }
         onHoverRegion={
           isStructureShown
@@ -470,6 +485,24 @@ const MissenseConstraint3dView = ({
             : undefined
         }
       />
+      {isRegionTableShown && (
+        <TrackPageSection>
+          <MissenseConstraint3dRegionTable
+            regions={constraint.regions}
+            regionRanks={regionRanks}
+            colorRegion={colorRegion}
+            onHoverRegion={highlightRegion}
+          />
+          <Button
+            onClick={() => {
+              setHoverHighlight(NO_HIGHLIGHT)
+              setIsRegionTableShown(false)
+            }}
+          >
+            Hide regions
+          </Button>
+        </TrackPageSection>
+      )}
       {isStructureShown && (
         <>
           {plddtByResidue && (

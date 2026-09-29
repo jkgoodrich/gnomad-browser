@@ -33,6 +33,10 @@ The structure can also be colored by:
 
 With these options, the track keeps showing the missense o/e of each 3D region.
 
+### Listing the regions
+
+Select "Show regions" to list every region below the track, with the number of its residues, the number of separate stretches of sequence they form, its first and last residues, and its missense constraint, above a summary of how many regions there are and how large they are. Select a column heading to sort by it, and hover over a region to outline its segments in the track and highlight its residues in the structure.
+
 ### Showing the structure
 
 Select "Show structure" to view the AlphaFold structure colored the same way as the track. Drag to rotate the structure, and scroll or use the zoom buttons to zoom in and out. "Reset colors" and "Reset rotation and zoom" go back to the starting coloring and view, and each section of the legend beside the structure has its own "Reset" once it has been changed. Hover over a region in the track to highlight all of its residues in the structure and outline all of its segments in the track, or over a residue in the structure to see its region, predicted confidence, and any features shown on the structure. With the "Regions" colors, hovering over a residue also highlights its whole region, and clicking a region in the track, or a residue while "Select" is Off, keeps the region highlighted while you rotate the structure, until you click it again or select "Unpin". Once the structure has loaded, the "AlphaFold pLDDT" track shows AlphaFold's confidence in each residue along the gene, in the same colors, and hovering over it highlights those residues in the structure. The panel beside the structure can also show:
