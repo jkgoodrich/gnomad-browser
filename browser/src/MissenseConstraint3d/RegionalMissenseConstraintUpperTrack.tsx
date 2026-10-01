@@ -13,12 +13,13 @@ import {
 } from '../RegionalMissenseConstraintTrack'
 import { regionalMissenseConstraintUpperRegionColor } from './missenseConstraint3d'
 
-const RegionTooltip = ({
+// For a region attribute list, like a tooltip's
+export const RegionalMissenseConstraintRegionAttributes = ({
   region,
 }: {
-  region: RegionWithUnclamped<RegionalMissenseConstraintRegion>
+  region: RegionalMissenseConstraintRegion
 }) => (
-  <RegionAttributeList>
+  <>
     <div>
       <dt>Amino acids:</dt>
       <dd>{`${region.aa_start || '-'}-${region.aa_stop || '-'}`}</dd>
@@ -45,6 +46,16 @@ const RegionTooltip = ({
       <dt>p-value:</dt>
       <dd>{region.p_value.toExponential(3)}</dd>
     </div>
+  </>
+)
+
+const RegionTooltip = ({
+  region,
+}: {
+  region: RegionWithUnclamped<RegionalMissenseConstraintRegion>
+}) => (
+  <RegionAttributeList>
+    <RegionalMissenseConstraintRegionAttributes region={region} />
   </RegionAttributeList>
 )
 

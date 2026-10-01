@@ -18,7 +18,7 @@ import { Gene, GeneTranscript } from '../GenePage/GenePage'
 import InfoButton from '../help/InfoButton'
 import Legend, { LegendInteraction } from '../Legend'
 import Query from '../Query'
-import {
+import RegionalMissenseConstraintTrack, {
   MissenseObsExpLegend,
   RegionalMissenseConstraint,
 } from '../RegionalMissenseConstraintTrack'
@@ -47,6 +47,7 @@ import {
   isSignificantRegion,
   rankConstrainedRegions,
   regionColor,
+  regionalMissenseConstraintRegionsShown,
   regionResidueRanges,
   regionResidues,
   residuesOnGenome,
@@ -56,6 +57,7 @@ import {
 import MissenseConstraint3dRegionAttributes from './MissenseConstraint3dRegionAttributes'
 import MissenseConstraint3dRegionTable from './MissenseConstraint3dRegionTable'
 import MissenseConstraint3dStructurePanel from './MissenseConstraint3dStructurePanel'
+import MissenseConstraintPlotTrack from './MissenseConstraintPlotTrack'
 import PlddtTrack from './PlddtTrack'
 import RegionalMissenseConstraintUpperTrack from './RegionalMissenseConstraintUpperTrack'
 import UniprotFeatureTracks from './UniprotFeatureTracks'
@@ -236,6 +238,7 @@ type ViewProps = {
   variantTableFilter?: PageFilter<VariantFilterState>
   structureSelection: StructureSelection | null
   onChangeStructureSelection?: (selection: StructureSelection | null) => void
+  showAsPlot: boolean
 }
 
 const MissenseConstraint3dView = ({
@@ -250,6 +253,7 @@ const MissenseConstraint3dView = ({
   variantTableFilter,
   structureSelection,
   onChangeStructureSelection,
+  showAsPlot,
 }: ViewProps) => {
   const [isStructureShown, setIsStructureShown] = useState(false)
   const [isRegionTableShown, setIsRegionTableShown] = useState(false)
@@ -288,6 +292,20 @@ const MissenseConstraint3dView = ({
       transcript.exons.filter((exon) => exon.feature_type === 'CDS')
     )
   }, [constraint, gene, transcript, regionRanks])
+
+  const regionalMissenseConstraintToPlot = useMemo(() => {
+    const { regions, isTranscriptWide } = regionalMissenseConstraintRegionsShown(
+      regionalMissenseConstraint,
+      gene
+    )
+    return {
+      regions: regionsInExons(
+        [...regions],
+        transcript.exons.filter((exon) => exon.feature_type === 'CDS')
+      ),
+      isTranscriptWide,
+    }
+  }, [regionalMissenseConstraint, gene, transcript])
 
   const colorRegion = useCallback(
     (region: MissenseConstraint3dRegion) =>
@@ -494,49 +512,66 @@ const MissenseConstraint3dView = ({
     )
   }
 
+  const leftPanelControl = (
+    <>
+      <LeftPanelButton
+        onClick={() => {
+          if (!isStructureShown) {
+            logButtonClick('User showed 3D missense constraint structure')
+          }
+          setHoverHighlight(NO_HIGHLIGHT)
+          setPinnedRegion(null)
+          if (isStructureShown) {
+            selectResidues(null)
+          }
+          setIsStructureShown(!isStructureShown)
+        }}
+      >
+        {isStructureShown ? 'Hide' : 'Show'} structure
+      </LeftPanelButton>
+      <LeftPanelButton
+        onClick={() => {
+          if (!isRegionTableShown) {
+            logButtonClick('User showed 3D missense constraint regions')
+          }
+          setHoverHighlight(NO_HIGHLIGHT)
+          setIsRegionTableShown(!isRegionTableShown)
+        }}
+      >
+        {isRegionTableShown ? 'Hide' : 'Show'} regions
+      </LeftPanelButton>
+    </>
+  )
+
   return (
     <>
-      <ConstraintTrack
-        {...regionTrackProps}
-        trackTitle={TRACK_TITLE}
-        legend={
-          <>
-            <UnassignedResiduePattern />
-            {obsExpLegend('Missense o/e upper bound', colorTrackRegion)}
-          </>
-        }
-        colorFn={(trackRegion: TrackRegion) => colorTrackRegion(trackRegion.region)}
-        leftPanelControl={
-          <>
-            <LeftPanelButton
-              onClick={() => {
-                if (!isStructureShown) {
-                  logButtonClick('User showed 3D missense constraint structure')
-                }
-                setHoverHighlight(NO_HIGHLIGHT)
-                setPinnedRegion(null)
-                if (isStructureShown) {
-                  selectResidues(null)
-                }
-                setIsStructureShown(!isStructureShown)
-              }}
-            >
-              {isStructureShown ? 'Hide' : 'Show'} structure
-            </LeftPanelButton>
-            <LeftPanelButton
-              onClick={() => {
-                if (!isRegionTableShown) {
-                  logButtonClick('User showed 3D missense constraint regions')
-                }
-                setHoverHighlight(NO_HIGHLIGHT)
-                setIsRegionTableShown(!isRegionTableShown)
-              }}
-            >
-              {isRegionTableShown ? 'Hide' : 'Show'} regions
-            </LeftPanelButton>
-          </>
-        }
-      />
+      {/* For the hatching of unassigned residues in the tracks, legends and region list */}
+      <UnassignedResiduePattern />
+      {showAsPlot ? (
+        <MissenseConstraintPlotTrack
+          trackTitle={
+            regionalMissenseConstraintToPlot.regions.length > 0
+              ? 'Missense constraint'
+              : TRACK_TITLE
+          }
+          segments={constrainedRegions}
+          regionalMissenseConstraintRegions={regionalMissenseConstraintToPlot.regions}
+          isRegionalMissenseConstraintTranscriptWide={
+            regionalMissenseConstraintToPlot.isTranscriptWide
+          }
+          highlightedRegions={highlight.regions}
+          leftPanelControl={leftPanelControl}
+          onHoverRegion={highlightRegion}
+        />
+      ) : (
+        <ConstraintTrack
+          {...regionTrackProps}
+          trackTitle={TRACK_TITLE}
+          legend={obsExpLegend('Missense o/e upper bound', colorTrackRegion)}
+          colorFn={(trackRegion: TrackRegion) => colorTrackRegion(trackRegion.region)}
+          leftPanelControl={leftPanelControl}
+        />
+      )}
       {isRegionTableShown && (
         <TrackPageSection>
           <MissenseConstraint3dRegionTable
@@ -620,6 +655,10 @@ type Props = {
   // Residues selected on the structure, which the page shows only the variants of
   structureSelection?: StructureSelection | null
   onChangeStructureSelection?: (selection: StructureSelection | null) => void
+  // Whether the track, with regional missense constraint if it's given, is a plot of their o/e
+  // rather than colors, as chosen with MissenseConstraintPlotToggle. The gene page hides its
+  // regional missense constraint track while it is.
+  showAsPlot?: boolean
 }
 
 const MissenseConstraint3dTrack = ({
@@ -632,6 +671,7 @@ const MissenseConstraint3dTrack = ({
   variantTableFilter,
   structureSelection = null,
   onChangeStructureSelection,
+  showAsPlot = false,
 }: Props) => (
   <Query
     operationName={operationName}
@@ -648,15 +688,26 @@ const MissenseConstraint3dTrack = ({
         gene.transcripts.find(
           (geneTranscript) => geneTranscript.transcript_id === constraint.transcript_id
         )
+      // Without 3D missense constraint to plot, the regional missense constraint track that the
+      // gene page hides while missense constraint is plotted is shown here instead
+      const unavailableTrack = (message: string) => (
+        <>
+          {showAsPlot && regionalMissenseConstraint && (
+            <RegionalMissenseConstraintTrack
+              regionalMissenseConstraint={regionalMissenseConstraint}
+              gene={gene}
+            />
+          )}
+          <UnavailableTrack message={message} />
+        </>
+      )
       if (!constraint || !transcript) {
-        return <UnavailableTrack message="3D missense constraint is not available for this gene." />
+        return unavailableTrack('3D missense constraint is not available for this gene.')
       }
       // Residue numbers can only be placed on the genome if the protein matches the coding sequence
       if (codingSequenceLength(transcript.exons) !== constraint.protein_sequence.length * 3) {
-        return (
-          <UnavailableTrack
-            message={`3D missense constraint does not match the coding sequence of ${constraint.transcript_id}.`}
-          />
+        return unavailableTrack(
+          `3D missense constraint does not match the coding sequence of ${constraint.transcript_id}.`
         )
       }
       return (
@@ -672,6 +723,7 @@ const MissenseConstraint3dTrack = ({
           variantTableFilter={variantTableFilter}
           structureSelection={structureSelection}
           onChangeStructureSelection={onChangeStructureSelection}
+          showAsPlot={showAsPlot}
         />
       )
     }}

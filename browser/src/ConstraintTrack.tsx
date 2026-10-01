@@ -63,7 +63,7 @@ export const RegionAttributeList = styled.dl`
   }
 `
 
-const SidePanelWithControl = styled.div`
+export const SidePanelWithControl = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;

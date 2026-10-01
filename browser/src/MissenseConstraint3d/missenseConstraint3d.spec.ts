@@ -1,6 +1,8 @@
 import { describe, expect, test } from '@jest/globals'
 
+import geneFactory from '../__factories__/Gene'
 import {
+  RegionalMissenseConstraint,
   RegionalMissenseConstraintRegion,
   missenseObsExpColorScale,
 } from '../RegionalMissenseConstraintTrack'
@@ -29,6 +31,7 @@ import {
   rankConstrainedRegions,
   regionColor,
   regionalMissenseConstraintByResidue,
+  regionalMissenseConstraintRegionsShown,
   regionalMissenseConstraintUpperRegionColor,
   regionsByResidue,
   residueColors,
@@ -317,6 +320,56 @@ test('unassigned residues alternate between gray and the color of its hatching',
     NO_REGION_COLOR,
     UNASSIGNED_RESIDUE_HATCH_COLOR,
   ])
+})
+
+describe('regionalMissenseConstraintRegionsShown', () => {
+  const rmcRegion = {
+    chrom: '12',
+    start: 100,
+    stop: 205,
+    aa_start: 'Met1',
+    aa_stop: 'Lys4',
+    obs_mis: 5,
+    exp_mis: 10,
+    obs_exp: 0.5,
+    p_value: 1e-4,
+    z_score: null,
+    chisq_diff_null: 10,
+  }
+  const rmc = (params: Partial<RegionalMissenseConstraint>): RegionalMissenseConstraint => ({
+    has_no_rmc_evidence: false,
+    passed_qc: true,
+    regions: [rmcRegion],
+    ...params,
+  })
+  const gene = geneFactory.build({ chrom: '12', start: 50, stop: 300 })
+
+  test('shows the regions of genes with regional missense constraint', () => {
+    expect(regionalMissenseConstraintRegionsShown(rmc({}), gene)).toEqual({
+      regions: [rmcRegion],
+      isTranscriptWide: false,
+    })
+  })
+
+  test('shows no regions for genes that were not searched for it', () => {
+    expect(regionalMissenseConstraintRegionsShown(null, gene).regions).toEqual([])
+    expect(regionalMissenseConstraintRegionsShown(rmc({ passed_qc: false }), gene).regions).toEqual(
+      []
+    )
+  })
+
+  test('shows the gene-wide missense constraint where no regional constraint was found', () => {
+    const constrainedGene = {
+      ...gene,
+      gnomad_constraint: { obs_mis: 90, exp_mis: 100, oe_mis: 0.9, oe_mis_upper: 1.05, mis_z: 1 },
+    } as typeof gene
+    const { regions, isTranscriptWide } = regionalMissenseConstraintRegionsShown(
+      rmc({ has_no_rmc_evidence: true, passed_qc: false }),
+      constrainedGene
+    )
+    expect(isTranscriptWide).toBe(true)
+    expect(regions).toMatchObject([{ start: 50, stop: 300, obs_exp: 0.9, obs_exp_upper: 1.05 }])
+  })
 })
 
 test('regional missense constraint regions are placed by their amino acids', () => {

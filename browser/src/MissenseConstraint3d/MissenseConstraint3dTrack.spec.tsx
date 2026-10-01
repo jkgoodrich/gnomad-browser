@@ -22,6 +22,11 @@ import {
 import { DEFAULT_VARIANT_FILTER, VariantFilterState } from '../VariantList/filterVariants'
 import MissenseConstraint3dTrack from './MissenseConstraint3dTrack'
 import {
+  MISSENSE_CONSTRAINT_3D_COLOR,
+  MissenseConstraintPlotToggle,
+  REGIONAL_MISSENSE_CONSTRAINT_COLOR,
+} from './MissenseConstraintPlotTrack'
+import {
   MissenseConstraint3d,
   NO_REGION_COLOR,
   PageFilter,
@@ -226,6 +231,7 @@ const TrackInRegionViewer = (props: {
   variantTableFilter?: PageFilter<VariantFilterState>
   structureSelection?: StructureSelection | null
   onChangeStructureSelection?: (selection: StructureSelection | null) => void
+  showAsPlot?: boolean
 }) => (
   <MemoryRouter>
     <RegionViewerContext.Provider value={regionViewer}>
@@ -275,6 +281,24 @@ const TrackWithPageFilters = ({
       />
       <output>{JSON.stringify({ clinvarTrackFilter, variantTableFilter })}</output>
     </>
+  )
+}
+
+// Like the gene page, which has the toggle above both missense constraint tracks
+const TrackWithPlotToggle = () => {
+  const [showAsPlot, setShowAsPlot] = useState(false)
+  return (
+    <MemoryRouter>
+      <RegionViewerContext.Provider value={regionViewer}>
+        <MissenseConstraintPlotToggle showAsPlot={showAsPlot} onChangeShowAsPlot={setShowAsPlot} />
+        <MissenseConstraint3dTrack
+          datasetId="gnomad_r4"
+          gene={gene}
+          regionalMissenseConstraint={regionalMissenseConstraint}
+          showAsPlot={showAsPlot}
+        />
+      </RegionViewerContext.Provider>
+    </MemoryRouter>
   )
 }
 
@@ -442,6 +466,51 @@ describe('MissenseConstraint3dTrack', () => {
     expect(screen.queryByRole('heading', { name: 'Residues per region' })).toBeNull()
     // The table is still shown
     expect(screen.getAllByRole('row')).toHaveLength(3)
+  })
+
+  test('shows 3D and regional missense constraint as lines in one plot', async () => {
+    const { container } = render(<TrackWithPlotToggle />)
+    await userEvent.click(screen.getByRole('button', { name: 'Show missense constraint as plot' }))
+    expect(logButtonClick).toHaveBeenCalledWith('User plotted missense constraint')
+    expect(screen.getByText('Missense constraint')).not.toBeNull()
+    expect(trackRegionFills(container)).toEqual([])
+
+    // A line for each, broken between the two exons
+    const line = (color: string) =>
+      container.querySelector(`path[stroke="${color}"]`)!.getAttribute('d')!
+    expect(line(MISSENSE_CONSTRAINT_3D_COLOR).match(/M/g)).toHaveLength(2)
+    expect(line(REGIONAL_MISSENSE_CONSTRAINT_COLOR).match(/M/g)).toHaveLength(2)
+    expect(screen.getByText('Regional missense constraint')).not.toBeNull()
+
+    // Hovering shows both kinds of constraint at that part of the gene
+    const [firstExon] = Array.from(container.querySelectorAll('rect[pointer-events="all"]'))
+    await userEvent.hover(firstExon)
+    expect(screen.getByText('#1 most constrained')).not.toBeNull()
+    expect(screen.getByText('Met1-Lys4')).not.toBeNull()
+    await userEvent.unhover(firstExon)
+
+    const obsExpLine = line(MISSENSE_CONSTRAINT_3D_COLOR)
+    await userEvent.click(screen.getByLabelText('o/e upper bound'))
+    expect(line(MISSENSE_CONSTRAINT_3D_COLOR)).not.toBe(obsExpLine)
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Show missense constraint as colors' })
+    )
+    expect(container.querySelector(`path[stroke="${MISSENSE_CONSTRAINT_3D_COLOR}"]`)).toBeNull()
+    expect(trackRegionFills(container)).toHaveLength(2)
+  })
+
+  test('shows regional missense constraint as a track while there is no 3D missense constraint to plot', () => {
+    setMockApiResponses({
+      MissenseConstraint3d: () => ({ gene: { missense_constraint_3d: null } }),
+    })
+    render(
+      <TrackInRegionViewer regionalMissenseConstraint={regionalMissenseConstraint} showAsPlot />
+    )
+    expect(screen.getByText('Regional missense constraint')).not.toBeNull()
+    expect(
+      screen.getByText('3D missense constraint is not available for this gene.')
+    ).not.toBeNull()
   })
 
   test('says when 3D missense constraint is not available', () => {

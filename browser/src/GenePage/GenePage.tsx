@@ -39,6 +39,7 @@ import GnomadPageHeading from '../GnomadPageHeading'
 import InfoButton from '../help/InfoButton'
 import Link from '../Link'
 import MissenseConstraint3dTrack from '../MissenseConstraint3d/MissenseConstraint3dTrack'
+import { MissenseConstraintPlotToggle } from '../MissenseConstraint3d/MissenseConstraintPlotTrack'
 import RegionalConstraintTrack from '../RegionalConstraintTrack'
 import RegionalMissenseConstraintTrack, {
   RegionalMissenseConstraint,
@@ -395,6 +396,14 @@ const GenePage = ({ datasetId, gene, geneId }: Props) => {
         }))
 
   const [zoomRegion, setZoomRegion] = useState(null)
+  // The gene whose missense constraint is shown as a plot, rather than colored tracks. Other genes
+  // start with the tracks.
+  const [geneIdWithMissenseConstraintPlot, setGeneIdWithMissenseConstraintPlot] = useState<
+    string | null
+  >(null)
+  const isMissenseConstraintPlotted = geneIdWithMissenseConstraintPlot === gene.gene_id
+  const hasMissenseConstraint3d =
+    isV4(datasetId) && hasShortVariants(datasetId) && hasCodingExons && gene.chrom !== 'M'
 
   const { preferredTranscriptId, preferredTranscriptDescription } = getPreferredTranscript(gene)
 
@@ -657,6 +666,15 @@ const GenePage = ({ datasetId, gene, geneId }: Props) => {
             />
           )}
 
+          {hasMissenseConstraint3d && (
+            <MissenseConstraintPlotToggle
+              showAsPlot={isMissenseConstraintPlotted}
+              onChangeShowAsPlot={(showAsPlot) =>
+                setGeneIdWithMissenseConstraintPlot(showAsPlot ? gene.gene_id : null)
+              }
+            />
+          )}
+
           {isV2(datasetId) && (
             <RegionalMissenseConstraintTrack
               regionalMissenseConstraint={gene.gnomad_v2_regional_missense_constraint}
@@ -664,23 +682,21 @@ const GenePage = ({ datasetId, gene, geneId }: Props) => {
             />
           )}
 
-          {demoRegionalMissenseConstraint && (
+          {demoRegionalMissenseConstraint && !isMissenseConstraintPlotted && (
             <RegionalMissenseConstraintTrack
               regionalMissenseConstraint={demoRegionalMissenseConstraint}
               gene={gene}
             />
           )}
 
-          {isV4(datasetId) &&
-            hasShortVariants(datasetId) &&
-            hasCodingExons &&
-            gene.chrom !== 'M' && (
-              <MissenseConstraint3dTrackWithPageSelections
-                datasetId={datasetId}
-                gene={gene}
-                regionalMissenseConstraint={demoRegionalMissenseConstraint}
-              />
-            )}
+          {hasMissenseConstraint3d && (
+            <MissenseConstraint3dTrackWithPageSelections
+              datasetId={datasetId}
+              gene={gene}
+              regionalMissenseConstraint={demoRegionalMissenseConstraint}
+              showAsPlot={isMissenseConstraintPlotted}
+            />
+          )}
 
           {/* eslint-disable-next-line no-nested-ternary */}
           {hasStructuralVariants(datasetId) ? (

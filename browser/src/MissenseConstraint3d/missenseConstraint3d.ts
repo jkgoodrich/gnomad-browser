@@ -4,9 +4,10 @@ import {
   CLINICAL_SIGNIFICANCE_CATEGORY_LABELS,
   clinvarVariantClinicalSignificanceCategory,
 } from '../ClinvarVariantsTrack/clinvarVariantCategories'
-import { Strand } from '../GenePage/GenePage'
+import { Gene, Strand } from '../GenePage/GenePage'
 import { LegendInteraction } from '../Legend'
 import {
+  RegionalMissenseConstraint,
   RegionalMissenseConstraintRegion,
   missenseObsExpColorScale,
   regionalMissenseConstraintRegionColor,
@@ -723,6 +724,46 @@ export const regionalMissenseConstraintByResidue = (
     }),
     sequenceLength
   )
+
+// Like the regional missense constraint track: no regions for a gene that wasn't searched for
+// regional missense constraint, and the gene's own missense constraint where none was found
+export const regionalMissenseConstraintRegionsShown = (
+  regionalMissenseConstraint: RegionalMissenseConstraint | null,
+  gene: Gene
+): { regions: RegionalMissenseConstraintRegion[]; isTranscriptWide: boolean } => {
+  if (
+    !regionalMissenseConstraint ||
+    regionalMissenseConstraint.regions === null ||
+    (!regionalMissenseConstraint.passed_qc && !regionalMissenseConstraint.has_no_rmc_evidence)
+  ) {
+    return { regions: [], isTranscriptWide: false }
+  }
+  if (!regionalMissenseConstraint.has_no_rmc_evidence) {
+    return { regions: regionalMissenseConstraint.regions, isTranscriptWide: false }
+  }
+  const constraint = gene.gnomad_constraint
+  return {
+    regions: constraint
+      ? [
+          {
+            chrom: gene.chrom,
+            start: Math.min(gene.start, gene.stop),
+            stop: Math.max(gene.start, gene.stop),
+            aa_start: null,
+            aa_stop: null,
+            obs_mis: constraint.obs_mis,
+            exp_mis: constraint.exp_mis,
+            obs_exp: constraint.oe_mis,
+            obs_exp_upper: constraint.oe_mis_upper,
+            chisq_diff_null: undefined,
+            p_value: NaN,
+            z_score: constraint.mis_z,
+          },
+        ]
+      : [],
+    isTranscriptWide: true,
+  }
+}
 
 export const residueColors = <R extends object>(
   regionByResidue: (R | undefined)[],
