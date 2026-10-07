@@ -1436,7 +1436,386 @@
             ]
           }
         ],
-        "uniprot_features": []
+        "uniprot_features": [
+          {
+            "feature_type": "topological domain",
+            "start": 1,
+            "stop": 98,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 99,
+            "stop": 117,
+            "note": "Helical; Name=S1 of repeat I"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 118,
+            "stop": 135,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 136,
+            "stop": 155,
+            "note": "Helical; Name=S2 of repeat I"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 156,
+            "stop": 167,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 168,
+            "stop": 185,
+            "note": "Helical; Name=S3 of repeat I"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 186,
+            "stop": 190,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 191,
+            "stop": 209,
+            "note": "Helical; Name=S4 of repeat I"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 210,
+            "stop": 228,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 229,
+            "stop": 248,
+            "note": "Helical; Name=S5 of repeat I"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 249,
+            "stop": 335,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 336,
+            "stop": 360,
+            "note": "Helical; Name=S6 of repeat I"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 361,
+            "stop": 486,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 487,
+            "stop": 505,
+            "note": "Helical; Name=S1 of repeat II"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 506,
+            "stop": 520,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 521,
+            "stop": 540,
+            "note": "Helical; Name=S2 of repeat II"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 541,
+            "stop": 548,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 549,
+            "stop": 567,
+            "note": "Helical; Name=S3 of repeat II"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 568,
+            "stop": 577,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 578,
+            "stop": 596,
+            "note": "Helical; Name=S4 of repeat II"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 597,
+            "stop": 615,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 616,
+            "stop": 635,
+            "note": "Helical; Name=S5 of repeat II"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 636,
+            "stop": 688,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 689,
+            "stop": 713,
+            "note": "Helical; Name=S6 of repeat II"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 714,
+            "stop": 1241,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 1242,
+            "stop": 1260,
+            "note": "Helical; Name=S1 of repeat III"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 1261,
+            "stop": 1276,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 1277,
+            "stop": 1296,
+            "note": "Helical; Name=S2 of repeat III"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 1297,
+            "stop": 1308,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 1309,
+            "stop": 1327,
+            "note": "Helical; Name=S3 of repeat III"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 1328,
+            "stop": 1338,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 1339,
+            "stop": 1357,
+            "note": "Helical; Name=S4 of repeat III"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 1358,
+            "stop": 1376,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 1377,
+            "stop": 1396,
+            "note": "Helical; Name=S5 of repeat III"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 1397,
+            "stop": 1483,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 1484,
+            "stop": 1508,
+            "note": "Helical; Name=S6 of repeat III"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 1509,
+            "stop": 1563,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 1564,
+            "stop": 1592,
+            "note": "Helical; Name=S1 of repeat IV"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 1593,
+            "stop": 1597,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 1598,
+            "stop": 1617,
+            "note": "Helical; Name=S2 of repeat IV"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 1618,
+            "stop": 1625,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 1626,
+            "stop": 1644,
+            "note": "Helical; Name=S3 of repeat IV"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 1645,
+            "stop": 1651,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 1652,
+            "stop": 1670,
+            "note": "Helical; Name=S4 of repeat IV"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 1671,
+            "stop": 1689,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 1690,
+            "stop": 1709,
+            "note": "Helical; Name=S5 of repeat IV"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 1710,
+            "stop": 1781,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 1782,
+            "stop": 1806,
+            "note": "Helical; Name=S6 of repeat IV"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 1807,
+            "stop": 2506,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "repeat",
+            "start": 85,
+            "stop": 363,
+            "note": "I"
+          },
+          {
+            "feature_type": "repeat",
+            "start": 472,
+            "stop": 716,
+            "note": "II"
+          },
+          {
+            "feature_type": "repeat",
+            "start": 1230,
+            "stop": 1513,
+            "note": "III"
+          },
+          {
+            "feature_type": "repeat",
+            "start": 1550,
+            "stop": 1813,
+            "note": "IV"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 383,
+            "stop": 400,
+            "note": "Binding to the beta subunit"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 818,
+            "stop": 1220,
+            "note": "Disordered"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 1988,
+            "stop": 2031,
+            "note": "Disordered"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 2043,
+            "stop": 2506,
+            "note": "Disordered"
+          },
+          {
+            "feature_type": "site",
+            "start": 318,
+            "stop": 318,
+            "note": "Calcium ion selectivity and permeability"
+          },
+          {
+            "feature_type": "site",
+            "start": 667,
+            "stop": 667,
+            "note": "Calcium ion selectivity and permeability"
+          },
+          {
+            "feature_type": "site",
+            "start": 1459,
+            "stop": 1459,
+            "note": "Calcium ion selectivity and permeability"
+          },
+          {
+            "feature_type": "site",
+            "start": 1648,
+            "stop": 1648,
+            "note": "Binds to omega-Aga-IVA"
+          },
+          {
+            "feature_type": "site",
+            "start": 1755,
+            "stop": 1755,
+            "note": "Calcium ion selectivity and permeability"
+          },
+          {
+            "feature_type": "glycosylation site",
+            "start": 283,
+            "stop": 283,
+            "note": "N-linked (GlcNAc...) asparagine"
+          }
+        ]
       }
     }
   }
