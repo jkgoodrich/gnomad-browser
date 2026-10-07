@@ -132,6 +132,38 @@ def test_regions_are_keyed_by_transcript_with_1_based_segments(tmp_path):
     ) == (2, 10.0, 0.2, 0.4, 1e-5)
 
 
+UNASSIGNED_RESIDUE = {
+    "region_index": None,
+    "obs": None,
+    "exp": None,
+    "oe": None,
+    "oe_upper": None,
+    "p_value": None,
+    "is_null": None,
+}
+
+
+def test_residues_assigned_to_no_region_are_left_out(tmp_path):
+    residues = [{**residue, **UNASSIGNED_RESIDUE} if residue["residue_index"] == 0 else residue for residue in RESIDUES]
+    # Another protein with no residues assigned to a region
+    residues += [
+        {
+            "uniprot_id": "P00001",
+            "transcript_id": "ENST00000000002",
+            "residue_index": residue_index,
+            **UNASSIGNED_RESIDUE,
+        }
+        for residue_index in range(len(SEQUENCE))
+    ]
+    [row] = prepare(tmp_path, residues=residues)
+
+    assert row.transcript_id == "ENST00000000001"
+    assert [
+        (region.region_index, [(s.aa_start, s.aa_stop) for s in region.segments])
+        for region in row.missense_constraint_3d.regions
+    ] == [(0, [(2, 3), (6, 6)]), (1, [(4, 5), (7, 8)])]
+
+
 def test_uniprot_features_are_filtered_and_disulfide_bonds_split(tmp_path):
     [row] = prepare(tmp_path)
 

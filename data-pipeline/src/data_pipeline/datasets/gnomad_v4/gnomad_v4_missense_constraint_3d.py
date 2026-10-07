@@ -111,6 +111,9 @@ def _validate_residue_positions(ds):
 
 def prepare_gnomad_v4_missense_constraint_3d(residues_path, uniprot_features_path):
     residues = hl.read_table(residues_path)
+    # Residues that the analysis assigned to no region, not even the catch-all one, have no statistics.
+    # They're left out, and so are proteins with none assigned.
+    residues = residues.filter(hl.is_defined(residues.region_index))
 
     # Region statistics are repeated on every residue of the region
     regions = residues.group_by(residues.transcript_id, residues.uniprot_id, residues.region_index).aggregate(
