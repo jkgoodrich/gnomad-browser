@@ -11,13 +11,15 @@ import SCN2A from './regional_missense_constraint_ENSG00000136531.json'
 import PPP3CA from './regional_missense_constraint_ENSG00000138814.json'
 import CACNA1A from './regional_missense_constraint_ENSG00000141837.json'
 import HCN1 from './regional_missense_constraint_ENSG00000164588.json'
+import BEST1 from './regional_missense_constraint_ENSG00000167995.json'
 import CHD3 from './regional_missense_constraint_ENSG00000170004.json'
 import PTEN from './regional_missense_constraint_ENSG00000171862.json'
 import GRIN1 from './regional_missense_constraint_ENSG00000176884.json'
 import USP7 from './regional_missense_constraint_ENSG00000187555.json'
 import GRIN2B from './regional_missense_constraint_ENSG00000273079.json'
 
-// Keyed by gene ID. The v4 regions have no z-scores, and genes on chrX have no regions.
+// Keyed by gene ID. The v4 regions have no z-scores, and genes that weren't searched, like those on
+// chrX, have no regions.
 const regionalMissenseConstraintFixtures = {
   ENSG00000072501: SMC1A,
   ENSG00000075043: KCNQ2,
@@ -28,6 +30,7 @@ const regionalMissenseConstraintFixtures = {
   ENSG00000138814: PPP3CA,
   ENSG00000141837: CACNA1A,
   ENSG00000164588: HCN1,
+  ENSG00000167995: BEST1,
   ENSG00000170004: CHD3,
   ENSG00000171862: PTEN,
   ENSG00000176884: GRIN1,

@@ -29,6 +29,7 @@ DEMO_GENES = [
     "GRIN1",
     "USP7",
     "SMC1A:Q14683",
+    "BEST1",
 ]
 
 
