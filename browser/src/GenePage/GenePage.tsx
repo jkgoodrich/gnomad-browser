@@ -87,10 +87,8 @@ import {
 } from '../ChartStyles'
 import { logButtonClick } from '../analytics'
 import { GtexTissueExpression } from './TranscriptsTissueExpression'
-// DONTMERGE: v4 regional missense constraint for the GRIN2B demo until the API serves v4 RMC
-import grin2bRegionalMissenseConstraint from '../../demo/regional_missense_constraint_ENSG00000273079.json'
-
-const DEMO_REGIONAL_MISSENSE_CONSTRAINT_GENE_ID = 'ENSG00000273079'
+// DONTMERGE: v4 regional missense constraint for the demo genes until the API serves v4 RMC
+import regionalMissenseConstraintFixtures from '../../demo/regionalMissenseConstraintFixtures'
 
 export type ProteinMitochondrialGeneConstraint = {
   exp_lof: number
@@ -408,9 +406,7 @@ const GenePage = ({ datasetId, gene, geneId }: Props) => {
   const { preferredTranscriptId, preferredTranscriptDescription } = getPreferredTranscript(gene)
 
   const demoRegionalMissenseConstraint =
-    isV4(datasetId) && gene.gene_id === DEMO_REGIONAL_MISSENSE_CONSTRAINT_GENE_ID
-      ? (grin2bRegionalMissenseConstraint as RegionalMissenseConstraint)
-      : null
+    (isV4(datasetId) && regionalMissenseConstraintFixtures[gene.gene_id]) || null
 
   return (
     <TrackPage>

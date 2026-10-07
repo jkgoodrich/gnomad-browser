@@ -1,3 +1,4 @@
+const fs = require('fs')
 const path = require('path')
 
 const CopyWebpackPlugin = require('copy-webpack-plugin')
@@ -8,10 +9,16 @@ const tsConfig = require('../tsconfig.build.json')
 
 const isDev = process.env.NODE_ENV === 'development'
 
-// DONTMERGE: serve GRIN2B 3D missense constraint from a fixture until the API has the field
-const missenseConstraint3dFixture = require('./demo/missense_constraint_3d_ENSG00000273079.json')
-
-const MISSENSE_CONSTRAINT_3D_FIXTURE_GENE_ID = 'ENSG00000273079'
+// DONTMERGE: serve the demo genes' 3D missense constraint from fixtures until the API has the field
+const DEMO_FIXTURES_DIR = path.join(__dirname, 'demo')
+const missenseConstraint3dFixtures = Object.fromEntries(
+  fs.readdirSync(DEMO_FIXTURES_DIR).flatMap((filename) => {
+    const match = filename.match(/^missense_constraint_3d_(ENSG\d+)\.json$/)
+    return match
+      ? [[match[1], JSON.parse(fs.readFileSync(path.join(DEMO_FIXTURES_DIR, filename), 'utf8'))]]
+      : []
+  })
+)
 
 const serveMissenseConstraint3dFixture = (req, res, next) => {
   if (req.method !== 'POST') {
@@ -27,10 +34,9 @@ const serveMissenseConstraint3dFixture = (req, res, next) => {
       next()
       return
     }
-    const response =
-      variables.geneId === MISSENSE_CONSTRAINT_3D_FIXTURE_GENE_ID
-        ? missenseConstraint3dFixture
-        : { data: { gene: { missense_constraint_3d: null } } }
+    const response = missenseConstraint3dFixtures[variables.geneId] || {
+      data: { gene: { missense_constraint_3d: null } },
+    }
     res.setHeader('Content-Type', 'application/json')
     res.end(JSON.stringify(response))
   })

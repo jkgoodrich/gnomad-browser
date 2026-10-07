@@ -1,0 +1,318 @@
+{
+  "data": {
+    "gene": {
+      "missense_constraint_3d": {
+        "transcript_id": "ENST00000371953",
+        "uniprot_id": "P60484",
+        "protein_sequence": "MTAIIKEIVSRNKRRYQEDGFDLDLTYIYPNIIAMGFPAERLEGVYRNNIDDVVRFLDSKHKNHYKIYNLCAERHYDTAKFNCRVAQYPFEDHNPPQLELIKPFCEDLDQWLSEDDNHVAAIHCKAGKGRTGVMICAYLLHRGKFLKAQEALDFYGEVRTRDKKGVTIPSQRRYVYYYSYLLKNHLDYRPVALLFHKMMFETIPMFSGGTCNPQFVVCQLKVKIYSSNSGPTRREDKFMYFEFPQPLPVCGDIKVEFFHKQNKMLKKDKMFHFWVNTFFIPGPEETSEKVENGSLCDQEIDSICSIERADNDKEYLVLTLTKNDLDKANKDKANRYFSPNFKVKLYFTKTVEEPSNPEASSSTSVTPDVSDNEPDHYRYSDTTDSDPENEPFDEDQHTQITKV",
+        "regions": [
+          {
+            "region_index": 0,
+            "is_catch_all": false,
+            "obs_mis": 23,
+            "exp_mis": 18.809153561508573,
+            "obs_exp": 1.2228088799842465,
+            "oe_upper": 1.7324216289279648,
+            "p_value": 0.3338883627712608,
+            "segments": [
+              {
+                "aa_start": 351,
+                "aa_stop": 366
+              }
+            ]
+          },
+          {
+            "region_index": 1,
+            "is_catch_all": false,
+            "obs_mis": 35,
+            "exp_mis": 135.35523610705803,
+            "obs_exp": 0.25857884043966395,
+            "oe_upper": 0.34283221341249714,
+            "p_value": 6.3611678994396e-18,
+            "segments": [
+              {
+                "aa_start": 6,
+                "aa_stop": 7
+              },
+              {
+                "aa_start": 9,
+                "aa_stop": 16
+              },
+              {
+                "aa_start": 23,
+                "aa_stop": 28
+              },
+              {
+                "aa_start": 32,
+                "aa_stop": 41
+              },
+              {
+                "aa_start": 43,
+                "aa_stop": 54
+              },
+              {
+                "aa_start": 57,
+                "aa_stop": 57
+              },
+              {
+                "aa_start": 65,
+                "aa_stop": 78
+              },
+              {
+                "aa_start": 80,
+                "aa_stop": 81
+              },
+              {
+                "aa_start": 84,
+                "aa_stop": 98
+              },
+              {
+                "aa_start": 100,
+                "aa_stop": 101
+              },
+              {
+                "aa_start": 104,
+                "aa_stop": 105
+              },
+              {
+                "aa_start": 107,
+                "aa_stop": 108
+              },
+              {
+                "aa_start": 119,
+                "aa_stop": 138
+              },
+              {
+                "aa_start": 152,
+                "aa_stop": 152
+              },
+              {
+                "aa_start": 155,
+                "aa_stop": 156
+              },
+              {
+                "aa_start": 158,
+                "aa_stop": 160
+              },
+              {
+                "aa_start": 164,
+                "aa_stop": 168
+              },
+              {
+                "aa_start": 170,
+                "aa_stop": 172
+              },
+              {
+                "aa_start": 174,
+                "aa_stop": 175
+              }
+            ]
+          },
+          {
+            "region_index": 2,
+            "is_catch_all": false,
+            "obs_mis": 2,
+            "exp_mis": 25.33470032765342,
+            "obs_exp": 0.07894310862706172,
+            "oe_upper": 0.2485047598925014,
+            "p_value": 3.55199192719288e-6,
+            "segments": [
+              {
+                "aa_start": 169,
+                "aa_stop": 169
+              },
+              {
+                "aa_start": 215,
+                "aa_stop": 217
+              },
+              {
+                "aa_start": 254,
+                "aa_stop": 258
+              },
+              {
+                "aa_start": 269,
+                "aa_stop": 275
+              },
+              {
+                "aa_start": 324,
+                "aa_stop": 329
+              }
+            ]
+          },
+          {
+            "region_index": 3,
+            "is_catch_all": false,
+            "obs_mis": 143,
+            "exp_mis": 252.42880716522495,
+            "obs_exp": 0.5664963583431295,
+            "oe_upper": 0.6508377649647002,
+            "p_value": 5.677760312169237e-12,
+            "segments": [
+              {
+                "aa_start": 1,
+                "aa_stop": 5
+              },
+              {
+                "aa_start": 8,
+                "aa_stop": 8
+              },
+              {
+                "aa_start": 17,
+                "aa_stop": 22
+              },
+              {
+                "aa_start": 29,
+                "aa_stop": 31
+              },
+              {
+                "aa_start": 42,
+                "aa_stop": 42
+              },
+              {
+                "aa_start": 55,
+                "aa_stop": 56
+              },
+              {
+                "aa_start": 58,
+                "aa_stop": 64
+              },
+              {
+                "aa_start": 79,
+                "aa_stop": 79
+              },
+              {
+                "aa_start": 82,
+                "aa_stop": 83
+              },
+              {
+                "aa_start": 99,
+                "aa_stop": 99
+              },
+              {
+                "aa_start": 102,
+                "aa_stop": 103
+              },
+              {
+                "aa_start": 106,
+                "aa_stop": 106
+              },
+              {
+                "aa_start": 109,
+                "aa_stop": 118
+              },
+              {
+                "aa_start": 139,
+                "aa_stop": 151
+              },
+              {
+                "aa_start": 153,
+                "aa_stop": 154
+              },
+              {
+                "aa_start": 157,
+                "aa_stop": 157
+              },
+              {
+                "aa_start": 161,
+                "aa_stop": 163
+              },
+              {
+                "aa_start": 173,
+                "aa_stop": 173
+              },
+              {
+                "aa_start": 176,
+                "aa_stop": 214
+              },
+              {
+                "aa_start": 218,
+                "aa_stop": 253
+              },
+              {
+                "aa_start": 259,
+                "aa_stop": 268
+              },
+              {
+                "aa_start": 276,
+                "aa_stop": 288
+              },
+              {
+                "aa_start": 297,
+                "aa_stop": 323
+              },
+              {
+                "aa_start": 330,
+                "aa_stop": 350
+              },
+              {
+                "aa_start": 387,
+                "aa_stop": 387
+              }
+            ]
+          },
+          {
+            "region_index": 4,
+            "is_catch_all": true,
+            "obs_mis": 12,
+            "exp_mis": 51.91092071275529,
+            "obs_exp": 0.23116523142405795,
+            "oe_upper": 0.3745371698856746,
+            "p_value": 3.035173381344072e-8,
+            "segments": [
+              {
+                "aa_start": 289,
+                "aa_stop": 296
+              },
+              {
+                "aa_start": 367,
+                "aa_stop": 386
+              },
+              {
+                "aa_start": 388,
+                "aa_stop": 403
+              }
+            ]
+          }
+        ],
+        "uniprot_features": [
+          {
+            "feature_type": "domain",
+            "start": 14,
+            "stop": 185,
+            "note": "Phosphatase tensin-type"
+          },
+          {
+            "feature_type": "domain",
+            "start": 190,
+            "stop": 350,
+            "note": "C2 tensin-type"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 338,
+            "stop": 348,
+            "note": "Required for interaction with NOP53"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 352,
+            "stop": 403,
+            "note": "Disordered"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 401,
+            "stop": 403,
+            "note": "PDZ domain-binding"
+          },
+          {
+            "feature_type": "active site",
+            "start": 124,
+            "stop": 124,
+            "note": "Phosphocysteine intermediate"
+          }
+        ]
+      }
+    }
+  }
+}
