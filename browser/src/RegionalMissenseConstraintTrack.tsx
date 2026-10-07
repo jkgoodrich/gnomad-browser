@@ -203,7 +203,8 @@ export const RegionTooltip = ({ region, isTranscriptWide }: RegionTooltipProps) 
 export type RegionalMissenseConstraint = {
   has_no_rmc_evidence: boolean
   passed_qc: boolean
-  regions: RegionalMissenseConstraintRegion[]
+  // Null for genes that weren't searched for regional missense constraint
+  regions: RegionalMissenseConstraintRegion[] | null
 }
 
 const formattedOE = (region: RegionalMissenseConstraintRegion) =>

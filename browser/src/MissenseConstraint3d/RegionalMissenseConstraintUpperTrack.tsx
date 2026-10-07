@@ -73,7 +73,7 @@ const RegionalMissenseConstraintUpperTrack = ({
   const regions = useMemo(
     () =>
       regionsInExons(
-        [...regionalMissenseConstraint.regions],
+        [...(regionalMissenseConstraint.regions || [])],
         transcript.exons.filter((exon) => exon.feature_type === 'CDS')
       ),
     [regionalMissenseConstraint, transcript]

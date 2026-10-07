@@ -589,16 +589,19 @@ const StructurePanel = ({
     () => regionsByResidue(constraint.regions, sequence.length),
     [constraint, sequence]
   )
+  // Null for genes that weren't searched for regional missense constraint
+  const regionalMissenseConstraintRegions =
+    regionalMissenseConstraint && regionalMissenseConstraint.regions
   const regionalMissenseConstraintRegionByResidue = useMemo(
     () =>
-      regionalMissenseConstraint && regionalMissenseConstraint.regions.length > 0
-        ? regionalMissenseConstraintByResidue(regionalMissenseConstraint.regions, sequence.length)
+      regionalMissenseConstraintRegions && regionalMissenseConstraintRegions.length > 0
+        ? regionalMissenseConstraintByResidue(regionalMissenseConstraintRegions, sequence.length)
         : null,
-    [regionalMissenseConstraint, sequence]
+    [regionalMissenseConstraintRegions, sequence]
   )
   const hasRegionalMissenseConstraintUpperBounds =
-    regionalMissenseConstraint !== null &&
-    regionalMissenseConstraint.regions.some(
+    regionalMissenseConstraintRegions !== null &&
+    regionalMissenseConstraintRegions.some(
       (region) => region.obs_exp_upper !== undefined && region.obs_exp_upper !== null
     )
   const colors = useMemo(() => {

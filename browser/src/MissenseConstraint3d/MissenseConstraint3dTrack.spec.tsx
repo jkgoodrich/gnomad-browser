@@ -915,8 +915,19 @@ describe('MissenseConstraint3dTrack', () => {
     expect(screen.getByText('RMC o/e upper bound')).not.toBeNull()
   })
 
+  test('shows the structure of genes that were not searched for regional missense constraint', async () => {
+    render(
+      <TrackInRegionViewer
+        regionalMissenseConstraint={{ ...regionalMissenseConstraint, regions: null }}
+      />
+    )
+    await showStructure()
+    expect(screen.queryByLabelText('RMC o/e')).toBeNull()
+    expect(screen.queryByLabelText('RMC o/e upper')).toBeNull()
+  })
+
   test('offers the upper bound of regional missense constraint only when it is known', async () => {
-    const [region] = regionalMissenseConstraint.regions
+    const [region] = regionalMissenseConstraint.regions!
     render(
       <TrackInRegionViewer
         regionalMissenseConstraint={{
