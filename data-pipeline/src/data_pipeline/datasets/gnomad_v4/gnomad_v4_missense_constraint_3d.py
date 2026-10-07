@@ -2,6 +2,8 @@ import hail as hl
 
 # UniProt release whose sequences the AlphaFold models used for the analysis were predicted from
 UNIPROT_FEATURES_RELEASE = "map_2021_04"
+# Whether the analysis's sequence was found as the entry's sequence in that release
+UNIPROT_FEATURES_RELEASE_FOUND = "found_in_2021_04"
 
 # UniProt feature types the browser can overlay on the structure
 UNIPROT_FEATURE_TYPES = {
@@ -42,6 +44,18 @@ def _residue_segments(residue_indices):
     )
 
 
+# UniProt positions an entry's features on its canonical sequence. The release's record can be for
+# another of the entry's isoforms, with that isoform's sequence, so the features also fit when the
+# analysis's sequence was found as the entry's own sequence in the release.
+def _uniprot_features_fit_sequence(uniprot):
+    release = uniprot[UNIPROT_FEATURES_RELEASE]
+    found = uniprot[UNIPROT_FEATURES_RELEASE_FOUND]
+    is_other_isoform_of_entry = (release.id.split("-")[0] == uniprot.uniprot_id) & ~release.isoform_canonical
+    return hl.coalesce(release.sequence == uniprot.sequence, False) | hl.coalesce(
+        is_other_isoform_of_entry & found.by_uniprot_id & found.by_seq, False
+    )
+
+
 def _uniprot_features(uniprot):
     release = uniprot[UNIPROT_FEATURES_RELEASE]
     features = release.features.filter(
@@ -69,7 +83,7 @@ def _uniprot_features(uniprot):
         )
     )
     return hl.if_else(
-        hl.coalesce(release.sequence == uniprot.sequence, False),
+        _uniprot_features_fit_sequence(uniprot),
         features,
         hl.empty_array(features.dtype.element_type),
     )

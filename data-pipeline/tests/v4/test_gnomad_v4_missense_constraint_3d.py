@@ -23,7 +23,13 @@ UNIPROT_FEATURE_SCHEMA = hl.tstruct(feature_type=hl.tstr, location=hl.tstr, star
 UNIPROT_SCHEMA = hl.tstruct(
     uniprot_id=hl.tstr,
     sequence=hl.tstr,
-    map_2021_04=hl.tstruct(sequence=hl.tstr, features=hl.tarray(UNIPROT_FEATURE_SCHEMA)),
+    found_in_2021_04=hl.tstruct(by_uniprot_id=hl.tbool, by_seq=hl.tbool),
+    map_2021_04=hl.tstruct(
+        id=hl.tstr,
+        isoform_canonical=hl.tbool,
+        sequence=hl.tstr,
+        features=hl.tarray(UNIPROT_FEATURE_SCHEMA),
+    ),
 )
 
 SEQUENCE = "MACDEFGC"
@@ -70,7 +76,14 @@ def write_table(path, rows, schema, key):
     return str(path)
 
 
-def prepare(tmp_path, residues=RESIDUES, sequence=SEQUENCE, feature_release_sequence=SEQUENCE):
+def prepare(
+    tmp_path,
+    residues=RESIDUES,
+    sequence=SEQUENCE,
+    feature_release_sequence=SEQUENCE,
+    feature_release_id="P00001",
+    found_in_feature_release=True,
+):
     residues_path = write_table(
         tmp_path / "residues.ht", residues, RESIDUES_SCHEMA, ["uniprot_id", "transcript_id", "residue_index"]
     )
@@ -80,7 +93,13 @@ def prepare(tmp_path, residues=RESIDUES, sequence=SEQUENCE, feature_release_sequ
             {
                 "uniprot_id": "P00001",
                 "sequence": sequence,
-                "map_2021_04": {"sequence": feature_release_sequence, "features": FEATURES},
+                "found_in_2021_04": {"by_uniprot_id": True, "by_seq": found_in_feature_release},
+                "map_2021_04": {
+                    "id": feature_release_id,
+                    "isoform_canonical": "-" not in feature_release_id,
+                    "sequence": feature_release_sequence,
+                    "features": FEATURES,
+                },
             }
         ],
         UNIPROT_SCHEMA,
@@ -128,6 +147,19 @@ def test_uniprot_features_are_filtered_and_disulfide_bonds_split(tmp_path):
 
 def test_uniprot_features_are_dropped_when_release_sequence_differs(tmp_path):
     [row] = prepare(tmp_path, feature_release_sequence="MACDEFGA")
+
+    assert row.missense_constraint_3d.uniprot_features == []
+
+
+def test_uniprot_features_are_kept_when_the_release_record_is_another_isoform(tmp_path):
+    # Features are on the entry's canonical sequence, which the analysis's sequence was found as
+    [row] = prepare(tmp_path, feature_release_sequence="MACD", feature_release_id="P00001-2")
+
+    assert len(row.missense_constraint_3d.uniprot_features) == 3
+
+
+def test_uniprot_features_are_dropped_when_the_release_record_is_another_entry(tmp_path):
+    [row] = prepare(tmp_path, feature_release_sequence="MACD", feature_release_id="P99999-2")
 
     assert row.missense_constraint_3d.uniprot_features == []
 
