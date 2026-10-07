@@ -1,0 +1,71 @@
+{
+  "has_no_rmc_evidence": false,
+  "passed_qc": true,
+  "regions": [
+    {
+      "chrom": "7",
+      "start": 80135161,
+      "stop": 80135218,
+      "aa_start": "Met1",
+      "aa_stop": "Ile19",
+      "obs_mis": 37,
+      "exp_mis": 26.198631232226944,
+      "obs_exp": 1.412287522658294,
+      "chisq_diff_null": 4.4532695705838234,
+      "p_value": 0.03483449220059262,
+      "obs_exp_upper": 1.8579400106079107
+    },
+    {
+      "chrom": "7",
+      "start": 80135217,
+      "stop": 80189170,
+      "aa_start": "Ile19",
+      "aa_stop": "Ser80",
+      "obs_mis": 40,
+      "exp_mis": 77.96025176763327,
+      "obs_exp": 0.513081975661433,
+      "chisq_diff_null": 18.483530794090587,
+      "p_value": 1.7137884801121905e-5,
+      "obs_exp_upper": 0.6678963694259714
+    },
+    {
+      "chrom": "7",
+      "start": 80189169,
+      "stop": 80199304,
+      "aa_start": "Ile81",
+      "aa_stop": "Ile127",
+      "obs_mis": 67,
+      "exp_mis": 61.45923885826887,
+      "obs_exp": 1.0901534292428952,
+      "chisq_diff_null": 0.49951861754284027,
+      "p_value": 0.4797117138450716,
+      "obs_exp_upper": 1.3359765261402288
+    },
+    {
+      "chrom": "7",
+      "start": 80199303,
+      "stop": 80217399,
+      "aa_start": "Lys128",
+      "aa_stop": "Phe323",
+      "obs_mis": 158,
+      "exp_mis": 234.68465583954594,
+      "obs_exp": 0.6732438447446888,
+      "chisq_diff_null": 25.057183309206778,
+      "p_value": 5.565503374696974e-7,
+      "obs_exp_upper": 0.7682376211738362
+    },
+    {
+      "chrom": "7",
+      "start": 80217398,
+      "stop": 80217492,
+      "aa_start": "Thr324",
+      "aa_stop": "Phe354",
+      "obs_mis": 15,
+      "exp_mis": 36.63273831256577,
+      "obs_exp": 0.40946979917290804,
+      "chisq_diff_null": 12.77478530015939,
+      "p_value": 0.00035132293848714926,
+      "obs_exp_upper": 0.6305051389569873
+    }
+  ]
+}

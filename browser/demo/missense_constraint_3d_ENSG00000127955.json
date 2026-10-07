@@ -1,0 +1,370 @@
+{
+  "data": {
+    "gene": {
+      "missense_constraint_3d": {
+        "transcript_id": "ENST00000649796",
+        "uniprot_id": "P63096",
+        "protein_sequence": "MGCTLSAEDKAAVERSKMIDRNLREDGEKAAREVKLLLLGAGESGKSTIVKQMKIIHEAGYSEEECKQYKAVVYSNTIQSIIAIIRAMGRLKIDFGDSARADDARQLFVLAGAAEEGFMTAELAGVIKRLWKDSGVQACFNRSREYQLNDSAAYYLNDLDRIAQPNYIPTQQDVLRTRVKTTGIVETHFTFKDLHFKMFDVGGQRSERKKWIHCFEGVTAIIFCVALSDYDLVLAEDEEMNRMHESMKLFDSICNNKWFTDTSIILFLNKKDLFEEKIKKSPLTICYPEYAGSNTYEEAAAYIQCQFEDLNKRKDTKEIYTHFTCATDTKNVQFVFDAVTDVIIKNNLKDCGLF",
+        "regions": [
+          {
+            "region_index": 0,
+            "is_catch_all": false,
+            "obs_mis": 28,
+            "exp_mis": 89.87226395647072,
+            "obs_exp": 0.3115532953922435,
+            "oe_upper": 0.4271495997544277,
+            "p_value": 6.73052521493458e-11,
+            "segments": [
+              {
+                "aa_start": 36,
+                "aa_stop": 53
+              },
+              {
+                "aa_start": 68,
+                "aa_stop": 69
+              },
+              {
+                "aa_start": 71,
+                "aa_stop": 73
+              },
+              {
+                "aa_start": 75,
+                "aa_stop": 76
+              },
+              {
+                "aa_start": 79,
+                "aa_stop": 79
+              },
+              {
+                "aa_start": 147,
+                "aa_stop": 147
+              },
+              {
+                "aa_start": 149,
+                "aa_stop": 149
+              },
+              {
+                "aa_start": 174,
+                "aa_stop": 188
+              },
+              {
+                "aa_start": 197,
+                "aa_stop": 215
+              },
+              {
+                "aa_start": 221,
+                "aa_stop": 226
+              },
+              {
+                "aa_start": 234,
+                "aa_stop": 237
+              },
+              {
+                "aa_start": 242,
+                "aa_stop": 242
+              },
+              {
+                "aa_start": 245,
+                "aa_stop": 246
+              },
+              {
+                "aa_start": 249,
+                "aa_stop": 249
+              }
+            ]
+          },
+          {
+            "region_index": 1,
+            "is_catch_all": false,
+            "obs_mis": 121,
+            "exp_mis": 187.28917451408532,
+            "obs_exp": 0.6460597646069504,
+            "oe_upper": 0.7513435304269779,
+            "p_value": 1.2737865169360258e-6,
+            "segments": [
+              {
+                "aa_start": 19,
+                "aa_stop": 35
+              },
+              {
+                "aa_start": 54,
+                "aa_stop": 67
+              },
+              {
+                "aa_start": 150,
+                "aa_stop": 151
+              },
+              {
+                "aa_start": 154,
+                "aa_stop": 154
+              },
+              {
+                "aa_start": 169,
+                "aa_stop": 173
+              },
+              {
+                "aa_start": 189,
+                "aa_stop": 196
+              },
+              {
+                "aa_start": 216,
+                "aa_stop": 220
+              },
+              {
+                "aa_start": 227,
+                "aa_stop": 230
+              },
+              {
+                "aa_start": 232,
+                "aa_stop": 232
+              },
+              {
+                "aa_start": 243,
+                "aa_stop": 244
+              },
+              {
+                "aa_start": 247,
+                "aa_stop": 248
+              },
+              {
+                "aa_start": 250,
+                "aa_stop": 278
+              },
+              {
+                "aa_start": 283,
+                "aa_stop": 283
+              },
+              {
+                "aa_start": 295,
+                "aa_stop": 354
+              }
+            ]
+          },
+          {
+            "region_index": 2,
+            "is_catch_all": false,
+            "obs_mis": 60,
+            "exp_mis": 73.05434979088812,
+            "obs_exp": 0.8213063311321627,
+            "oe_upper": 1.018277917264838,
+            "p_value": 0.12667956470510122,
+            "segments": [
+              {
+                "aa_start": 74,
+                "aa_stop": 74
+              },
+              {
+                "aa_start": 77,
+                "aa_stop": 78
+              },
+              {
+                "aa_start": 80,
+                "aa_stop": 95
+              },
+              {
+                "aa_start": 104,
+                "aa_stop": 104
+              },
+              {
+                "aa_start": 107,
+                "aa_stop": 108
+              },
+              {
+                "aa_start": 111,
+                "aa_stop": 111
+              },
+              {
+                "aa_start": 127,
+                "aa_stop": 128
+              },
+              {
+                "aa_start": 130,
+                "aa_stop": 146
+              },
+              {
+                "aa_start": 148,
+                "aa_stop": 148
+              },
+              {
+                "aa_start": 152,
+                "aa_stop": 153
+              },
+              {
+                "aa_start": 155,
+                "aa_stop": 159
+              },
+              {
+                "aa_start": 231,
+                "aa_stop": 231
+              },
+              {
+                "aa_start": 233,
+                "aa_stop": 233
+              },
+              {
+                "aa_start": 238,
+                "aa_stop": 241
+              },
+              {
+                "aa_start": 280,
+                "aa_stop": 281
+              },
+              {
+                "aa_start": 285,
+                "aa_stop": 286
+              }
+            ]
+          },
+          {
+            "region_index": 3,
+            "is_catch_all": false,
+            "obs_mis": 30,
+            "exp_mis": 31.0998627132446,
+            "obs_exp": 0.9646344833292078,
+            "oe_upper": 1.3083822256591686,
+            "p_value": 0.8436524347749564,
+            "segments": [
+              {
+                "aa_start": 70,
+                "aa_stop": 70
+              },
+              {
+                "aa_start": 110,
+                "aa_stop": 110
+              },
+              {
+                "aa_start": 112,
+                "aa_stop": 126
+              },
+              {
+                "aa_start": 129,
+                "aa_stop": 129
+              },
+              {
+                "aa_start": 160,
+                "aa_stop": 168
+              }
+            ]
+          },
+          {
+            "region_index": 4,
+            "is_catch_all": true,
+            "obs_mis": 78,
+            "exp_mis": 55.619865035552124,
+            "obs_exp": 1.4023766499638668,
+            "oe_upper": 1.6930254321810003,
+            "p_value": 0.002692060859354971,
+            "segments": [
+              {
+                "aa_start": 1,
+                "aa_stop": 18
+              },
+              {
+                "aa_start": 96,
+                "aa_stop": 103
+              },
+              {
+                "aa_start": 105,
+                "aa_stop": 106
+              },
+              {
+                "aa_start": 109,
+                "aa_stop": 109
+              },
+              {
+                "aa_start": 279,
+                "aa_stop": 279
+              },
+              {
+                "aa_start": 282,
+                "aa_stop": 282
+              },
+              {
+                "aa_start": 284,
+                "aa_stop": 284
+              },
+              {
+                "aa_start": 287,
+                "aa_stop": 294
+              }
+            ]
+          }
+        ],
+        "uniprot_features": [
+          {
+            "feature_type": "domain",
+            "start": 32,
+            "stop": 354,
+            "note": "G-alpha"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 35,
+            "stop": 48,
+            "note": "G1 motif"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 173,
+            "stop": 181,
+            "note": "G2 motif"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 196,
+            "stop": 205,
+            "note": "G3 motif"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 265,
+            "stop": 272,
+            "note": "G4 motif"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 324,
+            "stop": 329,
+            "note": "G5 motif"
+          },
+          {
+            "feature_type": "metal ion-binding site",
+            "start": 47,
+            "stop": 47,
+            "note": "Magnesium"
+          },
+          {
+            "feature_type": "metal ion-binding site",
+            "start": 181,
+            "stop": 181,
+            "note": "Magnesium"
+          },
+          {
+            "feature_type": "binding site",
+            "start": 151,
+            "stop": 151,
+            "note": "GTP"
+          },
+          {
+            "feature_type": "binding site",
+            "start": 326,
+            "stop": 326,
+            "note": "GTP; via amide nitrogen"
+          },
+          {
+            "feature_type": "lipid moiety-binding region",
+            "start": 2,
+            "stop": 2,
+            "note": "N-myristoyl glycine"
+          },
+          {
+            "feature_type": "lipid moiety-binding region",
+            "start": 3,
+            "stop": 3,
+            "note": "S-palmitoyl cysteine"
+          }
+        ]
+      }
+    }
+  }
+}

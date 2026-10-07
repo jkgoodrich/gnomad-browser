@@ -13,8 +13,23 @@ from data_pipeline.datasets.gnomad_v4.gnomad_v4_missense_constraint_3d import (
 )
 
 # Gene symbols, with the UniProt entry to use where the analysis has more than one for the gene's
-# transcript
-DEMO_GENES = ["GRIN2B", "SCN2A", "KCNQ2", "PTEN:P60484", "HCN1", "CACNA1A"]
+# transcript: the reviewed Swiss-Prot entry rather than a TrEMBL one
+DEMO_GENES = [
+    "GRIN2B",
+    "SCN2A",
+    "KCNQ2",
+    "PTEN:P60484",
+    "HCN1",
+    "CACNA1A",
+    "CHD3",
+    "KDM5C",
+    "GNAI1",
+    "NALCN",
+    "PPP3CA:Q08209",
+    "GRIN1",
+    "USP7",
+    "SMC1A:Q14683",
+]
 
 
 def write_json(path, value):
