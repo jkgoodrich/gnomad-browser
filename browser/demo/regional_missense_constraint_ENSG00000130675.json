@@ -1,0 +1,97 @@
+{
+  "has_no_rmc_evidence": false,
+  "passed_qc": true,
+  "regions": [
+    {
+      "chrom": "7",
+      "start": 157005523,
+      "stop": 157005836,
+      "aa_start": "Gln401",
+      "aa_stop": "Arg298",
+      "obs_mis": 178,
+      "exp_mis": 155.15573057539487,
+      "obs_exp": 1.1472344549562377,
+      "chisq_diff_null": 3.363463557605183,
+      "p_value": 0.06665773532585537,
+      "obs_exp_upper": 1.2990839800417182
+    },
+    {
+      "chrom": "7",
+      "start": 157005835,
+      "stop": 157006483,
+      "aa_start": "Lys297",
+      "aa_stop": "Gln284",
+      "obs_mis": 1,
+      "exp_mis": 17.726274774203848,
+      "obs_exp": 0.056413432192490294,
+      "chisq_diff_null": 15.782688206396337,
+      "p_value": 7.104964690268797e-5,
+      "obs_exp_upper": 0.26761767933858743
+    },
+    {
+      "chrom": "7",
+      "start": 157006482,
+      "stop": 157009946,
+      "aa_start": "Thr283",
+      "aa_stop": "Gly136",
+      "obs_mis": 210,
+      "exp_mis": 211.2582809111611,
+      "obs_exp": 0.9940438741348546,
+      "chisq_diff_null": 0.007494479480585334,
+      "p_value": 0.9310127868338028,
+      "obs_exp_upper": 1.1145018459460272
+    },
+    {
+      "chrom": "7",
+      "start": 157009945,
+      "stop": 157009986,
+      "aa_start": "Gly136",
+      "aa_stop": "Ala123",
+      "obs_mis": 4,
+      "exp_mis": 16.794742391504823,
+      "obs_exp": 0.2381697740135207,
+      "chisq_diff_null": 9.747421487558906,
+      "p_value": 0.0017957442497139038,
+      "obs_exp_upper": 0.5450228895006832
+    },
+    {
+      "chrom": "7",
+      "start": 157009985,
+      "stop": 157010228,
+      "aa_start": "Ala122",
+      "aa_stop": "Gly42",
+      "obs_mis": 115,
+      "exp_mis": 103.45323864532367,
+      "obs_exp": 1.1116133386047289,
+      "chisq_diff_null": 1.2887725848674878,
+      "p_value": 0.25627427088419485,
+      "obs_exp_upper": 1.297839091384689
+    },
+    {
+      "chrom": "7",
+      "start": 157010227,
+      "stop": 157010261,
+      "aa_start": "Gly42",
+      "aa_stop": "Val31",
+      "obs_mis": 3,
+      "exp_mis": 18.377633137922736,
+      "obs_exp": 0.16324191355248135,
+      "chisq_diff_null": 12.86735887858018,
+      "p_value": 0.00033436316530279506,
+      "obs_exp_upper": 0.42190724288280895
+    },
+    {
+      "chrom": "7",
+      "start": 157010260,
+      "stop": 157010352,
+      "aa_start": "Val31",
+      "aa_stop": "Met1",
+      "obs_mis": 45,
+      "exp_mis": 41.97880742933639,
+      "obs_exp": 1.0719694711611145,
+      "chisq_diff_null": 0.2174336315865482,
+      "p_value": 0.6410023584178313,
+      "obs_exp_upper": 1.374381465010702
+    }
+  ]
+}

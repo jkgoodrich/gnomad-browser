@@ -1,0 +1,305 @@
+{
+  "data": {
+    "gene": {
+      "missense_constraint_3d": {
+        "transcript_id": "ENST00000312280",
+        "uniprot_id": "Q01453",
+        "protein_sequence": "MLLLLLSIIVLHVAVLVLLFVSTIVSQWIVGNGHATDLWQNCSTSSSGNVHHCFSSSPNEWLQSVQATMILSIIFSILSLFLFFCQLFTLTKGGRFYITGIFQILAGLCVMSAAAIYTVRHPEWHLNSDYSYGFAYILAWVAFPLALLSGVIYVILRKRE",
+        "regions": [
+          {
+            "region_index": 0,
+            "is_catch_all": false,
+            "obs_mis": 18,
+            "exp_mis": 46.619884055108265,
+            "obs_exp": 0.38610134634231663,
+            "oe_upper": 0.5725404696402278,
+            "p_value": 2.7696524654312664e-5,
+            "segments": [
+              {
+                "aa_start": 5,
+                "aa_stop": 21
+              },
+              {
+                "aa_start": 72,
+                "aa_stop": 81
+              },
+              {
+                "aa_start": 83,
+                "aa_stop": 84
+              },
+              {
+                "aa_start": 103,
+                "aa_stop": 103
+              },
+              {
+                "aa_start": 106,
+                "aa_stop": 106
+              },
+              {
+                "aa_start": 142,
+                "aa_stop": 142
+              },
+              {
+                "aa_start": 145,
+                "aa_stop": 146
+              },
+              {
+                "aa_start": 148,
+                "aa_stop": 150
+              }
+            ]
+          },
+          {
+            "region_index": 1,
+            "is_catch_all": false,
+            "obs_mis": 15,
+            "exp_mis": 25.92830147914971,
+            "obs_exp": 0.5785184198071084,
+            "oe_upper": 0.8908076673943656,
+            "p_value": 0.03185882155807455,
+            "segments": [
+              {
+                "aa_start": 62,
+                "aa_stop": 62
+              },
+              {
+                "aa_start": 64,
+                "aa_stop": 69
+              },
+              {
+                "aa_start": 108,
+                "aa_stop": 118
+              },
+              {
+                "aa_start": 139,
+                "aa_stop": 139
+              }
+            ]
+          },
+          {
+            "region_index": 2,
+            "is_catch_all": false,
+            "obs_mis": 11,
+            "exp_mis": 18.209549271445248,
+            "obs_exp": 0.6040786532398864,
+            "oe_upper": 0.9998882443210835,
+            "p_value": 0.0911234134622748,
+            "segments": [
+              {
+                "aa_start": 26,
+                "aa_stop": 26
+              },
+              {
+                "aa_start": 36,
+                "aa_stop": 42
+              },
+              {
+                "aa_start": 52,
+                "aa_stop": 59
+              }
+            ]
+          },
+          {
+            "region_index": 3,
+            "is_catch_all": false,
+            "obs_mis": 26,
+            "exp_mis": 32.51843431589323,
+            "obs_exp": 0.799546489459753,
+            "oe_upper": 1.109420205568731,
+            "p_value": 0.25300335151755216,
+            "segments": [
+              {
+                "aa_start": 2,
+                "aa_stop": 2
+              },
+              {
+                "aa_start": 4,
+                "aa_stop": 4
+              },
+              {
+                "aa_start": 82,
+                "aa_stop": 82
+              },
+              {
+                "aa_start": 85,
+                "aa_stop": 91
+              },
+              {
+                "aa_start": 94,
+                "aa_stop": 102
+              },
+              {
+                "aa_start": 104,
+                "aa_stop": 104
+              },
+              {
+                "aa_start": 151,
+                "aa_stop": 158
+              }
+            ]
+          },
+          {
+            "region_index": 4,
+            "is_catch_all": false,
+            "obs_mis": 20,
+            "exp_mis": 22.19979374170962,
+            "obs_exp": 0.9009092711714441,
+            "oe_upper": 1.3091121106153096,
+            "p_value": 0.6405840258362794,
+            "segments": [
+              {
+                "aa_start": 22,
+                "aa_stop": 23
+              },
+              {
+                "aa_start": 27,
+                "aa_stop": 28
+              },
+              {
+                "aa_start": 107,
+                "aa_stop": 107
+              },
+              {
+                "aa_start": 132,
+                "aa_stop": 138
+              },
+              {
+                "aa_start": 140,
+                "aa_stop": 141
+              },
+              {
+                "aa_start": 143,
+                "aa_stop": 144
+              },
+              {
+                "aa_start": 147,
+                "aa_stop": 147
+              }
+            ]
+          },
+          {
+            "region_index": 5,
+            "is_catch_all": true,
+            "obs_mis": 79,
+            "exp_mis": 56.716235684195645,
+            "obs_exp": 1.392899212138895,
+            "oe_upper": 1.6795583682138386,
+            "p_value": 0.0030870808255967566,
+            "segments": [
+              {
+                "aa_start": 1,
+                "aa_stop": 1
+              },
+              {
+                "aa_start": 3,
+                "aa_stop": 3
+              },
+              {
+                "aa_start": 24,
+                "aa_stop": 25
+              },
+              {
+                "aa_start": 29,
+                "aa_stop": 35
+              },
+              {
+                "aa_start": 43,
+                "aa_stop": 51
+              },
+              {
+                "aa_start": 60,
+                "aa_stop": 61
+              },
+              {
+                "aa_start": 63,
+                "aa_stop": 63
+              },
+              {
+                "aa_start": 70,
+                "aa_stop": 71
+              },
+              {
+                "aa_start": 92,
+                "aa_stop": 93
+              },
+              {
+                "aa_start": 105,
+                "aa_stop": 105
+              },
+              {
+                "aa_start": 119,
+                "aa_stop": 131
+              },
+              {
+                "aa_start": 159,
+                "aa_stop": 160
+              }
+            ]
+          }
+        ],
+        "uniprot_features": [
+          {
+            "feature_type": "topological domain",
+            "start": 1,
+            "stop": 1,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 2,
+            "stop": 31,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 32,
+            "stop": 64,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 65,
+            "stop": 91,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 92,
+            "stop": 95,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 96,
+            "stop": 119,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 120,
+            "stop": 133,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 134,
+            "stop": 156,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 157,
+            "stop": 160,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "glycosylation site",
+            "start": 41,
+            "stop": 41,
+            "note": "N-linked (GlcNAc...) asparagine"
+          }
+        ]
+      }
+    }
+  }
+}

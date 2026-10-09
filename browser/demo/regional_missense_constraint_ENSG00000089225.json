@@ -1,0 +1,97 @@
+{
+  "has_no_rmc_evidence": false,
+  "passed_qc": true,
+  "regions": [
+    {
+      "chrom": "12",
+      "start": 114355535,
+      "stop": 114385517,
+      "aa_start": "Ser518",
+      "aa_stop": "Ser239",
+      "obs_mis": 348,
+      "exp_mis": 360.3593970583938,
+      "obs_exp": 0.9657025814803685,
+      "chisq_diff_null": 0.42389541356203636,
+      "p_value": 0.5149996808566228,
+      "obs_exp_upper": 1.0552973780278818
+    },
+    {
+      "chrom": "12",
+      "start": 114385516,
+      "stop": 114394770,
+      "aa_start": "Ser239",
+      "aa_stop": "Ile212",
+      "obs_mis": 5,
+      "exp_mis": 31.918558695809946,
+      "obs_exp": 0.15664867726801104,
+      "chisq_diff_null": 22.701802082150003,
+      "p_value": 1.891903585536743e-6,
+      "obs_exp_upper": 0.3293706025053572
+    },
+    {
+      "chrom": "12",
+      "start": 114394769,
+      "stop": 114394807,
+      "aa_start": "Ile212",
+      "aa_stop": "Ala200",
+      "obs_mis": 17,
+      "exp_mis": 17.622448852579172,
+      "obs_exp": 0.9646786404213015,
+      "chisq_diff_null": 0.02198573974129724,
+      "p_value": 0.8821250415158282,
+      "obs_exp_upper": 1.4469742710658122
+    },
+    {
+      "chrom": "12",
+      "start": 114394806,
+      "stop": 114398612,
+      "aa_start": "Ala200",
+      "aa_stop": "Leu158",
+      "obs_mis": 20,
+      "exp_mis": 50.93625285526479,
+      "obs_exp": 0.3926476503253967,
+      "chisq_diff_null": 18.789205861772725,
+      "p_value": 1.4599104657626502e-5,
+      "obs_exp_upper": 0.5705566705704415
+    },
+    {
+      "chrom": "12",
+      "start": 114398611,
+      "stop": 114399617,
+      "aa_start": "Leu158",
+      "aa_stop": "Tyr87",
+      "obs_mis": 85,
+      "exp_mis": 95.59131182536551,
+      "obs_exp": 0.8892021500372896,
+      "chisq_diff_null": 1.1734945785351276,
+      "p_value": 0.2786843604974795,
+      "obs_exp_upper": 1.0649582833417692
+    },
+    {
+      "chrom": "12",
+      "start": 114399616,
+      "stop": 114401884,
+      "aa_start": "Tyr87",
+      "aa_stop": "Glu62",
+      "obs_mis": 13,
+      "exp_mis": 32.01312526115998,
+      "obs_exp": 0.4060834390253141,
+      "chisq_diff_null": 11.292209968489061,
+      "p_value": 0.0007783297806165303,
+      "obs_exp_upper": 0.6456279699998517
+    },
+    {
+      "chrom": "12",
+      "start": 114401883,
+      "stop": 114403900,
+      "aa_start": "Glu62",
+      "aa_stop": "Met1",
+      "obs_mis": 101,
+      "exp_mis": 83.28343612061562,
+      "obs_exp": 1.212726139850021,
+      "chisq_diff_null": 3.768776245467755,
+      "p_value": 0.05221782345558003,
+      "obs_exp_upper": 1.4307887623745226
+    }
+  ]
+}

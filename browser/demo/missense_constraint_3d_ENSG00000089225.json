@@ -1,0 +1,508 @@
+{
+  "data": {
+    "gene": {
+      "missense_constraint_3d": {
+        "transcript_id": "ENST00000405440",
+        "uniprot_id": "Q99593",
+        "protein_sequence": "MADADEGFGLAHTPLEPDAKDLPCDSKPESALGAPSKSPSSPQAAFTQQGMEGIKVFLHERELWLKFHEVGTEMIITKAGRRMFPSYKVKVTGLNPKTKYILLMDIVPADDHRYKFADNKWSVTGKAEPAMPGRLYVHPDSPATGAHWMRQLVSFQKLKLTNNHLDPFGHIILNSMHKYQPRLHIVKADENNGFGSKNTAFCTHVFPETAFIAVTSYQNHKITQLKIENNPFAKGFRGSDDMELHRMSRMQSKEYPVVPRSTVRQKVASNHSPFSSESRALSTSSNLGSQYQCENGVSGPSQDLLPPPNPYPLPQEHSQIYHCTKRKEEECSTTDHPYKKPYMETSPSEEDSFYRSSYPQQQGLGASYRTESAQRQACMYASSAPPSEPVPSLEDISCNTWPSMPSYSSCTVTTVQPMDRLPYQHFSAHFTSGPLVPRLAGMANHGSPQLGEGMFQHQTSVAHQPVVRQCGPQTGLQSPGTLQPPEFLYSHGVPRTLSPHQYHSVHGVGMVPEWSDNS",
+        "regions": [
+          {
+            "region_index": 0,
+            "is_catch_all": false,
+            "obs_mis": 28,
+            "exp_mis": 82.63203558714623,
+            "obs_exp": 0.33885163061813184,
+            "oe_upper": 0.46457649633409615,
+            "p_value": 1.85544154503699e-9,
+            "segments": [
+              {
+                "aa_start": 72,
+                "aa_stop": 88
+              },
+              {
+                "aa_start": 104,
+                "aa_stop": 106
+              },
+              {
+                "aa_start": 134,
+                "aa_stop": 136
+              },
+              {
+                "aa_start": 154,
+                "aa_stop": 177
+              },
+              {
+                "aa_start": 179,
+                "aa_stop": 179
+              },
+              {
+                "aa_start": 181,
+                "aa_stop": 181
+              },
+              {
+                "aa_start": 209,
+                "aa_stop": 209
+              },
+              {
+                "aa_start": 211,
+                "aa_stop": 217
+              },
+              {
+                "aa_start": 222,
+                "aa_stop": 223
+              },
+              {
+                "aa_start": 226,
+                "aa_stop": 227
+              },
+              {
+                "aa_start": 230,
+                "aa_stop": 233
+              }
+            ]
+          },
+          {
+            "region_index": 1,
+            "is_catch_all": false,
+            "obs_mis": 18,
+            "exp_mis": 41.0776999269096,
+            "obs_exp": 0.43819396003251815,
+            "oe_upper": 0.6497873629482145,
+            "p_value": 0.000317336048789907,
+            "segments": [
+              {
+                "aa_start": 46,
+                "aa_stop": 51
+              },
+              {
+                "aa_start": 98,
+                "aa_stop": 102
+              },
+              {
+                "aa_start": 142,
+                "aa_stop": 142
+              },
+              {
+                "aa_start": 184,
+                "aa_stop": 203
+              }
+            ]
+          },
+          {
+            "region_index": 2,
+            "is_catch_all": false,
+            "obs_mis": 10,
+            "exp_mis": 24.7893733620538,
+            "obs_exp": 0.4033986601415043,
+            "oe_upper": 0.6842536512716663,
+            "p_value": 0.0029739855835657332,
+            "segments": [
+              {
+                "aa_start": 63,
+                "aa_stop": 63
+              },
+              {
+                "aa_start": 66,
+                "aa_stop": 67
+              },
+              {
+                "aa_start": 70,
+                "aa_stop": 71
+              },
+              {
+                "aa_start": 218,
+                "aa_stop": 221
+              },
+              {
+                "aa_start": 224,
+                "aa_stop": 225
+              },
+              {
+                "aa_start": 228,
+                "aa_stop": 229
+              },
+              {
+                "aa_start": 234,
+                "aa_stop": 241
+              }
+            ]
+          },
+          {
+            "region_index": 3,
+            "is_catch_all": false,
+            "obs_mis": 11,
+            "exp_mis": 24.29200933108867,
+            "obs_exp": 0.45282380103165487,
+            "oe_upper": 0.7495268918574741,
+            "p_value": 0.006999601818475383,
+            "segments": [
+              {
+                "aa_start": 442,
+                "aa_stop": 460
+              }
+            ]
+          },
+          {
+            "region_index": 4,
+            "is_catch_all": false,
+            "obs_mis": 9,
+            "exp_mis": 18.49045716700593,
+            "obs_exp": 0.4867375597429497,
+            "oe_upper": 0.8493687462817084,
+            "p_value": 0.02731016279077172,
+            "segments": [
+              {
+                "aa_start": 107,
+                "aa_stop": 109
+              },
+              {
+                "aa_start": 111,
+                "aa_stop": 111
+              },
+              {
+                "aa_start": 127,
+                "aa_stop": 133
+              },
+              {
+                "aa_start": 180,
+                "aa_stop": 180
+              },
+              {
+                "aa_start": 182,
+                "aa_stop": 182
+              }
+            ]
+          },
+          {
+            "region_index": 5,
+            "is_catch_all": false,
+            "obs_mis": 9,
+            "exp_mis": 17.328368376966488,
+            "obs_exp": 0.5193795401973988,
+            "oe_upper": 0.906329787113218,
+            "p_value": 0.04542516738147572,
+            "segments": [
+              {
+                "aa_start": 247,
+                "aa_stop": 259
+              }
+            ]
+          },
+          {
+            "region_index": 6,
+            "is_catch_all": false,
+            "obs_mis": 13,
+            "exp_mis": 20.590466154357113,
+            "obs_exp": 0.6313601597236832,
+            "oe_upper": 1.0037931594540443,
+            "p_value": 0.09437324462666452,
+            "segments": [
+              {
+                "aa_start": 363,
+                "aa_stop": 378
+              }
+            ]
+          },
+          {
+            "region_index": 7,
+            "is_catch_all": false,
+            "obs_mis": 18,
+            "exp_mis": 25.536437125422303,
+            "obs_exp": 0.7048751519874498,
+            "oe_upper": 1.0452425363956575,
+            "p_value": 0.1358639062886886,
+            "segments": [
+              {
+                "aa_start": 404,
+                "aa_stop": 421
+              }
+            ]
+          },
+          {
+            "region_index": 8,
+            "is_catch_all": false,
+            "obs_mis": 11,
+            "exp_mis": 17.48982920096389,
+            "obs_exp": 0.6289369595098032,
+            "oe_upper": 1.041034423017705,
+            "p_value": 0.1207060360463149,
+            "segments": [
+              {
+                "aa_start": 507,
+                "aa_stop": 518
+              }
+            ]
+          },
+          {
+            "region_index": 9,
+            "is_catch_all": false,
+            "obs_mis": 13,
+            "exp_mis": 17.670339185851212,
+            "obs_exp": 0.7356961212385333,
+            "oe_upper": 1.1696758538887124,
+            "p_value": 0.2665552230983187,
+            "segments": [
+              {
+                "aa_start": 429,
+                "aa_stop": 441
+              }
+            ]
+          },
+          {
+            "region_index": 10,
+            "is_catch_all": false,
+            "obs_mis": 13,
+            "exp_mis": 17.43258163619405,
+            "obs_exp": 0.7457300514233077,
+            "oe_upper": 1.1856286984367814,
+            "p_value": 0.2884006841867033,
+            "segments": [
+              {
+                "aa_start": 277,
+                "aa_stop": 291
+              }
+            ]
+          },
+          {
+            "region_index": 11,
+            "is_catch_all": false,
+            "obs_mis": 14,
+            "exp_mis": 17.707374634282285,
+            "obs_exp": 0.7906310387139696,
+            "oe_upper": 1.23600964936371,
+            "p_value": 0.37830302160922347,
+            "segments": [
+              {
+                "aa_start": 468,
+                "aa_stop": 482
+              }
+            ]
+          },
+          {
+            "region_index": 12,
+            "is_catch_all": false,
+            "obs_mis": 37,
+            "exp_mis": 39.21703773505069,
+            "obs_exp": 0.9434674859934874,
+            "oe_upper": 1.2411820984126036,
+            "p_value": 0.723319072146385,
+            "segments": [
+              {
+                "aa_start": 39,
+                "aa_stop": 41
+              },
+              {
+                "aa_start": 43,
+                "aa_stop": 43
+              },
+              {
+                "aa_start": 64,
+                "aa_stop": 65
+              },
+              {
+                "aa_start": 68,
+                "aa_stop": 69
+              },
+              {
+                "aa_start": 110,
+                "aa_stop": 110
+              },
+              {
+                "aa_start": 112,
+                "aa_stop": 117
+              },
+              {
+                "aa_start": 119,
+                "aa_stop": 126
+              },
+              {
+                "aa_start": 178,
+                "aa_stop": 178
+              },
+              {
+                "aa_start": 183,
+                "aa_stop": 183
+              },
+              {
+                "aa_start": 205,
+                "aa_stop": 208
+              },
+              {
+                "aa_start": 210,
+                "aa_stop": 210
+              }
+            ]
+          },
+          {
+            "region_index": 13,
+            "is_catch_all": false,
+            "obs_mis": 69,
+            "exp_mis": 42.33657075168845,
+            "obs_exp": 1.6297966220433235,
+            "oe_upper": 1.9913392990963392,
+            "p_value": 4.1696952411121095e-5,
+            "segments": [
+              {
+                "aa_start": 31,
+                "aa_stop": 38
+              },
+              {
+                "aa_start": 42,
+                "aa_stop": 42
+              },
+              {
+                "aa_start": 44,
+                "aa_stop": 45
+              },
+              {
+                "aa_start": 52,
+                "aa_stop": 62
+              },
+              {
+                "aa_start": 89,
+                "aa_stop": 93
+              },
+              {
+                "aa_start": 103,
+                "aa_stop": 103
+              },
+              {
+                "aa_start": 118,
+                "aa_stop": 118
+              },
+              {
+                "aa_start": 152,
+                "aa_stop": 153
+              },
+              {
+                "aa_start": 204,
+                "aa_stop": 204
+              }
+            ]
+          },
+          {
+            "region_index": 14,
+            "is_catch_all": false,
+            "obs_mis": 15,
+            "exp_mis": 17.9266176853739,
+            "obs_exp": 0.8367445696261103,
+            "oe_upper": 1.2884265267164083,
+            "p_value": 0.48942677836280085,
+            "segments": [
+              {
+                "aa_start": 325,
+                "aa_stop": 339
+              }
+            ]
+          },
+          {
+            "region_index": 15,
+            "is_catch_all": false,
+            "obs_mis": 15,
+            "exp_mis": 17.216550244457203,
+            "obs_exp": 0.871254681513748,
+            "oe_upper": 1.3415654955367877,
+            "p_value": 0.5932026335530574,
+            "segments": [
+              {
+                "aa_start": 94,
+                "aa_stop": 94
+              },
+              {
+                "aa_start": 137,
+                "aa_stop": 140
+              },
+              {
+                "aa_start": 148,
+                "aa_stop": 151
+              },
+              {
+                "aa_start": 242,
+                "aa_stop": 245
+              }
+            ]
+          },
+          {
+            "region_index": 16,
+            "is_catch_all": true,
+            "obs_mis": 286,
+            "exp_mis": 229.99078256437622,
+            "obs_exp": 1.2435280962616246,
+            "oe_upper": 1.371456768427721,
+            "p_value": 0.00022143888785957082,
+            "segments": [
+              {
+                "aa_start": 1,
+                "aa_stop": 30
+              },
+              {
+                "aa_start": 95,
+                "aa_stop": 97
+              },
+              {
+                "aa_start": 141,
+                "aa_stop": 141
+              },
+              {
+                "aa_start": 143,
+                "aa_stop": 147
+              },
+              {
+                "aa_start": 246,
+                "aa_stop": 246
+              },
+              {
+                "aa_start": 260,
+                "aa_stop": 276
+              },
+              {
+                "aa_start": 292,
+                "aa_stop": 324
+              },
+              {
+                "aa_start": 340,
+                "aa_stop": 362
+              },
+              {
+                "aa_start": 379,
+                "aa_stop": 403
+              },
+              {
+                "aa_start": 422,
+                "aa_stop": 428
+              },
+              {
+                "aa_start": 461,
+                "aa_stop": 467
+              },
+              {
+                "aa_start": 483,
+                "aa_stop": 506
+              }
+            ]
+          }
+        ],
+        "uniprot_features": [
+          {
+            "feature_type": "DNA-binding region",
+            "start": 58,
+            "stop": 238,
+            "note": "T-box"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 1,
+            "stop": 46,
+            "note": "Disordered"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 250,
+            "stop": 356,
+            "note": "Disordered"
+          }
+        ]
+      }
+    }
+  }
+}

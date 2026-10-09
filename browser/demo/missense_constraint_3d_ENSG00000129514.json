@@ -1,0 +1,539 @@
+{
+  "data": {
+    "gene": {
+      "missense_constraint_3d": {
+        "transcript_id": "ENST00000250448",
+        "uniprot_id": "P55317",
+        "protein_sequence": "MLGTVKMEGHETSDWNSYYADTQEAYSSVPVSNMNSGLGSMNSMNTYMTMNTMTTSGNMTPASFNMSYANPGLGAGLSPGAVAGMPGGSAGAMNSMTAAGVTAMGTALSPSGMGAMGAQQAASMNGLGPYAAAMNPCMSPMAYAPSNLGRSRAGGGGDAKTFKRSYPHAKPPYSYISLITMAIQQAPSKMLTLSEIYQWIMDLFPYYRQNQQRWQNSIRHSLSFNDCFVKVARSPDKPGKGSYWTLHPDSGNMFENGCYLRRQKRFKCEKQPGAGGGGGSGSGGSGAKGGPESRKDPSGASNPSADSPLHRGVHGKTGQLEGAPAPGPAASPQTLDHSGATATGGASELKTPASSTAPPISSGPGALASVPASHPAHGLAPHESQLHLKGDPHYSFNHPFSINNLMSSSEQQHKLDFKAYEQALQYSPYGSTLPASLPLGSASVTTRSPIEPSALEPAYYQGVYSRPVLNTS",
+        "regions": [
+          {
+            "region_index": 0,
+            "is_catch_all": false,
+            "obs_mis": 37,
+            "exp_mis": 86.17002916108439,
+            "obs_exp": 0.42938363094705473,
+            "oe_upper": 0.5648772045617343,
+            "p_value": 1.177806581076997e-7,
+            "segments": [
+              {
+                "aa_start": 172,
+                "aa_stop": 184
+              },
+              {
+                "aa_start": 190,
+                "aa_stop": 200
+              },
+              {
+                "aa_start": 207,
+                "aa_stop": 207
+              },
+              {
+                "aa_start": 211,
+                "aa_stop": 231
+              },
+              {
+                "aa_start": 241,
+                "aa_stop": 247
+              },
+              {
+                "aa_start": 250,
+                "aa_stop": 250
+              },
+              {
+                "aa_start": 253,
+                "aa_stop": 254
+              },
+              {
+                "aa_start": 259,
+                "aa_stop": 268
+              }
+            ]
+          },
+          {
+            "region_index": 1,
+            "is_catch_all": false,
+            "obs_mis": 14,
+            "exp_mis": 27.942414851538178,
+            "obs_exp": 0.5010304254082508,
+            "oe_upper": 0.7832710962583926,
+            "p_value": 0.008349934189232787,
+            "segments": [
+              {
+                "aa_start": 362,
+                "aa_stop": 380
+              }
+            ]
+          },
+          {
+            "region_index": 2,
+            "is_catch_all": false,
+            "obs_mis": 17,
+            "exp_mis": 29.49745941789035,
+            "obs_exp": 0.5763208200123642,
+            "oe_upper": 0.8644551288844186,
+            "p_value": 0.021387794909046777,
+            "segments": [
+              {
+                "aa_start": 400,
+                "aa_stop": 424
+              }
+            ]
+          },
+          {
+            "region_index": 3,
+            "is_catch_all": false,
+            "obs_mis": 12,
+            "exp_mis": 19.334494506989476,
+            "obs_exp": 0.6206523783521708,
+            "oe_upper": 1.0055897413240604,
+            "p_value": 0.095309833064119,
+            "segments": [
+              {
+                "aa_start": 171,
+                "aa_stop": 171
+              },
+              {
+                "aa_start": 185,
+                "aa_stop": 185
+              },
+              {
+                "aa_start": 187,
+                "aa_stop": 189
+              },
+              {
+                "aa_start": 248,
+                "aa_stop": 249
+              },
+              {
+                "aa_start": 251,
+                "aa_stop": 252
+              },
+              {
+                "aa_start": 255,
+                "aa_stop": 258
+              }
+            ]
+          },
+          {
+            "region_index": 4,
+            "is_catch_all": false,
+            "obs_mis": 11,
+            "exp_mis": 18.091958707789704,
+            "obs_exp": 0.6080049251529532,
+            "oe_upper": 1.0063871217583642,
+            "p_value": 0.0954474006552467,
+            "segments": [
+              {
+                "aa_start": 89,
+                "aa_stop": 99
+              }
+            ]
+          },
+          {
+            "region_index": 5,
+            "is_catch_all": false,
+            "obs_mis": 19,
+            "exp_mis": 26.405244068571246,
+            "obs_exp": 0.7195540382304092,
+            "oe_upper": 1.0558220771239413,
+            "p_value": 0.1495562782236847,
+            "segments": [
+              {
+                "aa_start": 3,
+                "aa_stop": 22
+              }
+            ]
+          },
+          {
+            "region_index": 6,
+            "is_catch_all": false,
+            "obs_mis": 10,
+            "exp_mis": 16.048465630639132,
+            "obs_exp": 0.623112528646251,
+            "oe_upper": 1.056937131942275,
+            "p_value": 0.13108644549680562,
+            "segments": [
+              {
+                "aa_start": 459,
+                "aa_stop": 472
+              }
+            ]
+          },
+          {
+            "region_index": 7,
+            "is_catch_all": false,
+            "obs_mis": 12,
+            "exp_mis": 17.23934121151358,
+            "obs_exp": 0.696082283700354,
+            "oe_upper": 1.1278023383474753,
+            "p_value": 0.20699375483327295,
+            "segments": [
+              {
+                "aa_start": 112,
+                "aa_stop": 121
+              }
+            ]
+          },
+          {
+            "region_index": 8,
+            "is_catch_all": false,
+            "obs_mis": 13,
+            "exp_mis": 17.794908554023557,
+            "obs_exp": 0.7305460413316148,
+            "oe_upper": 1.1614877937116672,
+            "p_value": 0.2556783985316977,
+            "segments": [
+              {
+                "aa_start": 442,
+                "aa_stop": 454
+              }
+            ]
+          },
+          {
+            "region_index": 9,
+            "is_catch_all": false,
+            "obs_mis": 12,
+            "exp_mis": 16.637928532624304,
+            "obs_exp": 0.7212436317700204,
+            "oe_upper": 1.1685691095373596,
+            "p_value": 0.255523006982171,
+            "segments": [
+              {
+                "aa_start": 333,
+                "aa_stop": 344
+              }
+            ]
+          },
+          {
+            "region_index": 10,
+            "is_catch_all": false,
+            "obs_mis": 16,
+            "exp_mis": 19.979779197416306,
+            "obs_exp": 0.8008096506926887,
+            "oe_upper": 1.2162889010700189,
+            "p_value": 0.3732748202052555,
+            "segments": [
+              {
+                "aa_start": 28,
+                "aa_stop": 42
+              }
+            ]
+          },
+          {
+            "region_index": 11,
+            "is_catch_all": false,
+            "obs_mis": 15,
+            "exp_mis": 18.162374124803193,
+            "obs_exp": 0.825883218621483,
+            "oe_upper": 1.271702124481455,
+            "p_value": 0.4580634916327005,
+            "segments": [
+              {
+                "aa_start": 66,
+                "aa_stop": 78
+              }
+            ]
+          },
+          {
+            "region_index": 12,
+            "is_catch_all": false,
+            "obs_mis": 13,
+            "exp_mis": 16.004635386081304,
+            "obs_exp": 0.8122646774762308,
+            "oe_upper": 1.2914114303215214,
+            "p_value": 0.45262252883304976,
+            "segments": [
+              {
+                "aa_start": 275,
+                "aa_stop": 283
+              }
+            ]
+          },
+          {
+            "region_index": 13,
+            "is_catch_all": false,
+            "obs_mis": 25,
+            "exp_mis": 26.536647612831857,
+            "obs_exp": 0.9420933783629547,
+            "oe_upper": 1.3157683170590222,
+            "p_value": 0.7654752507884053,
+            "segments": [
+              {
+                "aa_start": 295,
+                "aa_stop": 310
+              }
+            ]
+          },
+          {
+            "region_index": 14,
+            "is_catch_all": false,
+            "obs_mis": 14,
+            "exp_mis": 16.1625597642624,
+            "obs_exp": 0.8661994265881007,
+            "oe_upper": 1.3541472534112495,
+            "p_value": 0.590636252503406,
+            "segments": [
+              {
+                "aa_start": 123,
+                "aa_stop": 133
+              }
+            ]
+          },
+          {
+            "region_index": 15,
+            "is_catch_all": false,
+            "obs_mis": 18,
+            "exp_mis": 19.209676918310507,
+            "obs_exp": 0.9370277322489764,
+            "oe_upper": 1.3894960558156118,
+            "p_value": 0.7825479287714843,
+            "segments": [
+              {
+                "aa_start": 139,
+                "aa_stop": 150
+              }
+            ]
+          },
+          {
+            "region_index": 16,
+            "is_catch_all": false,
+            "obs_mis": 42,
+            "exp_mis": 39.176753395436926,
+            "obs_exp": 1.0720643330514446,
+            "oe_upper": 1.3866372728343817,
+            "p_value": 0.6519460981054395,
+            "segments": [
+              {
+                "aa_start": 163,
+                "aa_stop": 164
+              },
+              {
+                "aa_start": 166,
+                "aa_stop": 170
+              },
+              {
+                "aa_start": 186,
+                "aa_stop": 186
+              },
+              {
+                "aa_start": 201,
+                "aa_stop": 206
+              },
+              {
+                "aa_start": 208,
+                "aa_stop": 210
+              },
+              {
+                "aa_start": 232,
+                "aa_stop": 240
+              }
+            ]
+          },
+          {
+            "region_index": 17,
+            "is_catch_all": false,
+            "obs_mis": 29,
+            "exp_mis": 28.20676487930833,
+            "obs_exp": 1.0281221587830358,
+            "oe_upper": 1.4018258532346075,
+            "p_value": 0.8812720178539495,
+            "segments": [
+              {
+                "aa_start": 46,
+                "aa_stop": 63
+              }
+            ]
+          },
+          {
+            "region_index": 18,
+            "is_catch_all": false,
+            "obs_mis": 16,
+            "exp_mis": 16.99904653488471,
+            "obs_exp": 0.9412292605450248,
+            "oe_upper": 1.4295615718079981,
+            "p_value": 0.8085390584350823,
+            "segments": [
+              {
+                "aa_start": 384,
+                "aa_stop": 398
+              }
+            ]
+          },
+          {
+            "region_index": 19,
+            "is_catch_all": false,
+            "obs_mis": 16,
+            "exp_mis": 16.750175553919778,
+            "obs_exp": 0.9552138691618532,
+            "oe_upper": 1.4508017307293395,
+            "p_value": 0.8545656938081005,
+            "segments": [
+              {
+                "aa_start": 322,
+                "aa_stop": 329
+              }
+            ]
+          },
+          {
+            "region_index": 20,
+            "is_catch_all": false,
+            "obs_mis": 18,
+            "exp_mis": 16.522338532529087,
+            "obs_exp": 1.0894341599744917,
+            "oe_upper": 1.6154959093069088,
+            "p_value": 0.7162096732981671,
+            "segments": [
+              {
+                "aa_start": 426,
+                "aa_stop": 437
+              }
+            ]
+          },
+          {
+            "region_index": 21,
+            "is_catch_all": false,
+            "obs_mis": 19,
+            "exp_mis": 16.962994393944733,
+            "obs_exp": 1.120085260818244,
+            "oe_upper": 1.6435329159452858,
+            "p_value": 0.6208930731387053,
+            "segments": [
+              {
+                "aa_start": 151,
+                "aa_stop": 158
+              },
+              {
+                "aa_start": 160,
+                "aa_stop": 160
+              }
+            ]
+          },
+          {
+            "region_index": 22,
+            "is_catch_all": false,
+            "obs_mis": 22,
+            "exp_mis": 18.277427197825578,
+            "obs_exp": 1.2036705036153714,
+            "oe_upper": 1.7187763827855065,
+            "p_value": 0.3838992280096477,
+            "segments": [
+              {
+                "aa_start": 100,
+                "aa_stop": 110
+              }
+            ]
+          },
+          {
+            "region_index": 23,
+            "is_catch_all": true,
+            "obs_mis": 224,
+            "exp_mis": 137.12819706058764,
+            "obs_exp": 1.6335079495067641,
+            "oe_upper": 1.824774994910426,
+            "p_value": 1.1846409205611889e-13,
+            "segments": [
+              {
+                "aa_start": 1,
+                "aa_stop": 2
+              },
+              {
+                "aa_start": 23,
+                "aa_stop": 27
+              },
+              {
+                "aa_start": 43,
+                "aa_stop": 45
+              },
+              {
+                "aa_start": 64,
+                "aa_stop": 65
+              },
+              {
+                "aa_start": 79,
+                "aa_stop": 88
+              },
+              {
+                "aa_start": 111,
+                "aa_stop": 111
+              },
+              {
+                "aa_start": 122,
+                "aa_stop": 122
+              },
+              {
+                "aa_start": 134,
+                "aa_stop": 138
+              },
+              {
+                "aa_start": 159,
+                "aa_stop": 159
+              },
+              {
+                "aa_start": 161,
+                "aa_stop": 162
+              },
+              {
+                "aa_start": 165,
+                "aa_stop": 165
+              },
+              {
+                "aa_start": 269,
+                "aa_stop": 274
+              },
+              {
+                "aa_start": 284,
+                "aa_stop": 294
+              },
+              {
+                "aa_start": 311,
+                "aa_stop": 321
+              },
+              {
+                "aa_start": 330,
+                "aa_stop": 332
+              },
+              {
+                "aa_start": 345,
+                "aa_stop": 361
+              },
+              {
+                "aa_start": 381,
+                "aa_stop": 383
+              },
+              {
+                "aa_start": 399,
+                "aa_stop": 399
+              },
+              {
+                "aa_start": 425,
+                "aa_stop": 425
+              },
+              {
+                "aa_start": 438,
+                "aa_stop": 441
+              },
+              {
+                "aa_start": 455,
+                "aa_stop": 458
+              }
+            ]
+          }
+        ],
+        "uniprot_features": [
+          {
+            "feature_type": "DNA-binding region",
+            "start": 169,
+            "stop": 260,
+            "note": "Fork-head"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 269,
+            "stop": 392,
+            "note": "Disordered"
+          }
+        ]
+      }
+    }
+  }
+}

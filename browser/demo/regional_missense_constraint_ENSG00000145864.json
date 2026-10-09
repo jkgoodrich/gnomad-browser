@@ -1,0 +1,84 @@
+{
+  "has_no_rmc_evidence": false,
+  "passed_qc": true,
+  "regions": [
+    {
+      "chrom": "5",
+      "start": 161330953,
+      "stop": 161336646,
+      "aa_start": "Gln336",
+      "aa_stop": "Val223",
+      "obs_mis": 25,
+      "exp_mis": 137.4510570129183,
+      "obs_exp": 0.18188292286213834,
+      "chisq_diff_null": 91.99813008447177,
+      "p_value": 8.67584217199994e-22,
+      "obs_exp_upper": 0.2540255486477817
+    },
+    {
+      "chrom": "5",
+      "start": 161336645,
+      "stop": 161336730,
+      "aa_start": "Val222",
+      "aa_stop": "Asp195",
+      "obs_mis": 30,
+      "exp_mis": 33.70185440042842,
+      "obs_exp": 0.8901587326191357,
+      "chisq_diff_null": 0.40661637900248687,
+      "p_value": 0.5236919131117937,
+      "obs_exp_upper": 1.2073670223301511
+    },
+    {
+      "chrom": "5",
+      "start": 161336729,
+      "stop": 161459738,
+      "aa_start": "Gly194",
+      "aa_stop": "Trp116",
+      "obs_mis": 15,
+      "exp_mis": 102.16210308305129,
+      "obs_exp": 0.14682548173275128,
+      "chisq_diff_null": 74.36448530904256,
+      "p_value": 6.494695738133031e-18,
+      "obs_exp_upper": 0.22608314691175388
+    },
+    {
+      "chrom": "5",
+      "start": 161459737,
+      "stop": 161546389,
+      "aa_start": "Leu115",
+      "aa_stop": "Leu35",
+      "obs_mis": 42,
+      "exp_mis": 99.69764534748336,
+      "obs_exp": 0.4212737407550036,
+      "chisq_diff_null": 33.39114245919351,
+      "p_value": 7.536643567444756e-9,
+      "obs_exp_upper": 0.5448869559297479
+    },
+    {
+      "chrom": "5",
+      "start": 161546388,
+      "stop": 161546645,
+      "aa_start": "Leu35",
+      "aa_stop": "Met1",
+      "obs_mis": 42,
+      "exp_mis": 42.9826296852689,
+      "obs_exp": 0.977138911870586,
+      "chisq_diff_null": 0.02246398383351056,
+      "p_value": 0.880859371602277,
+      "obs_exp_upper": 1.2638581418710133
+    },
+    {
+      "chrom": "5",
+      "start": 161294084,
+      "stop": 161330954,
+      "aa_start": "Asn512",
+      "aa_stop": "Gln336",
+      "obs_mis": 201,
+      "exp_mis": 228.05254054953468,
+      "obs_exp": 0.8813758422320287,
+      "chisq_diff_null": 3.209084838172444,
+      "p_value": 0.07323043237257706,
+      "obs_exp_upper": 0.9907029453447285
+    }
+  ]
+}

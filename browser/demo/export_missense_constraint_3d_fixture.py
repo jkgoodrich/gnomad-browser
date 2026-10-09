@@ -30,6 +30,17 @@ DEMO_GENES = [
     "USP7",
     "SMC1A:Q14683",
     "BEST1",
+    "PMP22:Q01453",
+    "GABRB2",
+    "SLC6A8:P48029",
+    "HTR2A",
+    "SLC9A6",
+    "UBIAD1",
+    "FOXC1:Q12948",
+    "TBX5",
+    "FOXA1",
+    "MNX1",
+    "PRRX1",
 ]
 
 

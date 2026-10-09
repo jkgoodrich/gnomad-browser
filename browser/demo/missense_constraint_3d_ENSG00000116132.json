@@ -1,0 +1,236 @@
+{
+  "data": {
+    "gene": {
+      "missense_constraint_3d": {
+        "transcript_id": "ENST00000239461",
+        "uniprot_id": "P54821",
+        "protein_sequence": "MTSSYGHVLERQPALGGRLDSPGNLDTLQAKKNFSVSHLLDLEEAGDMVAAQADENVGEAGRSLLESPGLTSGSDTPQQDNDQLNSEEKKKRKQRRNRTTFNSSQLQALERVFERTHYPDAFVREDLARRVNLTEARVQVWFQNRRAKFRRNERAMLANKNASLLKSYSGDVTAVEQPIVPRPAPRPTDYLSWGTASPYSAMATYSATCANNSPAQGINMANSIANLRLKAKEYSLQRNQVPTVN",
+        "regions": [
+          {
+            "region_index": 0,
+            "is_catch_all": false,
+            "obs_mis": 10,
+            "exp_mis": 31.26481417488108,
+            "obs_exp": 0.3198483747277233,
+            "oe_upper": 0.5425338254320974,
+            "p_value": 0.00014291725277069,
+            "segments": [
+              {
+                "aa_start": 98,
+                "aa_stop": 101
+              },
+              {
+                "aa_start": 109,
+                "aa_stop": 109
+              },
+              {
+                "aa_start": 118,
+                "aa_stop": 119
+              },
+              {
+                "aa_start": 124,
+                "aa_stop": 124
+              },
+              {
+                "aa_start": 128,
+                "aa_stop": 128
+              },
+              {
+                "aa_start": 133,
+                "aa_stop": 148
+              }
+            ]
+          },
+          {
+            "region_index": 1,
+            "is_catch_all": false,
+            "obs_mis": 12,
+            "exp_mis": 21.821292996803646,
+            "obs_exp": 0.5499215835540884,
+            "oe_upper": 0.8909907095222512,
+            "p_value": 0.035512709764571326,
+            "segments": [
+              {
+                "aa_start": 72,
+                "aa_stop": 88
+              }
+            ]
+          },
+          {
+            "region_index": 2,
+            "is_catch_all": false,
+            "obs_mis": 14,
+            "exp_mis": 23.762427423896767,
+            "obs_exp": 0.5891653975519712,
+            "oe_upper": 0.9210542981337371,
+            "p_value": 0.04521122297555145,
+            "segments": [
+              {
+                "aa_start": 34,
+                "aa_stop": 43
+              },
+              {
+                "aa_start": 108,
+                "aa_stop": 108
+              },
+              {
+                "aa_start": 110,
+                "aa_stop": 115
+              },
+              {
+                "aa_start": 127,
+                "aa_stop": 127
+              }
+            ]
+          },
+          {
+            "region_index": 3,
+            "is_catch_all": false,
+            "obs_mis": 30,
+            "exp_mis": 41.73584434349047,
+            "obs_exp": 0.7188065911185787,
+            "oe_upper": 0.9749535018283642,
+            "p_value": 0.06927810859655241,
+            "segments": [
+              {
+                "aa_start": 92,
+                "aa_stop": 95
+              },
+              {
+                "aa_start": 97,
+                "aa_stop": 97
+              },
+              {
+                "aa_start": 151,
+                "aa_stop": 151
+              },
+              {
+                "aa_start": 217,
+                "aa_stop": 245
+              }
+            ]
+          },
+          {
+            "region_index": 4,
+            "is_catch_all": false,
+            "obs_mis": 10,
+            "exp_mis": 17.538502744840116,
+            "obs_exp": 0.5701740989801443,
+            "oe_upper": 0.9671418069431403,
+            "p_value": 0.07184994858463473,
+            "segments": [
+              {
+                "aa_start": 200,
+                "aa_stop": 211
+              }
+            ]
+          },
+          {
+            "region_index": 5,
+            "is_catch_all": false,
+            "obs_mis": 15,
+            "exp_mis": 23.18395991273087,
+            "obs_exp": 0.6469990483275093,
+            "oe_upper": 0.996254731593805,
+            "p_value": 0.08918927669280574,
+            "segments": [
+              {
+                "aa_start": 53,
+                "aa_stop": 69
+              }
+            ]
+          },
+          {
+            "region_index": 6,
+            "is_catch_all": true,
+            "obs_mis": 190,
+            "exp_mis": 163.09180395480055,
+            "obs_exp": 1.1649880336884177,
+            "oe_upper": 1.3139010360714858,
+            "p_value": 0.035115906139908046,
+            "segments": [
+              {
+                "aa_start": 1,
+                "aa_stop": 33
+              },
+              {
+                "aa_start": 44,
+                "aa_stop": 52
+              },
+              {
+                "aa_start": 70,
+                "aa_stop": 71
+              },
+              {
+                "aa_start": 89,
+                "aa_stop": 91
+              },
+              {
+                "aa_start": 96,
+                "aa_stop": 96
+              },
+              {
+                "aa_start": 102,
+                "aa_stop": 107
+              },
+              {
+                "aa_start": 116,
+                "aa_stop": 117
+              },
+              {
+                "aa_start": 120,
+                "aa_stop": 123
+              },
+              {
+                "aa_start": 125,
+                "aa_stop": 126
+              },
+              {
+                "aa_start": 129,
+                "aa_stop": 132
+              },
+              {
+                "aa_start": 149,
+                "aa_stop": 150
+              },
+              {
+                "aa_start": 152,
+                "aa_stop": 199
+              },
+              {
+                "aa_start": 212,
+                "aa_stop": 216
+              }
+            ]
+          }
+        ],
+        "uniprot_features": [
+          {
+            "feature_type": "DNA-binding region",
+            "start": 94,
+            "stop": 153,
+            "note": "Homeobox"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 1,
+            "stop": 22,
+            "note": "Disordered"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 63,
+            "stop": 103,
+            "note": "Disordered"
+          },
+          {
+            "feature_type": "short sequence motif",
+            "start": 222,
+            "stop": 235,
+            "note": "OAR"
+          }
+        ]
+      }
+    }
+  }
+}

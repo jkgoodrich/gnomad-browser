@@ -1,0 +1,455 @@
+{
+  "data": {
+    "gene": {
+      "missense_constraint_3d": {
+        "transcript_id": "ENST00000253122",
+        "uniprot_id": "P48029",
+        "protein_sequence": "MAKKSAENGIYSVSGDEKKGPLIAPGPDGAPAKGDGPVGLGTPGGRLAVPPRETWTRQMDFIMSCVGFAVGLGNVWRFPYLCYKNGGGVFLIPYVLIALVGGIPIFFLEISLGQFMKAGSINVWNICPLFKGLGYASMVIVFYCNTYYIMVLAWGFYYLVKSFTTTLPWATCGHTWNTPDCVEIFRHEDCANASLANLTCDQLADRRSPVIEFWENKVLRLSGGLEVPGALNWEVTLCLLACWVLVYFCVWKGVKSTGKIVYFTATFPYVVLVVLLVRGVLLPGALDGIIYYLKPDWSKLGSPQVWIDAGTQIFFSYAIGLGALTALGSYNRFNNNCYKDAIILALINSGTSFFAGFVVFSILGFMAAEQGVHISKVAESGPGLAFIAYPRAVTLMPVAPLWAALFFFMLLLLGLDSQFVGVEGFITGLLDLLPASYYFRFQREISVALCCALCFVIDLSMVTDGGMYVFQLFDYYSASGTTLLWQAFWECVVVAWVYGADRFMDDIACMIGYRPCPWMKWCWSFFTPLVCMGIFIFNVVYYEPLVYNNTYVYPWWGEAMGWAFALSSMLCVPLHLLGCLLRAKGTMAERWQHLTQPIWGLHHLEYRAQDADVRGLTTLTPVSESSKVVVVESVM",
+        "regions": [
+          {
+            "region_index": 0,
+            "is_catch_all": false,
+            "obs_mis": 88,
+            "exp_mis": 300.78188315285337,
+            "obs_exp": 0.2925708127017729,
+            "oe_upper": 0.34930595636186296,
+            "p_value": 1.3290084500278501e-34,
+            "segments": [
+              {
+                "aa_start": 52,
+                "aa_stop": 121
+              },
+              {
+                "aa_start": 123,
+                "aa_stop": 123
+              },
+              {
+                "aa_start": 134,
+                "aa_stop": 134
+              },
+              {
+                "aa_start": 136,
+                "aa_stop": 171
+              },
+              {
+                "aa_start": 183,
+                "aa_stop": 183
+              },
+              {
+                "aa_start": 208,
+                "aa_stop": 221
+              },
+              {
+                "aa_start": 231,
+                "aa_stop": 295
+              },
+              {
+                "aa_start": 305,
+                "aa_stop": 370
+              },
+              {
+                "aa_start": 372,
+                "aa_stop": 431
+              },
+              {
+                "aa_start": 441,
+                "aa_stop": 464
+              },
+              {
+                "aa_start": 466,
+                "aa_stop": 484
+              },
+              {
+                "aa_start": 486,
+                "aa_stop": 487
+              },
+              {
+                "aa_start": 510,
+                "aa_stop": 511
+              },
+              {
+                "aa_start": 519,
+                "aa_stop": 519
+              },
+              {
+                "aa_start": 547,
+                "aa_stop": 548
+              }
+            ]
+          },
+          {
+            "region_index": 1,
+            "is_catch_all": false,
+            "obs_mis": 62,
+            "exp_mis": 127.54238680341908,
+            "obs_exp": 0.48611290374830857,
+            "oe_upper": 0.600576430250125,
+            "p_value": 6.491889748955142e-9,
+            "segments": [
+              {
+                "aa_start": 122,
+                "aa_stop": 122
+              },
+              {
+                "aa_start": 124,
+                "aa_stop": 133
+              },
+              {
+                "aa_start": 135,
+                "aa_stop": 135
+              },
+              {
+                "aa_start": 172,
+                "aa_stop": 182
+              },
+              {
+                "aa_start": 184,
+                "aa_stop": 207
+              },
+              {
+                "aa_start": 222,
+                "aa_stop": 230
+              },
+              {
+                "aa_start": 296,
+                "aa_stop": 304
+              },
+              {
+                "aa_start": 371,
+                "aa_stop": 371
+              },
+              {
+                "aa_start": 432,
+                "aa_stop": 434
+              },
+              {
+                "aa_start": 465,
+                "aa_stop": 465
+              },
+              {
+                "aa_start": 485,
+                "aa_stop": 485
+              },
+              {
+                "aa_start": 488,
+                "aa_stop": 500
+              },
+              {
+                "aa_start": 503,
+                "aa_stop": 503
+              },
+              {
+                "aa_start": 518,
+                "aa_stop": 518
+              },
+              {
+                "aa_start": 520,
+                "aa_stop": 546
+              },
+              {
+                "aa_start": 549,
+                "aa_stop": 583
+              },
+              {
+                "aa_start": 591,
+                "aa_stop": 591
+              },
+              {
+                "aa_start": 594,
+                "aa_stop": 595
+              }
+            ]
+          },
+          {
+            "region_index": 2,
+            "is_catch_all": false,
+            "obs_mis": 8,
+            "exp_mis": 16.511225955443052,
+            "obs_exp": 0.4845188371589536,
+            "oe_upper": 0.8742324618504677,
+            "p_value": 0.036205981345217,
+            "segments": [
+              {
+                "aa_start": 5,
+                "aa_stop": 18
+              }
+            ]
+          },
+          {
+            "region_index": 3,
+            "is_catch_all": false,
+            "obs_mis": 38,
+            "exp_mis": 50.48933187432008,
+            "obs_exp": 0.7526342415184065,
+            "oe_upper": 0.9865146123566667,
+            "p_value": 0.07880225992417798,
+            "segments": [
+              {
+                "aa_start": 48,
+                "aa_stop": 51
+              },
+              {
+                "aa_start": 435,
+                "aa_stop": 436
+              },
+              {
+                "aa_start": 438,
+                "aa_stop": 438
+              },
+              {
+                "aa_start": 501,
+                "aa_stop": 502
+              },
+              {
+                "aa_start": 504,
+                "aa_stop": 509
+              },
+              {
+                "aa_start": 512,
+                "aa_stop": 517
+              },
+              {
+                "aa_start": 584,
+                "aa_stop": 590
+              },
+              {
+                "aa_start": 592,
+                "aa_stop": 593
+              },
+              {
+                "aa_start": 596,
+                "aa_stop": 617
+              }
+            ]
+          },
+          {
+            "region_index": 4,
+            "is_catch_all": false,
+            "obs_mis": 14,
+            "exp_mis": 17.571884631146,
+            "obs_exp": 0.796727288727194,
+            "oe_upper": 1.2455400415091227,
+            "p_value": 0.39416111146599275,
+            "segments": [
+              {
+                "aa_start": 26,
+                "aa_stop": 39
+              }
+            ]
+          },
+          {
+            "region_index": 5,
+            "is_catch_all": true,
+            "obs_mis": 45,
+            "exp_mis": 32.48190261872728,
+            "obs_exp": 1.3853868268805003,
+            "oe_upper": 1.7762166068704919,
+            "p_value": 0.02806109760253614,
+            "segments": [
+              {
+                "aa_start": 1,
+                "aa_stop": 4
+              },
+              {
+                "aa_start": 19,
+                "aa_stop": 25
+              },
+              {
+                "aa_start": 40,
+                "aa_stop": 47
+              },
+              {
+                "aa_start": 437,
+                "aa_stop": 437
+              },
+              {
+                "aa_start": 439,
+                "aa_stop": 440
+              },
+              {
+                "aa_start": 618,
+                "aa_stop": 629
+              }
+            ]
+          }
+        ],
+        "uniprot_features": [
+          {
+            "feature_type": "topological domain",
+            "start": 1,
+            "stop": 60,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 61,
+            "stop": 81,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 82,
+            "stop": 87,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 88,
+            "stop": 108,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 109,
+            "stop": 138,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 139,
+            "stop": 159,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 160,
+            "stop": 230,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 231,
+            "stop": 251,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 252,
+            "stop": 269,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 270,
+            "stop": 290,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 291,
+            "stop": 304,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 305,
+            "stop": 325,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 326,
+            "stop": 341,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 342,
+            "stop": 362,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 363,
+            "stop": 394,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 395,
+            "stop": 415,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 416,
+            "stop": 444,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 445,
+            "stop": 465,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 466,
+            "stop": 479,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 480,
+            "stop": 500,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 501,
+            "stop": 520,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 521,
+            "stop": 541,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 542,
+            "stop": 560,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 561,
+            "stop": 581,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 582,
+            "stop": 635,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 1,
+            "stop": 28,
+            "note": "Disordered"
+          },
+          {
+            "feature_type": "glycosylation site",
+            "start": 192,
+            "stop": 192,
+            "note": "N-linked (GlcNAc...) asparagine"
+          },
+          {
+            "feature_type": "glycosylation site",
+            "start": 197,
+            "stop": 197,
+            "note": "N-linked (GlcNAc...) asparagine"
+          },
+          {
+            "feature_type": "glycosylation site",
+            "start": 548,
+            "stop": 548,
+            "note": "N-linked (GlcNAc...) asparagine"
+          }
+        ]
+      }
+    }
+  }
+}
