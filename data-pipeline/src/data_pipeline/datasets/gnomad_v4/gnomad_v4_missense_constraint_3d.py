@@ -29,6 +29,31 @@ UNIPROT_FEATURE_TYPES = {
     "zinc finger region",
 }
 
+# TrEMBL records name feature types by their keys in UniProt's flat files, rather than as Swiss-Prot
+# records do
+UNIPROT_FEATURE_TYPES_BY_KEY = {
+    "ACT_SITE": "active site",
+    "BINDING": "binding site",
+    "CARBOHYD": "glycosylation site",
+    "COILED": "coiled-coil region",
+    "DISULFID": "disulfide bond",
+    "DNA_BIND": "DNA-binding region",
+    "DOMAIN": "domain",
+    "INTRAMEM": "intramembrane region",
+    "LIPID": "lipid moiety-binding region",
+    "METAL": "metal ion-binding site",
+    "MOTIF": "short sequence motif",
+    "PROPEP": "propeptide",
+    "REGION": "region of interest",
+    "REPEAT": "repeat",
+    "SIGNAL": "signal peptide",
+    "SITE": "site",
+    "TOPO_DOM": "topological domain",
+    "TRANSIT": "transit peptide",
+    "TRANSMEM": "transmembrane region",
+    "ZN_FING": "zinc finger region",
+}
+
 
 def _residue_segments(residue_indices):
     # Collapse sorted 0-based residue indices into runs of consecutive residues, numbered from 1
@@ -58,7 +83,12 @@ def _uniprot_features_fit_sequence(uniprot):
 
 def _uniprot_features(uniprot):
     release = uniprot[UNIPROT_FEATURES_RELEASE]
-    features = release.features.filter(
+    features = release.features.map(
+        lambda feature: feature.annotate(
+            feature_type=hl.literal(UNIPROT_FEATURE_TYPES_BY_KEY).get(feature.feature_type, feature.feature_type)
+        )
+    )
+    features = features.filter(
         # Features located on another isoform (e.g. "P31946-2:1..26") don't apply to this sequence
         lambda feature: (
             hl.literal(UNIPROT_FEATURE_TYPES).contains(feature.feature_type) & ~feature.location.contains(":")

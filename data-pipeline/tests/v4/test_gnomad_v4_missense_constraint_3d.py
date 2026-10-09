@@ -83,6 +83,7 @@ def prepare(
     feature_release_sequence=SEQUENCE,
     feature_release_id="P00001",
     found_in_feature_release=True,
+    features=FEATURES,
 ):
     residues_path = write_table(
         tmp_path / "residues.ht", residues, RESIDUES_SCHEMA, ["uniprot_id", "transcript_id", "residue_index"]
@@ -98,7 +99,7 @@ def prepare(
                     "id": feature_release_id,
                     "isoform_canonical": "-" not in feature_release_id,
                     "sequence": feature_release_sequence,
-                    "features": FEATURES,
+                    "features": features,
                 },
             }
         ],
@@ -175,6 +176,21 @@ def test_uniprot_features_are_filtered_and_disulfide_bonds_split(tmp_path):
         ("disulfide bond", 3, 3, ""),
         ("disulfide bond", 8, 8, ""),
     ]
+
+
+def test_trembl_feature_keys_are_named_like_swiss_prot_feature_types(tmp_path):
+    [row] = prepare(
+        tmp_path,
+        features=[
+            {"feature_type": "TRANSMEM", "location": "2..4", "start": "2", "end": "4", "note": "Helical"},
+            {"feature_type": "DISULFID", "location": "3..8", "start": "3", "end": "8", "note": ""},
+            {"feature_type": "NON_TER", "location": "1", "start": "1", "end": "1", "note": ""},
+        ],
+    )
+
+    assert [
+        (feature.feature_type, feature.start, feature.stop) for feature in row.missense_constraint_3d.uniprot_features
+    ] == [("transmembrane region", 2, 4), ("disulfide bond", 3, 3), ("disulfide bond", 8, 8)]
 
 
 def test_uniprot_features_are_dropped_when_release_sequence_differs(tmp_path):
