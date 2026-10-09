@@ -413,7 +413,74 @@
             ]
           }
         ],
-        "uniprot_features": []
+        "uniprot_features": [
+          {
+            "feature_type": "transmembrane region",
+            "start": 20,
+            "stop": 39,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 51,
+            "stop": 68,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 130,
+            "stop": 147,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 159,
+            "stop": 179,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 274,
+            "stop": 296,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 316,
+            "stop": 340,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 361,
+            "stop": 382,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 394,
+            "stop": 416,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 428,
+            "stop": 447,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 459,
+            "stop": 486,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "domain",
+            "start": 27,
+            "stop": 482,
+            "note": "Na_H_Exchanger"
+          }
+        ]
       }
     }
   }
