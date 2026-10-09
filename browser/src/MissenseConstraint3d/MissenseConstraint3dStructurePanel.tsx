@@ -7,6 +7,7 @@ import {
   ExternalLink,
   SearchInput,
   SegmentedControl,
+  Select,
   TextButton,
 } from '@gnomad/ui'
 import { DatasetId, referenceGenome } from '@gnomad/dataset-metadata/metadata'
@@ -43,6 +44,7 @@ import {
   PageFilter,
   MissenseConstraint3dVariant,
   NO_REGION_COLOR,
+  NO_TRANSMEMBRANE_SPLIT,
   PLDDT_BANDS,
   ResidueRange,
   StructureColorBy,
@@ -50,6 +52,8 @@ import {
   StructureViewerHandle,
   StructureViewerProps,
   TABLE_VARIANTS_OVERLAY_ID,
+  TransmembraneGrouping,
+  TransmembraneSplit,
   UNIPROT_FEATURE_LEVELS,
   UNIPROT_FEATURE_OVERLAY_STYLES,
   alphafoldEntryUrl,
@@ -69,8 +73,9 @@ import {
   residueLegendInteraction,
   toggleResidues,
   uniprotEntryUrl,
-  uniprotFeatureOverlayId,
+  uniprotFeatureGroups,
   uniprotFeatureOverlays,
+  voltageGatedChannelSegments,
 } from './missenseConstraint3d'
 import MissenseConstraint3dRegionAttributes, {
   regionDescription,
@@ -493,6 +498,9 @@ type PanelProps = {
   onChangePinnedRegion: (region: MissenseConstraint3dRegion | null) => void
   regionalMissenseConstraint: RegionalMissenseConstraint | null
   visibleOverlayIds: Set<string>
+  // How the transmembrane segments of voltage-gated channels are grouped into overlays
+  transmembraneSplit: TransmembraneSplit
+  onChangeTransmembraneSplit: (split: TransmembraneSplit) => void
   onToggleOverlay: (overlayId: string) => void
   onShowOverlays: (overlayIds: string[]) => void
   onHideOverlays: (overlayIds: string[]) => void
@@ -531,6 +539,8 @@ const StructurePanel = ({
   onChangePinnedRegion,
   regionalMissenseConstraint,
   visibleOverlayIds,
+  transmembraneSplit,
+  onChangeTransmembraneSplit,
   onToggleOverlay,
   onShowOverlays,
   onHideOverlays,
@@ -688,9 +698,18 @@ const StructurePanel = ({
   }
 
   const uniprotOverlays = useMemo(
-    () => uniprotFeatureOverlays(constraint.uniprot_features),
+    () => uniprotFeatureOverlays(constraint.uniprot_features, transmembraneSplit),
+    [constraint, transmembraneSplit]
+  )
+  const uniprotGroups = useMemo(
+    () => uniprotFeatureGroups(constraint.uniprot_features, transmembraneSplit),
+    [constraint, transmembraneSplit]
+  )
+  const channelSegments = useMemo(
+    () => voltageGatedChannelSegments(constraint.uniprot_features),
     [constraint]
   )
+  const hasChannelRepeats = Array.from(channelSegments.values()).some(({ repeat }) => repeat)
   // Those that can be shown, like the checkboxes that aren't disabled
   const selectableUniprotOverlayIds = uniprotOverlays
     .filter((overlay) => overlay.count > 0)
@@ -842,12 +861,17 @@ const StructurePanel = ({
               tableVariantsByResidue.get(residue.residueNumber)) ||
             []
           }
-          uniprotFeatureDescriptions={constraint.uniprot_features
+          uniprotFeatureDescriptions={Array.from(
+            // A pore loop of a channel can be in two groups, its type's and its segment's
+            new Set(
+              uniprotGroups
+                .filter((group) => isVisible(group.id))
+                .flatMap((group) => group.features)
+            )
+          )
             .filter(
               (feature) =>
-                isVisible(uniprotFeatureOverlayId(feature.feature_type)) &&
-                feature.start <= residue.residueNumber &&
-                residue.residueNumber <= feature.stop
+                feature.start <= residue.residueNumber && residue.residueNumber <= feature.stop
             )
             .map((feature) =>
               [UNIPROT_FEATURE_OVERLAY_STYLES[feature.feature_type].label, feature.note]
@@ -1107,10 +1131,13 @@ const StructurePanel = ({
                       Select all
                     </SectionButton>
                   )}
-                  {isAnyOverlayVisible(uniprotOverlays.map(({ id }) => id)) &&
-                    renderSectionReset('UniProt features', () =>
+                  {(isAnyOverlayVisible(uniprotOverlays.map(({ id }) => id)) ||
+                    transmembraneSplit.grouping !== 'none' ||
+                    transmembraneSplit.byRepeat) &&
+                    renderSectionReset('UniProt features', () => {
                       onHideOverlays(uniprotOverlays.map(({ id }) => id))
-                    )}
+                      onChangeTransmembraneSplit(NO_TRANSMEMBRANE_SPLIT)
+                    })}
                 </SectionButtons>
               </OverlayGroupHeading>
               {UNIPROT_FEATURE_LEVELS.map(({ level, label }) => {
@@ -1120,6 +1147,42 @@ const StructurePanel = ({
                     <React.Fragment key={level}>
                       <OverlaySubgroupHeading>{label}</OverlaySubgroupHeading>
                       {renderOverlayList(levelOverlays)}
+                      {level === 'region' && channelSegments.size > 0 && (
+                        <OverlayFilter>
+                          <label htmlFor="missense-constraint-3d-transmembrane-grouping">
+                            Group transmembrane segments by{' '}
+                            <Select
+                              id="missense-constraint-3d-transmembrane-grouping"
+                              value={transmembraneSplit.grouping}
+                              onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
+                                onChangeTransmembraneSplit({
+                                  ...transmembraneSplit,
+                                  grouping: event.target.value as TransmembraneGrouping,
+                                })
+                              }
+                            >
+                              <option value="none">none</option>
+                              <option value="domain">voltage sensor and pore</option>
+                              <option value="segment">segment (S1-S6)</option>
+                            </Select>
+                          </label>
+                          {hasChannelRepeats && (
+                            <Label htmlFor="missense-constraint-3d-transmembrane-by-repeat">
+                              <CheckboxInput
+                                id="missense-constraint-3d-transmembrane-by-repeat"
+                                checked={transmembraneSplit.byRepeat}
+                                onChange={() =>
+                                  onChangeTransmembraneSplit({
+                                    ...transmembraneSplit,
+                                    byRepeat: !transmembraneSplit.byRepeat,
+                                  })
+                                }
+                              />
+                              and by repeat (I-IV)
+                            </Label>
+                          )}
+                        </OverlayFilter>
+                      )}
                     </React.Fragment>
                   )
                 )

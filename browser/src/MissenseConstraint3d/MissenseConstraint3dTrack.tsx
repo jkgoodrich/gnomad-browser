@@ -30,6 +30,7 @@ import {
   MissenseConstraint3dTrackRegion,
   NO_HIGHLIGHTED_RESIDUES,
   NO_REGION_COLOR,
+  NO_TRANSMEMBRANE_SPLIT,
   PageFilter,
   RANKED_REGION_COLORS,
   RANKED_REGION_MAX_P_VALUE,
@@ -39,6 +40,8 @@ import {
   STRUCTURE_HIGHLIGHT_COLOR,
   StructureColorBy,
   StructureSelection,
+  TRANSMEMBRANE_OVERLAY_ID,
+  TransmembraneSplit,
   UNASSIGNED_RESIDUE_FILL,
   UNASSIGNED_RESIDUE_HATCH_COLOR,
   UNASSIGNED_RESIDUE_PATTERN_ID,
@@ -53,6 +56,7 @@ import {
   residuesOnGenome,
   segmentsOnGenome,
   toggleResidues,
+  uniprotFeatureGroups,
 } from './missenseConstraint3d'
 import MissenseConstraint3dRegionAttributes from './MissenseConstraint3dRegionAttributes'
 import MissenseConstraint3dRegionTable from './MissenseConstraint3dRegionTable'
@@ -268,6 +272,8 @@ const MissenseConstraint3dView = ({
   const [plddtByResidue, setPlddtByResidue] = useState<number[] | null>(null)
   // Variants and features shown on the structure
   const [visibleOverlayIds, setVisibleOverlayIds] = useState<Set<string>>(new Set())
+  const [transmembraneSplit, setTransmembraneSplit] =
+    useState<TransmembraneSplit>(NO_TRANSMEMBRANE_SPLIT)
 
   // The structure's colors of 3D regions, or the track's while it isn't colored by 3D regions
   const regionColorBy: RegionColorBy =
@@ -414,6 +420,30 @@ const MissenseConstraint3dView = ({
       return nextOverlayIds
     })
   }, [])
+
+  // Shows the new groups of transmembrane segments in place of the old
+  const changeTransmembraneSplit = useCallback(
+    (split: TransmembraneSplit) => {
+      setTransmembraneSplit(split)
+      const transmembraneOverlayIds = uniprotFeatureGroups(constraint.uniprot_features, split)
+        .map(({ id }) => id)
+        .filter((id) => id.startsWith(TRANSMEMBRANE_OVERLAY_ID))
+      setVisibleOverlayIds((previousOverlayIds) => {
+        const wasShown = Array.from(previousOverlayIds).some((id) =>
+          id.startsWith(TRANSMEMBRANE_OVERLAY_ID)
+        )
+        const nextOverlayIds = new Set(
+          Array.from(previousOverlayIds).filter((id) => !id.startsWith(TRANSMEMBRANE_OVERLAY_ID))
+        )
+        // Grouping them is for showing them, unless they're being ungrouped while hidden
+        if (wasShown || split.grouping !== 'none' || split.byRepeat) {
+          transmembraneOverlayIds.forEach((id) => nextOverlayIds.add(id))
+        }
+        return nextOverlayIds
+      })
+    },
+    [constraint]
+  )
 
   const toggleOverlay = useCallback((overlayId: string) => {
     setVisibleOverlayIds((previousOverlayIds) => {
@@ -601,6 +631,7 @@ const MissenseConstraint3dView = ({
             strand={gene.strand}
             transcript={transcript}
             visibleOverlayIds={visibleOverlayIds}
+            transmembraneSplit={transmembraneSplit}
             onHoverFeature={onHoverFeature}
           />
           <TrackPageSection>
@@ -624,6 +655,8 @@ const MissenseConstraint3dView = ({
               onChangePinnedRegion={setPinnedRegion}
               regionalMissenseConstraint={regionalMissenseConstraint}
               visibleOverlayIds={visibleOverlayIds}
+              transmembraneSplit={transmembraneSplit}
+              onChangeTransmembraneSplit={changeTransmembraneSplit}
               onToggleOverlay={toggleOverlay}
               onShowOverlays={showOverlays}
               onHideOverlays={hideOverlays}

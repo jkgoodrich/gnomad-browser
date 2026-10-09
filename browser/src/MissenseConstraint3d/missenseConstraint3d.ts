@@ -1001,15 +1001,170 @@ export const uniprotFeaturesByType = (features: UniprotFeature[]) =>
       : [{ id: uniprotFeatureOverlayId(featureType), ...style, features: featuresOfType }]
   })
 
+// Transmembrane segments of voltage-gated channels can be shown in groups: by domain (the voltage
+// sensor and the pore), by segment (S1-S6), and either of those, or neither, by repeat (I-IV)
+export type TransmembraneGrouping = 'none' | 'domain' | 'segment'
+
+export type TransmembraneSplit = { grouping: TransmembraneGrouping; byRepeat: boolean }
+
+export const NO_TRANSMEMBRANE_SPLIT: TransmembraneSplit = { grouping: 'none', byRepeat: false }
+
+export const TRANSMEMBRANE_OVERLAY_ID = uniprotFeatureOverlayId('transmembrane region')
+
+// A segment of a voltage-gated channel's transmembrane domain: S1-S6, or the pore loop between S5
+// and S6. Channels with four repeats of it, like sodium and calcium channels, name the repeat.
+export type ChannelSegment = { segment: number | 'pore loop'; repeat: string | null }
+
+const CHANNEL_REPEATS = ['I', 'II', 'III', 'IV']
+
+// Like "Helical; Voltage-sensor; Name=S4 of repeat II" or "Helical; Name=Segment S4"
+const channelSegmentName = (note: string | null): ChannelSegment | null => {
+  const match =
+    note && note.match(/Name=(?:Segment )?S([1-6])(?: of repeat (I|II|III|IV))?(?:\b|$)/)
+  return match ? { segment: Number(match[1]), repeat: match[2] || null } : null
+}
+
+// The segments of voltage-gated channels' transmembrane domains, as UniProt names them, and the
+// pore-forming loops between them. Other proteins have none.
+export const voltageGatedChannelSegments = (features: UniprotFeature[]) => {
+  const segments = new Map<UniprotFeature, ChannelSegment>()
+  features.forEach((feature) => {
+    const segment =
+      feature.feature_type === 'transmembrane region' && channelSegmentName(feature.note)
+    if (segment) {
+      segments.set(feature, segment)
+    }
+  })
+  const fifthSegments = Array.from(segments).filter(([, { segment }]) => segment === 5)
+  features.forEach((feature) => {
+    if (
+      segments.size > 0 &&
+      feature.feature_type === 'intramembrane region' &&
+      feature.note &&
+      feature.note.startsWith('Pore-forming')
+    ) {
+      // The loop follows its repeat's S5
+      const previousFifthSegments = fifthSegments.filter(([s5]) => s5.stop < feature.start)
+      const [, s5] = previousFifthSegments[previousFifthSegments.length - 1] || [null, null]
+      segments.set(feature, { segment: 'pore loop', repeat: s5 ? s5.repeat : null })
+    }
+  })
+  return segments
+}
+
+const CHANNEL_DOMAIN_GROUPS = [
+  { key: 'sensor', label: 'Voltage sensor (S1-S4)', color: '#6A3D9A' },
+  { key: 'pore', label: 'Pore (S5-S6, pore loops)', color: '#1F78B4' },
+]
+
+const CHANNEL_SEGMENT_GROUPS = [
+  { key: 'S1', label: 'S1', color: '#A6CEE3' },
+  { key: 'S2', label: 'S2', color: '#B2DF8A' },
+  { key: 'S3', label: 'S3', color: '#33A02C' },
+  { key: 'S4', label: 'S4 (voltage sensor)', color: '#6A3D9A' },
+  { key: 'S5', label: 'S5', color: '#1F78B4' },
+  { key: 'S6', label: 'S6', color: '#01665E' },
+  { key: 'pore-loop', label: 'Pore loop', color: '#CAB2D6' },
+]
+
+const CHANNEL_REPEAT_COLORS = ['#1B9E77', '#7570B3', '#0570B0', '#E7298A']
+
+// The key of a segment's group in CHANNEL_DOMAIN_GROUPS or CHANNEL_SEGMENT_GROUPS
+const channelGroupKey = (segment: ChannelSegment, grouping: TransmembraneGrouping) => {
+  if (grouping === 'domain') {
+    return segment.segment === 'pore loop' || segment.segment >= 5 ? 'pore' : 'sensor'
+  }
+  if (grouping === 'segment') {
+    return segment.segment === 'pore loop' ? 'pore-loop' : `S${segment.segment}`
+  }
+  return null
+}
+
+export type UniprotFeatureGroup = ReturnType<typeof uniprotFeaturesByType>[number]
+
+// The transmembrane segments of a voltage-gated channel, split into groups
+const transmembraneGroups = (
+  transmembrane: UniprotFeatureGroup,
+  features: UniprotFeature[],
+  split: TransmembraneSplit
+): UniprotFeatureGroup[] => {
+  const segments = voltageGatedChannelSegments(features)
+  const byRepeat = split.byRepeat && Array.from(segments.values()).some(({ repeat }) => repeat)
+  if (segments.size === 0 || (split.grouping === 'none' && !byRepeat)) {
+    return [transmembrane]
+  }
+  let groupings: { key: string | null; label: string | null; color: string | null }[] = [
+    { key: null, label: null, color: null },
+  ]
+  if (split.grouping === 'domain') {
+    groupings = CHANNEL_DOMAIN_GROUPS
+  } else if (split.grouping === 'segment') {
+    groupings = CHANNEL_SEGMENT_GROUPS
+  }
+  const repeats = byRepeat ? CHANNEL_REPEATS : [null]
+  const groups = groupings.flatMap((grouping) =>
+    repeats.map((repeat, repeatIndex) => {
+      const groupFeatures = Array.from(segments)
+        .filter(
+          ([, segment]) =>
+            channelGroupKey(segment, split.grouping) === grouping.key &&
+            (repeat === null || segment.repeat === repeat)
+        )
+        .map(([feature]) => feature)
+        .sort((a, b) => a.start - b.start)
+      const repeatLabel = repeat && `repeat ${repeat}`
+      return {
+        ...transmembrane,
+        id: [transmembrane.id, grouping.key, repeat && `repeat-${repeat}`]
+          .filter(Boolean)
+          .join('-'),
+        label: grouping.label
+          ? [grouping.label, repeatLabel].filter(Boolean).join(', ')
+          : `Repeat ${repeat}`,
+        color: grouping.color || CHANNEL_REPEAT_COLORS[repeatIndex],
+        features: groupFeatures,
+      }
+    })
+  )
+  // Transmembrane regions that aren't named segments of the channel
+  const otherFeatures = transmembrane.features.filter((feature) => !segments.has(feature))
+  return [
+    ...groups.filter((group) => group.features.length > 0),
+    ...(otherFeatures.length > 0
+      ? [
+          {
+            ...transmembrane,
+            id: `${transmembrane.id}-other`,
+            label: 'Other transmembrane',
+            features: otherFeatures,
+          },
+        ]
+      : []),
+  ]
+}
+
+// UniProt features grouped by type, with the transmembrane segments of voltage-gated channels split
+// into groups
+export const uniprotFeatureGroups = (
+  features: UniprotFeature[],
+  split: TransmembraneSplit = NO_TRANSMEMBRANE_SPLIT
+) =>
+  uniprotFeaturesByType(features).flatMap((group) =>
+    group.id === TRANSMEMBRANE_OVERLAY_ID ? transmembraneGroups(group, features, split) : [group]
+  )
+
 export const uniprotFeatureOverlays = (
-  features: UniprotFeature[]
+  features: UniprotFeature[],
+  split: TransmembraneSplit = NO_TRANSMEMBRANE_SPLIT
 ): (StructureOverlay & { level: UniprotFeatureLevel })[] =>
-  uniprotFeaturesByType(features).map(({ id, label, color, level, features: featuresOfType }) => ({
-    id,
-    label,
-    color,
-    level,
-    count: featuresOfType.length,
-    residueRanges: featuresOfType.map((feature): ResidueRange => [feature.start, feature.stop]),
-    style: 'feature',
-  }))
+  uniprotFeatureGroups(features, split).map(
+    ({ id, label, color, level, features: featuresOfGroup }) => ({
+      id,
+      label,
+      color,
+      level,
+      count: featuresOfGroup.length,
+      residueRanges: featuresOfGroup.map((feature): ResidueRange => [feature.start, feature.stop]),
+      style: 'feature',
+    })
+  )

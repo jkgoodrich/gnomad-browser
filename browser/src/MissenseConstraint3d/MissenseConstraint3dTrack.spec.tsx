@@ -751,6 +751,68 @@ describe('MissenseConstraint3dTrack', () => {
     expect(screen.getByRole('button', { name: 'Reset UniProt features' })).not.toBeNull()
   })
 
+  test('groups the transmembrane segments of voltage-gated channels', async () => {
+    setMockApiResponses({
+      MissenseConstraint3d: () => ({
+        gene: {
+          missense_constraint_3d: {
+            ...missenseConstraint3d,
+            uniprot_features: [
+              {
+                feature_type: 'transmembrane region',
+                start: 1,
+                stop: 2,
+                note: 'Helical; Voltage-sensor; Name=Segment S4',
+              },
+              {
+                feature_type: 'transmembrane region',
+                start: 3,
+                stop: 4,
+                note: 'Helical; Name=Segment S5',
+              },
+            ],
+          },
+        },
+      }),
+      MissenseConstraint3dVariants: () => variantsResponse,
+    })
+    render(<TrackInRegionViewer />)
+    await showStructure()
+    expect(screen.getByLabelText('Transmembrane (2)')).not.toBeNull()
+    // Its segments aren't in repeats
+    expect(screen.queryByLabelText('and by repeat (I-IV)')).toBeNull()
+
+    await userEvent.selectOptions(
+      screen.getByLabelText(/Group transmembrane segments by/),
+      'voltage sensor and pore'
+    )
+    expect((screen.getByLabelText('Voltage sensor (S1-S4) (1)') as HTMLInputElement).checked).toBe(
+      true
+    )
+    expect(
+      (screen.getByLabelText('Pore (S5-S6, pore loops) (1)') as HTMLInputElement).checked
+    ).toBe(true)
+    expect(
+      lastViewerProps(StructureViewer3Dmol).overlays.map(({ id, residueRanges }) => [
+        id,
+        residueRanges,
+      ])
+    ).toEqual([
+      ['uniprot-transmembrane-region-sensor', [[1, 2]]],
+      ['uniprot-transmembrane-region-pore', [[3, 4]]],
+    ])
+
+    await userEvent.click(screen.getByRole('button', { name: 'Reset UniProt features' }))
+    expect(screen.getByLabelText('Transmembrane (2)')).not.toBeNull()
+    expect(lastViewerProps(StructureViewer3Dmol).overlays).toEqual([])
+  })
+
+  test('offers groups of transmembrane segments only for voltage-gated channels', async () => {
+    render(<TrackInRegionViewer />)
+    await showStructure()
+    expect(screen.queryByLabelText(/Group transmembrane segments by/)).toBeNull()
+  })
+
   test('shows UniProt features of single residues as diamonds', async () => {
     setMockApiResponses({
       MissenseConstraint3d: () => ({

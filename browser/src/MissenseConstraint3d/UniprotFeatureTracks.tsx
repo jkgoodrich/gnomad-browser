@@ -14,12 +14,13 @@ import { GeneTranscript, Strand } from '../GenePage/GenePage'
 import InfoButton from '../help/InfoButton'
 import Link from '../Link'
 import {
+  TransmembraneSplit,
   UNIPROT_FEATURE_OVERLAY_STYLES,
   UniprotFeature,
   UniprotFeatureOnGenome,
   uniprotEntryUrl,
   uniprotHelpUrl,
-  uniprotFeaturesByType,
+  uniprotFeatureGroups,
   uniprotFeaturesOnGenome,
 } from './missenseConstraint3d'
 
@@ -95,8 +96,10 @@ type Props = {
   chrom: string
   strand: Strand
   transcript: GeneTranscript
-  // Feature types selected in the structure's legend, which are the only ones shown here
+  // Feature types, or groups of a channel's transmembrane segments, selected in the structure's
+  // legend, which are the only ones shown here
   visibleOverlayIds: Set<string>
+  transmembraneSplit: TransmembraneSplit
   onHoverFeature: (feature: UniprotFeature | null) => void
 }
 
@@ -108,11 +111,12 @@ const UniprotFeatureTracks = ({
   strand,
   transcript,
   visibleOverlayIds,
+  transmembraneSplit,
   onHoverFeature,
 }: Props) => {
   const rows = useMemo(() => {
     const codingExons = transcript.exons.filter((exon) => exon.feature_type === 'CDS')
-    return uniprotFeaturesByType(features).map((row) => ({
+    return uniprotFeatureGroups(features, transmembraneSplit).map((row) => ({
       ...row,
       // Clipped one at a time, because features of the same type can overlap
       featuresOnGenome: uniprotFeaturesOnGenome(
@@ -121,7 +125,7 @@ const UniprotFeatureTracks = ({
         chrom
       ).flatMap((featureOnGenome) => regionsInExons([featureOnGenome], codingExons)),
     }))
-  }, [features, chrom, strand, transcript])
+  }, [features, transmembraneSplit, chrom, strand, transcript])
 
   if (rows.length === 0) {
     return null

@@ -16,6 +16,7 @@ import {
   RANKED_REGION_COLORS,
   UNASSIGNED_RESIDUE_FILL,
   UNASSIGNED_RESIDUE_HATCH_COLOR,
+  UniprotFeature,
   binByCount,
   codingSequenceLength,
   clinicalSignificanceCategoryOverlays,
@@ -39,7 +40,9 @@ import {
   residuesOnGenome,
   segmentsOnGenome,
   toggleResidues,
+  uniprotFeatureGroups,
   uniprotFeatureOverlays,
+  voltageGatedChannelSegments,
   uniprotFeaturesOnGenome,
 } from './missenseConstraint3d'
 
@@ -447,6 +450,126 @@ test('UniProt features are grouped into one overlay per known feature type', () 
       ],
     ],
   ])
+})
+
+describe('transmembrane segments of voltage-gated channels', () => {
+  // Two repeats of a channel's six segments and pore loop, with UniProt's notes, then a helix of
+  // another domain
+  const channelFeatures: UniprotFeature[] = ['I', 'II'].flatMap((repeat, repeatIndex) => {
+    const offset = repeatIndex * 100
+    return [
+      ...[1, 2, 3, 4, 5, 6].map((segment) => ({
+        feature_type: 'transmembrane region',
+        start: offset + segment * 10,
+        stop: offset + segment * 10 + 5,
+        note: `Helical;${
+          segment === 4 ? ' Voltage-sensor;' : ''
+        } Name=S${segment} of repeat ${repeat}`,
+      })),
+      {
+        feature_type: 'intramembrane region',
+        start: offset + 56,
+        stop: offset + 58,
+        note: 'Pore-forming',
+      },
+    ]
+  })
+  const otherHelix = {
+    feature_type: 'transmembrane region',
+    start: 300,
+    stop: 310,
+    note: 'Helical',
+  }
+  const features = [...channelFeatures, otherHelix]
+
+  const groups = (split: Parameters<typeof uniprotFeatureGroups>[1]) =>
+    uniprotFeatureGroups(features, split)
+      .filter(({ id }) => id.startsWith('uniprot-transmembrane-region'))
+      .map(({ id, label, features: groupFeatures }) => [
+        id,
+        label,
+        groupFeatures.map(({ start }) => start),
+      ])
+
+  test("are named S1-S6, with their repeats, and pore loops follow their repeat's S5", () => {
+    const segments = voltageGatedChannelSegments(features)
+    expect(segments.get(channelFeatures[3])).toEqual({ segment: 4, repeat: 'I' })
+    expect(segments.get(channelFeatures[6])).toEqual({ segment: 'pore loop', repeat: 'I' })
+    expect(segments.get(channelFeatures[13])).toEqual({ segment: 'pore loop', repeat: 'II' })
+    expect(segments.has(otherHelix)).toBe(false)
+  })
+
+  test('single-repeat channels name their segments without repeats', () => {
+    const s4 = {
+      feature_type: 'transmembrane region',
+      start: 1,
+      stop: 5,
+      note: 'Helical; Voltage-sensor; Name=Segment S4',
+    }
+    expect(voltageGatedChannelSegments([s4]).get(s4)).toEqual({ segment: 4, repeat: null })
+  })
+
+  test('proteins that are not voltage-gated channels have none', () => {
+    expect(voltageGatedChannelSegments([otherHelix]).size).toBe(0)
+    expect(
+      uniprotFeatureGroups([otherHelix], { grouping: 'domain', byRepeat: true }).map(({ id }) => id)
+    ).toEqual(['uniprot-transmembrane-region'])
+  })
+
+  test('are grouped into the voltage sensor and the pore', () => {
+    expect(groups({ grouping: 'domain', byRepeat: false })).toEqual([
+      [
+        'uniprot-transmembrane-region-sensor',
+        'Voltage sensor (S1-S4)',
+        [10, 20, 30, 40, 110, 120, 130, 140],
+      ],
+      [
+        'uniprot-transmembrane-region-pore',
+        'Pore (S5-S6, pore loops)',
+        [50, 56, 60, 150, 156, 160],
+      ],
+      ['uniprot-transmembrane-region-other', 'Other transmembrane', [300]],
+    ])
+  })
+
+  test('are grouped by segment', () => {
+    expect(groups({ grouping: 'segment', byRepeat: false }).map(([id]) => id)).toEqual([
+      'uniprot-transmembrane-region-S1',
+      'uniprot-transmembrane-region-S2',
+      'uniprot-transmembrane-region-S3',
+      'uniprot-transmembrane-region-S4',
+      'uniprot-transmembrane-region-S5',
+      'uniprot-transmembrane-region-S6',
+      'uniprot-transmembrane-region-pore-loop',
+      'uniprot-transmembrane-region-other',
+    ])
+  })
+
+  test('are grouped by repeat, alone or with domain or segment', () => {
+    expect(groups({ grouping: 'none', byRepeat: true })).toEqual([
+      ['uniprot-transmembrane-region-repeat-I', 'Repeat I', [10, 20, 30, 40, 50, 56, 60]],
+      ['uniprot-transmembrane-region-repeat-II', 'Repeat II', [110, 120, 130, 140, 150, 156, 160]],
+      ['uniprot-transmembrane-region-other', 'Other transmembrane', [300]],
+    ])
+    expect(groups({ grouping: 'domain', byRepeat: true }).map(([, label]) => label)).toEqual([
+      'Voltage sensor (S1-S4), repeat I',
+      'Voltage sensor (S1-S4), repeat II',
+      'Pore (S5-S6, pore loops), repeat I',
+      'Pore (S5-S6, pore loops), repeat II',
+      'Other transmembrane',
+    ])
+    expect(groups({ grouping: 'segment', byRepeat: true })).toHaveLength(15)
+  })
+
+  test('are not split by default', () => {
+    expect(groups({ grouping: 'none', byRepeat: false })).toEqual([
+      [
+        'uniprot-transmembrane-region',
+        'Transmembrane',
+        [10, 20, 30, 40, 50, 60, 110, 120, 130, 140, 150, 160, 300],
+      ],
+    ])
+  })
 })
 
 describe('parseProteinChangeHgvsp', () => {

@@ -7,6 +7,8 @@ UniProt features are residues and regions of a protein annotated in [UniProtKB](
 
 Select feature types in the legend beside the structure, or all of them with "Select all", to show them on the structure and as rows between the 3D missense constraint track and the structure. In the rows, features of a single residue are diamonds, and longer features are bars. Hover over a feature in a row to highlight its residues in the structure.
 
+UniProt names the transmembrane segments of voltage-gated ion channels S1 to S6. For these channels, "Group transmembrane segments by" splits them into the voltage-sensing domain (S1-S4) and the pore domain (S5, S6 and the pore-forming loop between them), or into each segment. Channels with four repeats of the segments, like sodium and calcium channels, can also be split by repeat (I-IV), on its own or with either of the others. Each group can be shown separately.
+
 The descriptions below are adapted from UniProt's documentation. Select a feature type for UniProt's full description.
 
 ### Residues
