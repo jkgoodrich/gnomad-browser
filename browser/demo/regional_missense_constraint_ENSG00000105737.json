@@ -5,7 +5,7 @@
     {
       "chrom": "19",
       "start": 41998874,
-      "stop": 41999093,
+      "stop": 41999091,
       "aa_start": "Glu980",
       "aa_stop": "Arg908",
       "obs_mis": 109,
@@ -18,7 +18,7 @@
     {
       "chrom": "19",
       "start": 41999092,
-      "stop": 42005949,
+      "stop": 42005947,
       "aa_start": "Arg908",
       "aa_stop": "Asn680",
       "obs_mis": 229,
@@ -31,7 +31,7 @@
     {
       "chrom": "19",
       "start": 42005948,
-      "stop": 42006690,
+      "stop": 42006688,
       "aa_start": "Asn680",
       "aa_stop": "Glu665",
       "obs_mis": 2,
@@ -44,7 +44,7 @@
     {
       "chrom": "19",
       "start": 42006689,
-      "stop": 42062511,
+      "stop": 42062509,
       "aa_start": "Glu665",
       "aa_stop": "Leu163",
       "obs_mis": 477,
@@ -57,7 +57,7 @@
     {
       "chrom": "19",
       "start": 42062510,
-      "stop": 42065772,
+      "stop": 42065770,
       "aa_start": "Ser162",
       "aa_stop": "Met1",
       "obs_mis": 198,

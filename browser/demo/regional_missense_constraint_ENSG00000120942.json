@@ -5,7 +5,7 @@
     {
       "chrom": "1",
       "start": 11273532,
-      "stop": 11273666,
+      "stop": 11273664,
       "aa_start": "Met1",
       "aa_stop": "Lys45",
       "obs_mis": 57,
@@ -18,7 +18,7 @@
     {
       "chrom": "1",
       "start": 11273665,
-      "stop": 11273912,
+      "stop": 11273910,
       "aa_start": "Lys45",
       "aa_stop": "Glu127",
       "obs_mis": 50,
@@ -31,7 +31,7 @@
     {
       "chrom": "1",
       "start": 11273911,
-      "stop": 11286130,
+      "stop": 11286128,
       "aa_start": "Glu127",
       "aa_stop": "Ile338",
       "obs_mis": 226,

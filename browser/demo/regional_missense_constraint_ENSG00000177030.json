@@ -5,7 +5,7 @@
     {
       "chrom": "11",
       "start": 644553,
-      "stop": 684910,
+      "stop": 684908,
       "aa_start": "Val565",
       "aa_stop": "Asp287",
       "obs_mis": 343,
@@ -18,7 +18,7 @@
     {
       "chrom": "11",
       "start": 684909,
-      "stop": 691540,
+      "stop": 691538,
       "aa_start": "Asp287",
       "aa_stop": "Ser117",
       "obs_mis": 132,
@@ -31,7 +31,7 @@
     {
       "chrom": "11",
       "start": 691539,
-      "stop": 695049,
+      "stop": 695047,
       "aa_start": "Ser117",
       "aa_stop": "Met1",
       "obs_mis": 210,

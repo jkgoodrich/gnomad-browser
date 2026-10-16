@@ -1,5 +1,97 @@
 {
   "has_no_rmc_evidence": false,
   "passed_qc": true,
-  "regions": null
+  "regions": [
+    {
+      "chrom": "X",
+      "start": 153688575,
+      "stop": 153688722,
+      "aa_start": "Met1",
+      "aa_stop": "Pro50",
+      "obs_mis": 50,
+      "exp_mis": 55.08563362695848,
+      "obs_exp": 0.9076776776064964,
+      "chisq_diff_null": 0.469517507283304,
+      "p_value": 0.4932092215170093,
+      "obs_exp_upper": 1.1488852887547625
+    },
+    {
+      "chrom": "X",
+      "start": 153688723,
+      "stop": 153690430,
+      "aa_start": "Pro50",
+      "aa_stop": "Phe106",
+      "obs_mis": 24,
+      "exp_mis": 51.98767294127542,
+      "obs_exp": 0.461647899245463,
+      "chisq_diff_null": 15.067222523166533,
+      "p_value": 0.00010374925769792639,
+      "obs_exp_upper": 0.6492385860951472
+    },
+    {
+      "chrom": "X",
+      "start": 153690431,
+      "stop": 153691304,
+      "aa_start": "Phe107",
+      "aa_stop": "Gly132",
+      "obs_mis": 0,
+      "exp_mis": 19.512382915581473,
+      "obs_exp": 0.0,
+      "chisq_diff_null": 19.512382915581473,
+      "p_value": 9.994965486471727e-6,
+      "obs_exp_upper": 0.15352980138380581
+    },
+    {
+      "chrom": "X",
+      "start": 153691305,
+      "stop": 153694178,
+      "aa_start": "Gly132",
+      "aa_stop": "Ala435",
+      "obs_mis": 75,
+      "exp_mis": 248.74627695364097,
+      "obs_exp": 0.3015120504254936,
+      "chisq_diff_null": 121.359680735553,
+      "p_value": 3.187684475046139e-28,
+      "obs_exp_upper": 0.36537279664779115
+    },
+    {
+      "chrom": "X",
+      "start": 153694179,
+      "stop": 153694254,
+      "aa_start": "Ala435",
+      "aa_stop": "Ser460",
+      "obs_mis": 18,
+      "exp_mis": 20.240236935811218,
+      "obs_exp": 0.8893176526087228,
+      "chisq_diff_null": 0.2479546827682277,
+      "p_value": 0.6185189443988872,
+      "obs_exp_upper": 1.3187479176322625
+    },
+    {
+      "chrom": "X",
+      "start": 153694255,
+      "stop": 153694538,
+      "aa_start": "Ser460",
+      "aa_stop": "Asp501",
+      "obs_mis": 6,
+      "exp_mis": 35.082061578610194,
+      "obs_exp": 0.17102757734335222,
+      "chisq_diff_null": 24.108227042670308,
+      "p_value": 9.107038460156123e-7,
+      "obs_exp_upper": 0.33756270639581487
+    },
+    {
+      "chrom": "X",
+      "start": 153694539,
+      "stop": 153695211,
+      "aa_start": "Asp501",
+      "aa_stop": "Met635",
+      "obs_mis": 87,
+      "exp_mis": 120.8821561085629,
+      "obs_exp": 0.7197092010988477,
+      "chisq_diff_null": 9.49685660416265,
+      "p_value": 0.002058242083036372,
+      "obs_exp_upper": 0.8601547312496157
+    }
+  ]
 }

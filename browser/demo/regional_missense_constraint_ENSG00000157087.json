@@ -5,7 +5,7 @@
     {
       "chrom": "3",
       "start": 10328817,
-      "stop": 10342773,
+      "stop": 10342771,
       "aa_start": "Leu1243",
       "aa_stop": "Ile966",
       "obs_mis": 211,
@@ -18,7 +18,7 @@
     {
       "chrom": "3",
       "start": 10342772,
-      "stop": 10350186,
+      "stop": 10350184,
       "aa_start": "Ile966",
       "aa_stop": "Ile778",
       "obs_mis": 98,
@@ -31,7 +31,7 @@
     {
       "chrom": "3",
       "start": 10350185,
-      "stop": 10378257,
+      "stop": 10378255,
       "aa_start": "Arg777",
       "aa_stop": "Ala400",
       "obs_mis": 343,
@@ -44,7 +44,7 @@
     {
       "chrom": "3",
       "start": 10378256,
-      "stop": 10378301,
+      "stop": 10378299,
       "aa_start": "Lys399",
       "aa_stop": "Val385",
       "obs_mis": 0,
@@ -57,7 +57,7 @@
     {
       "chrom": "3",
       "start": 10378300,
-      "stop": 10401037,
+      "stop": 10401035,
       "aa_start": "Val385",
       "aa_stop": "Asp233",
       "obs_mis": 145,
@@ -70,7 +70,7 @@
     {
       "chrom": "3",
       "start": 10401036,
-      "stop": 10401077,
+      "stop": 10401075,
       "aa_start": "Asp233",
       "aa_stop": "Asp220",
       "obs_mis": 2,
@@ -83,7 +83,7 @@
     {
       "chrom": "3",
       "start": 10401076,
-      "stop": 10402158,
+      "stop": 10402156,
       "aa_start": "Asp220",
       "aa_stop": "Ala197",
       "obs_mis": 35,
@@ -96,7 +96,7 @@
     {
       "chrom": "3",
       "start": 10402157,
-      "stop": 10402305,
+      "stop": 10402303,
       "aa_start": "Ala197",
       "aa_stop": "Glu148",
       "obs_mis": 30,
@@ -109,7 +109,7 @@
     {
       "chrom": "3",
       "start": 10402304,
-      "stop": 10410650,
+      "stop": 10410648,
       "aa_start": "Glu148",
       "aa_stop": "Phe123",
       "obs_mis": 35,
@@ -122,7 +122,7 @@
     {
       "chrom": "3",
       "start": 10410649,
-      "stop": 10410710,
+      "stop": 10410708,
       "aa_start": "Ser122",
       "aa_stop": "Leu103",
       "obs_mis": 7,
@@ -135,7 +135,7 @@
     {
       "chrom": "3",
       "start": 10410709,
-      "stop": 10449545,
+      "stop": 10449543,
       "aa_start": "Ala102",
       "aa_stop": "Met1",
       "obs_mis": 139,

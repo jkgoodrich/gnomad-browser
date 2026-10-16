@@ -58,8 +58,8 @@ import SLC9A6 from './regional_missense_constraint_ENSG00000198689.json'
 import CTR9 from './regional_missense_constraint_ENSG00000198730.json'
 import GRIN2B from './regional_missense_constraint_ENSG00000273079.json'
 
-// Keyed by gene ID. The v4 regions have no z-scores, and genes that weren't searched, like those on
-// chrX, have no regions.
+// Keyed by gene ID. The v4 regions have no z-scores, and transcripts searched without finding RMC
+// have none.
 const regionalMissenseConstraintFixtures = {
   ENSG00000005339: CREBBP,
   ENSG00000033627: ATP6V0A1,

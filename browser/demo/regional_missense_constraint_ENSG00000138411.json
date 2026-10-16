@@ -5,7 +5,7 @@
     {
       "chrom": "2",
       "start": 196201280,
-      "stop": 196225787,
+      "stop": 196225785,
       "aa_start": "Glu1572",
       "aa_stop": "Ala1335",
       "obs_mis": 134,
@@ -18,7 +18,7 @@
     {
       "chrom": "2",
       "start": 196225786,
-      "stop": 196225840,
+      "stop": 196225838,
       "aa_start": "Lys1334",
       "aa_stop": "Ala1317",
       "obs_mis": 1,
@@ -31,7 +31,7 @@
     {
       "chrom": "2",
       "start": 196225839,
-      "stop": 196228128,
+      "stop": 196228126,
       "aa_start": "Ala1317",
       "aa_stop": "Ala1298",
       "obs_mis": 16,
@@ -44,7 +44,7 @@
     {
       "chrom": "2",
       "start": 196228127,
-      "stop": 196228246,
+      "stop": 196228244,
       "aa_start": "Ala1298",
       "aa_stop": "Ser1259",
       "obs_mis": 7,
@@ -57,7 +57,7 @@
     {
       "chrom": "2",
       "start": 196228245,
-      "stop": 196292739,
+      "stop": 196292737,
       "aa_start": "Tyr1258",
       "aa_stop": "Met943",
       "obs_mis": 291,
@@ -70,7 +70,7 @@
     {
       "chrom": "2",
       "start": 196292738,
-      "stop": 196307221,
+      "stop": 196307219,
       "aa_start": "Met943",
       "aa_stop": "Arg867",
       "obs_mis": 105,
@@ -83,7 +83,7 @@
     {
       "chrom": "2",
       "start": 196307220,
-      "stop": 196318559,
+      "stop": 196318557,
       "aa_start": "Arg867",
       "aa_stop": "Thr778",
       "obs_mis": 82,
@@ -96,7 +96,7 @@
     {
       "chrom": "2",
       "start": 196318558,
-      "stop": 196320392,
+      "stop": 196320390,
       "aa_start": "Thr778",
       "aa_stop": "Val312",
       "obs_mis": 604,
@@ -109,7 +109,7 @@
     {
       "chrom": "2",
       "start": 196320391,
-      "stop": 196325117,
+      "stop": 196325115,
       "aa_start": "His311",
       "aa_stop": "Phe202",
       "obs_mis": 95,
@@ -122,7 +122,7 @@
     {
       "chrom": "2",
       "start": 196325116,
-      "stop": 196334430,
+      "stop": 196334428,
       "aa_start": "Phe202",
       "aa_stop": "Val164",
       "obs_mis": 54,
@@ -135,7 +135,7 @@
     {
       "chrom": "2",
       "start": 196334429,
-      "stop": 196433425,
+      "stop": 196433423,
       "aa_start": "Val164",
       "aa_stop": "Met1",
       "obs_mis": 135,

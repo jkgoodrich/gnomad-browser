@@ -5,7 +5,7 @@
     {
       "chrom": "4",
       "start": 101025868,
-      "stop": 101025958,
+      "stop": 101025956,
       "aa_start": "Gln521",
       "aa_stop": "Ser492",
       "obs_mis": 40,
@@ -18,7 +18,7 @@
     {
       "chrom": "4",
       "start": 101025957,
-      "stop": 101195935,
+      "stop": 101195933,
       "aa_start": "Ser492",
       "aa_stop": "Ile81",
       "obs_mis": 201,
@@ -31,7 +31,7 @@
     {
       "chrom": "4",
       "start": 101195934,
-      "stop": 101346798,
+      "stop": 101346796,
       "aa_start": "Ile81",
       "aa_stop": "Met1",
       "obs_mis": 76,

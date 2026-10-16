@@ -143,30 +143,48 @@ def export_missense_constraint_3d(residues_path, uniprot_features_path, genes):
     }
 
 
-# The v4 RMC is in the same gene table the earlier missense constraint demo exported from. It has no
-# o/e upper bound, so one is added like the 3D regions', with the Gamma method.
-def export_regional_missense_constraint(genes_path, genes):
-    ht = hl.read_table(genes_path)
-    ht = ht.filter(hl.literal([gene["gene_id"] for gene in genes]).contains(ht.gene_id))
-    rmc = ht.gnomad_regional_missense_constraint
-    rmc = rmc.annotate(
-        regions=rmc.regions.map(
-            lambda region: region.annotate(
-                obs_exp_upper=oe_confidence_interval(region.obs_mis, region.exp_mis, method="gamma").upper
-            )
+# Prepared from the v4 RMC browser table like the upstream v4-rmc branch's genes pipeline does, without
+# its outlier flags. It has no o/e upper bound, so one is added like the 3D regions', with the Gamma
+# method.
+def export_regional_missense_constraint(rmc_path, genes):
+    ht = hl.read_table(rmc_path)
+    ht = ht.filter(hl.literal([gene["transcript_id"] for gene in genes]).contains(ht.transcript))
+    regions = ht.regions.map(
+        lambda region: hl.struct(
+            chrom=region.start_coordinate.contig,
+            start=hl.min(region.start_coordinate.position, region.stop_coordinate.position),
+            stop=hl.max(region.start_coordinate.position, region.stop_coordinate.position),
+            aa_start=region.start_aa,
+            aa_stop=region.stop_aa,
+            obs_mis=region.obs,
+            exp_mis=region.exp,
+            obs_exp=region.oe,
+            chisq_diff_null=region.chisq,
+            p_value=region.p,
+            obs_exp_upper=oe_confidence_interval(region.obs, region.exp, method="gamma").upper,
         )
     )
-    rows = ht.select(json=hl.json(rmc)).collect()
+    rows = ht.select(json=hl.json(hl.sorted(regions, lambda region: region.start))).collect()
+    regions_by_transcript = {row.transcript: json.loads(row.json) for row in rows}
+    transcripts_no_rmc = hl.eval(ht.globals.all_transcripts.transcripts_no_rmc)
 
     regional_missense_constraint_by_gene = {}
-    for row in rows:
-        regional_missense_constraint = json.loads(row.json)
-        if regional_missense_constraint is None:
+    for gene in genes:
+        transcript_id = gene["transcript_id"]
+        if transcript_id in regions_by_transcript:
+            regional_missense_constraint = {
+                "has_no_rmc_evidence": False,
+                "passed_qc": True,
+                "regions": regions_by_transcript[transcript_id],
+            }
+            # The browser shows GRCh38 coordinates without the "chr" prefix
+            for region in regional_missense_constraint["regions"]:
+                region["chrom"] = region["chrom"].removeprefix("chr")
+        elif transcript_id in transcripts_no_rmc:
+            regional_missense_constraint = {"has_no_rmc_evidence": True, "passed_qc": True, "regions": []}
+        else:
             continue
-        # The browser shows GRCh38 coordinates without the "chr" prefix
-        for region in regional_missense_constraint["regions"] or []:
-            region["chrom"] = region["chrom"].removeprefix("chr")
-        regional_missense_constraint_by_gene[row.gene_id] = regional_missense_constraint
+        regional_missense_constraint_by_gene[gene["gene_id"]] = regional_missense_constraint
     return regional_missense_constraint_by_gene
 
 
@@ -175,6 +193,7 @@ def main():
     parser.add_argument("--residues-path", required=True)
     parser.add_argument("--uniprot-features-path", required=True)
     parser.add_argument("--genes-path", required=True)
+    parser.add_argument("--rmc-path", required=True)
     parser.add_argument("--output-dir", required=True)
     parser.add_argument(
         "--genes",
@@ -191,7 +210,7 @@ def main():
         args.residues_path, args.uniprot_features_path, genes
     ).items():
         write_json(os.path.join(args.output_dir, f"missense_constraint_3d_{gene_id}.json"), response)
-    for gene_id, regional_missense_constraint in export_regional_missense_constraint(args.genes_path, genes).items():
+    for gene_id, regional_missense_constraint in export_regional_missense_constraint(args.rmc_path, genes).items():
         write_json(
             os.path.join(args.output_dir, f"regional_missense_constraint_{gene_id}.json"),
             regional_missense_constraint,

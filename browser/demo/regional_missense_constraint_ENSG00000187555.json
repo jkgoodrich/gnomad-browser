@@ -5,7 +5,7 @@
     {
       "chrom": "16",
       "start": 8894001,
-      "stop": 8900606,
+      "stop": 8900604,
       "aa_start": "Asn1102",
       "aa_stop": "Arg745",
       "obs_mis": 222,
@@ -18,7 +18,7 @@
     {
       "chrom": "16",
       "start": 8900605,
-      "stop": 8901007,
+      "stop": 8901005,
       "aa_start": "Arg745",
       "aa_stop": "Ser731",
       "obs_mis": 2,
@@ -31,7 +31,7 @@
     {
       "chrom": "16",
       "start": 8901006,
-      "stop": 8905297,
+      "stop": 8905295,
       "aa_start": "Ser731",
       "aa_stop": "Thr489",
       "obs_mis": 197,
@@ -44,7 +44,7 @@
     {
       "chrom": "16",
       "start": 8905296,
-      "stop": 8910777,
+      "stop": 8910775,
       "aa_start": "Cys488",
       "aa_stop": "Asn377",
       "obs_mis": 31,
@@ -57,7 +57,7 @@
     {
       "chrom": "16",
       "start": 8910776,
-      "stop": 8915263,
+      "stop": 8915261,
       "aa_start": "Asn377",
       "aa_stop": "Lys357",
       "obs_mis": 21,
@@ -70,7 +70,7 @@
     {
       "chrom": "16",
       "start": 8915262,
-      "stop": 8915310,
+      "stop": 8915308,
       "aa_start": "Lys357",
       "aa_stop": "Asp342",
       "obs_mis": 1,
@@ -83,7 +83,7 @@
     {
       "chrom": "16",
       "start": 8915309,
-      "stop": 8915469,
+      "stop": 8915467,
       "aa_start": "Ser341",
       "aa_stop": "Lys322",
       "obs_mis": 15,
@@ -96,7 +96,7 @@
     {
       "chrom": "16",
       "start": 8915468,
-      "stop": 8920380,
+      "stop": 8920378,
       "aa_start": "Lys322",
       "aa_stop": "Asp198",
       "obs_mis": 24,
@@ -109,7 +109,7 @@
     {
       "chrom": "16",
       "start": 8920379,
-      "stop": 8920446,
+      "stop": 8920444,
       "aa_start": "Ala197",
       "aa_stop": "Val176",
       "obs_mis": 30,
@@ -122,7 +122,7 @@
     {
       "chrom": "16",
       "start": 8920445,
-      "stop": 8923325,
+      "stop": 8923323,
       "aa_start": "Glu175",
       "aa_stop": "Val92",
       "obs_mis": 35,
@@ -135,7 +135,7 @@
     {
       "chrom": "16",
       "start": 8923324,
-      "stop": 8963287,
+      "stop": 8963285,
       "aa_start": "Val92",
       "aa_stop": "Met1",
       "obs_mis": 137,

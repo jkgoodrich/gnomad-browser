@@ -5,7 +5,7 @@
     {
       "chrom": "19",
       "start": 52190097,
-      "stop": 52212777,
+      "stop": 52212775,
       "aa_start": "Met1",
       "aa_stop": "Leu198",
       "obs_mis": 93,
@@ -18,7 +18,7 @@
     {
       "chrom": "19",
       "start": 52212776,
-      "stop": 52225980,
+      "stop": 52225978,
       "aa_start": "Leu198",
       "aa_stop": "Ala589",
       "obs_mis": 276,

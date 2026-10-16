@@ -5,7 +5,7 @@
     {
       "chrom": "10",
       "start": 69318948,
-      "stop": 69382737,
+      "stop": 69382735,
       "aa_start": "Met1",
       "aa_stop": "Asn505",
       "obs_mis": 449,
@@ -18,7 +18,7 @@
     {
       "chrom": "10",
       "start": 69382736,
-      "stop": 69384880,
+      "stop": 69384878,
       "aa_start": "Asn505",
       "aa_stop": "Thr601",
       "obs_mis": 48,
@@ -31,7 +31,7 @@
     {
       "chrom": "10",
       "start": 69384879,
-      "stop": 69395007,
+      "stop": 69395005,
       "aa_start": "Thr601",
       "aa_stop": "Ile759",
       "obs_mis": 152,
@@ -44,7 +44,7 @@
     {
       "chrom": "10",
       "start": 69395006,
-      "stop": 69398672,
+      "stop": 69398670,
       "aa_start": "Ile759",
       "aa_stop": "Ile817",
       "obs_mis": 25,
@@ -57,7 +57,7 @@
     {
       "chrom": "10",
       "start": 69398671,
-      "stop": 69401050,
+      "stop": 69401048,
       "aa_start": "Leu818",
       "aa_stop": "Ser889",
       "obs_mis": 78,
@@ -70,7 +70,7 @@
     {
       "chrom": "10",
       "start": 69401049,
-      "stop": 69401096,
+      "stop": 69401094,
       "aa_start": "Phe890",
       "aa_stop": "Thr905",
       "obs_mis": 3,
@@ -83,7 +83,7 @@
     {
       "chrom": "10",
       "start": 69401095,
-      "stop": 69401134,
+      "stop": 69401132,
       "aa_start": "Thr905",
       "aa_stop": "Ser917",
       "obs_mis": 15,

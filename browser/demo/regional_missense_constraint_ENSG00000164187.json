@@ -5,7 +5,7 @@
     {
       "chrom": "5",
       "start": 36104049,
-      "stop": 36114444,
+      "stop": 36114442,
       "aa_start": "Val695",
       "aa_stop": "Cys541",
       "obs_mis": 183,
@@ -18,7 +18,7 @@
     {
       "chrom": "5",
       "start": 36114443,
-      "stop": 36143351,
+      "stop": 36143349,
       "aa_start": "Cys541",
       "aa_stop": "Met1",
       "obs_mis": 457,

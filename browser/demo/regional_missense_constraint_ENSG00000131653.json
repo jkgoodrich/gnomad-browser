@@ -5,7 +5,7 @@
     {
       "chrom": "16",
       "start": 2163921,
-      "stop": 2171327,
+      "stop": 2171325,
       "aa_start": "Met1",
       "aa_stop": "Val137",
       "obs_mis": 240,
@@ -18,7 +18,7 @@
     {
       "chrom": "16",
       "start": 2171326,
-      "stop": 2173941,
+      "stop": 2173939,
       "aa_start": "Val137",
       "aa_stop": "Ile385",
       "obs_mis": 238,
@@ -31,7 +31,7 @@
     {
       "chrom": "16",
       "start": 2173940,
-      "stop": 2174297,
+      "stop": 2174295,
       "aa_start": "Ile385",
       "aa_stop": "Glu436",
       "obs_mis": 15,
@@ -44,7 +44,7 @@
     {
       "chrom": "16",
       "start": 2174296,
-      "stop": 2176291,
+      "stop": 2176289,
       "aa_start": "Gly437",
       "aa_stop": "Cys635",
       "obs_mis": 160,
@@ -57,7 +57,7 @@
     {
       "chrom": "16",
       "start": 2176290,
-      "stop": 2176327,
+      "stop": 2176325,
       "aa_start": "Cys635",
       "aa_stop": "Thr647",
       "obs_mis": 1,
@@ -70,7 +70,7 @@
     {
       "chrom": "16",
       "start": 2176326,
-      "stop": 2176573,
+      "stop": 2176571,
       "aa_start": "Thr647",
       "aa_stop": "Cys670",
       "obs_mis": 23,

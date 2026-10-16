@@ -1,5 +1,71 @@
 {
   "has_no_rmc_evidence": false,
   "passed_qc": true,
-  "regions": null
+  "regions": [
+    {
+      "chrom": "X",
+      "start": 47233044,
+      "stop": 47239145,
+      "aa_start": "Met1",
+      "aa_stop": "Phe84",
+      "obs_mis": 71,
+      "exp_mis": 71.40297917827172,
+      "obs_exp": 0.9943562694034712,
+      "chisq_diff_null": 0.0022743059181761474,
+      "p_value": 0.9619635560746395,
+      "obs_exp_upper": 1.2114624703705
+    },
+    {
+      "chrom": "X",
+      "start": 47239146,
+      "stop": 47239798,
+      "aa_start": "Pro85",
+      "aa_stop": "Glu142",
+      "obs_mis": 14,
+      "exp_mis": 46.385967509387484,
+      "obs_exp": 0.30181541426653896,
+      "chisq_diff_null": 22.611383309119027,
+      "p_value": 1.9830616822679752e-6,
+      "obs_exp_upper": 0.4718342009022829
+    },
+    {
+      "chrom": "X",
+      "start": 47239799,
+      "stop": 47240811,
+      "aa_start": "Leu143",
+      "aa_stop": "Gly261",
+      "obs_mis": 80,
+      "exp_mis": 100.86689006394604,
+      "obs_exp": 0.7931244826650532,
+      "chisq_diff_null": 4.316848677150299,
+      "p_value": 0.037736746505942484,
+      "obs_exp_upper": 0.9552196267321361
+    },
+    {
+      "chrom": "X",
+      "start": 47240812,
+      "stop": 47241286,
+      "aa_start": "Gly261",
+      "aa_stop": "Asn286",
+      "obs_mis": 1,
+      "exp_mis": 20.041302347963423,
+      "obs_exp": 0.04989695692613604,
+      "chisq_diff_null": 18.091199304889557,
+      "p_value": 2.1057245837879444e-5,
+      "obs_exp_upper": 0.23670440353755973
+    },
+    {
+      "chrom": "X",
+      "start": 47241287,
+      "stop": 47247927,
+      "aa_start": "Asn286",
+      "aa_stop": "Asn920",
+      "obs_mis": 314,
+      "exp_mis": 555.9801251359227,
+      "obs_exp": 0.5647683897391749,
+      "chisq_diff_null": 105.31739951402358,
+      "p_value": 1.0405840983071972e-24,
+      "obs_exp_upper": 0.6200772366489413
+    }
+  ]
 }

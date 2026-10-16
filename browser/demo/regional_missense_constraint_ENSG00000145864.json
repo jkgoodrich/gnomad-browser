@@ -4,8 +4,21 @@
   "regions": [
     {
       "chrom": "5",
+      "start": 161294084,
+      "stop": 161330952,
+      "aa_start": "Asn512",
+      "aa_stop": "Gln336",
+      "obs_mis": 201,
+      "exp_mis": 228.05254054953468,
+      "obs_exp": 0.8813758422320287,
+      "chisq_diff_null": 3.209084838172444,
+      "p_value": 0.07323043237257706,
+      "obs_exp_upper": 0.9907029453447285
+    },
+    {
+      "chrom": "5",
       "start": 161330953,
-      "stop": 161336646,
+      "stop": 161336644,
       "aa_start": "Gln336",
       "aa_stop": "Val223",
       "obs_mis": 25,
@@ -18,7 +31,7 @@
     {
       "chrom": "5",
       "start": 161336645,
-      "stop": 161336730,
+      "stop": 161336728,
       "aa_start": "Val222",
       "aa_stop": "Asp195",
       "obs_mis": 30,
@@ -31,7 +44,7 @@
     {
       "chrom": "5",
       "start": 161336729,
-      "stop": 161459738,
+      "stop": 161459736,
       "aa_start": "Gly194",
       "aa_stop": "Trp116",
       "obs_mis": 15,
@@ -44,7 +57,7 @@
     {
       "chrom": "5",
       "start": 161459737,
-      "stop": 161546389,
+      "stop": 161546387,
       "aa_start": "Leu115",
       "aa_stop": "Leu35",
       "obs_mis": 42,
@@ -57,7 +70,7 @@
     {
       "chrom": "5",
       "start": 161546388,
-      "stop": 161546645,
+      "stop": 161546643,
       "aa_start": "Leu35",
       "aa_stop": "Met1",
       "obs_mis": 42,
@@ -66,19 +79,6 @@
       "chisq_diff_null": 0.02246398383351056,
       "p_value": 0.880859371602277,
       "obs_exp_upper": 1.2638581418710133
-    },
-    {
-      "chrom": "5",
-      "start": 161294084,
-      "stop": 161330954,
-      "aa_start": "Asn512",
-      "aa_stop": "Gln336",
-      "obs_mis": 201,
-      "exp_mis": 228.05254054953468,
-      "obs_exp": 0.8813758422320287,
-      "chisq_diff_null": 3.209084838172444,
-      "p_value": 0.07323043237257706,
-      "obs_exp_upper": 0.9907029453447285
     }
   ]
 }

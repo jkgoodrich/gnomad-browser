@@ -5,7 +5,7 @@
     {
       "chrom": "1",
       "start": 210683284,
-      "stop": 210684103,
+      "stop": 210684101,
       "aa_start": "Ser989",
       "aa_stop": "Glu717",
       "obs_mis": 331,
@@ -18,7 +18,7 @@
     {
       "chrom": "1",
       "start": 210684102,
-      "stop": 210919905,
+      "stop": 210919903,
       "aa_start": "Glu717",
       "aa_stop": "Ile400",
       "obs_mis": 197,
@@ -31,7 +31,7 @@
     {
       "chrom": "1",
       "start": 210919904,
-      "stop": 210919989,
+      "stop": 210919987,
       "aa_start": "Ile400",
       "aa_stop": "Ile372",
       "obs_mis": 4,
@@ -44,7 +44,7 @@
     {
       "chrom": "1",
       "start": 210919988,
-      "stop": 211133947,
+      "stop": 211133945,
       "aa_start": "Ile372",
       "aa_stop": "Met1",
       "obs_mis": 266,

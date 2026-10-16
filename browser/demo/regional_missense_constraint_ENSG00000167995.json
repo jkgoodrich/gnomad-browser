@@ -1,5 +1,5 @@
 {
-  "has_no_rmc_evidence": false,
+  "has_no_rmc_evidence": true,
   "passed_qc": true,
-  "regions": null
+  "regions": []
 }

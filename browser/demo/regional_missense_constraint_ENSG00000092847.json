@@ -5,7 +5,7 @@
     {
       "chrom": "1",
       "start": 35883422,
-      "stop": 35892590,
+      "stop": 35892588,
       "aa_start": "Met1",
       "aa_stop": "Lys81",
       "obs_mis": 89,
@@ -18,7 +18,7 @@
     {
       "chrom": "1",
       "start": 35892589,
-      "stop": 35894317,
+      "stop": 35894315,
       "aa_start": "Lys81",
       "aa_stop": "Gly262",
       "obs_mis": 129,
@@ -31,7 +31,7 @@
     {
       "chrom": "1",
       "start": 35894316,
-      "stop": 35901577,
+      "stop": 35901575,
       "aa_start": "Gly262",
       "aa_stop": "Gln374",
       "obs_mis": 42,
@@ -44,7 +44,7 @@
     {
       "chrom": "1",
       "start": 35901576,
-      "stop": 35906987,
+      "stop": 35906985,
       "aa_start": "Glu375",
       "aa_stop": "Ile483",
       "obs_mis": 106,
@@ -57,7 +57,7 @@
     {
       "chrom": "1",
       "start": 35906986,
-      "stop": 35915421,
+      "stop": 35915419,
       "aa_start": "Ile483",
       "aa_stop": "Glu635",
       "obs_mis": 68,
@@ -70,7 +70,7 @@
     {
       "chrom": "1",
       "start": 35915420,
-      "stop": 35917611,
+      "stop": 35917609,
       "aa_start": "Ile636",
       "aa_stop": "Leu682",
       "obs_mis": 45,
@@ -83,7 +83,7 @@
     {
       "chrom": "1",
       "start": 35917610,
-      "stop": 35919516,
+      "stop": 35919514,
       "aa_start": "Leu682",
       "aa_stop": "His827",
       "obs_mis": 62,
@@ -96,7 +96,7 @@
     {
       "chrom": "1",
       "start": 35919515,
-      "stop": 35919606,
+      "stop": 35919604,
       "aa_start": "Ile828",
       "aa_stop": "Ala857",
       "obs_mis": 33,

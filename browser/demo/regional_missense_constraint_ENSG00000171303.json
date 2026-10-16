@@ -5,7 +5,7 @@
     {
       "chrom": "2",
       "start": 26692876,
-      "stop": 26727938,
+      "stop": 26727936,
       "aa_start": "Met1",
       "aa_stop": "Thr185",
       "obs_mis": 158,
@@ -18,7 +18,7 @@
     {
       "chrom": "2",
       "start": 26727937,
-      "stop": 26728016,
+      "stop": 26728014,
       "aa_start": "Thr185",
       "aa_stop": "Asp211",
       "obs_mis": 3,
@@ -31,7 +31,7 @@
     {
       "chrom": "2",
       "start": 26728015,
-      "stop": 26728178,
+      "stop": 26728176,
       "aa_start": "Asp211",
       "aa_stop": "Thr265",
       "obs_mis": 38,
@@ -44,7 +44,7 @@
     {
       "chrom": "2",
       "start": 26728177,
-      "stop": 26728567,
+      "stop": 26728565,
       "aa_start": "Thr265",
       "aa_stop": "Val394",
       "obs_mis": 192,

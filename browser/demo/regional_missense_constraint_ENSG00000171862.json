@@ -5,7 +5,7 @@
     {
       "chrom": "10",
       "start": 87864470,
-      "stop": 87933088,
+      "stop": 87933086,
       "aa_start": "Met1",
       "aa_stop": "Asp109",
       "obs_mis": 35,
@@ -18,7 +18,7 @@
     {
       "chrom": "10",
       "start": 87933087,
-      "stop": 87965311,
+      "stop": 87965309,
       "aa_start": "Gln110",
       "aa_stop": "Thr350",
       "obs_mis": 147,
@@ -31,7 +31,7 @@
     {
       "chrom": "10",
       "start": 87965310,
-      "stop": 87965355,
+      "stop": 87965353,
       "aa_start": "Thr350",
       "aa_stop": "Val365",
       "obs_mis": 23,
@@ -44,7 +44,7 @@
     {
       "chrom": "10",
       "start": 87965354,
-      "stop": 87965471,
+      "stop": 87965469,
       "aa_start": "Val365",
       "aa_stop": "Val403",
       "obs_mis": 10,

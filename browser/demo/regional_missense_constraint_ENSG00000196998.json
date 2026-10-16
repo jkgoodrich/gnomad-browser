@@ -1,5 +1,45 @@
 {
   "has_no_rmc_evidence": false,
   "passed_qc": true,
-  "regions": null
+  "regions": [
+    {
+      "chrom": "X",
+      "start": 49074806,
+      "stop": 49075602,
+      "aa_start": "Phe360",
+      "aa_stop": "Gln223",
+      "obs_mis": 71,
+      "exp_mis": 122.9492010103355,
+      "obs_exp": 0.5774742691823717,
+      "chisq_diff_null": 21.949874122283884,
+      "p_value": 2.798652566197007e-6,
+      "obs_exp_upper": 0.7035591027537527
+    },
+    {
+      "chrom": "X",
+      "start": 49075603,
+      "stop": 49075692,
+      "aa_start": "Gln223",
+      "aa_stop": "Ser193",
+      "obs_mis": 2,
+      "exp_mis": 23.560601378087885,
+      "obs_exp": 0.0848874766779113,
+      "chisq_diff_null": 19.730376331443708,
+      "p_value": 8.917263292363114e-6,
+      "obs_exp_upper": 0.2672170171228006
+    },
+    {
+      "chrom": "X",
+      "start": 49075693,
+      "stop": 49078095,
+      "aa_start": "Ser193",
+      "aa_stop": "Met1",
+      "obs_mis": 102,
+      "exp_mis": 165.39160484963884,
+      "obs_exp": 0.6167181223782818,
+      "chisq_diff_null": 24.296853332223588,
+      "p_value": 8.257384553787565e-7,
+      "obs_exp_upper": 0.727015955066833
+    }
+  ]
 }

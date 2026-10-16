@@ -5,7 +5,7 @@
     {
       "chrom": "17",
       "start": 42460895,
-      "stop": 42487277,
+      "stop": 42487275,
       "aa_start": "Met1",
       "aa_stop": "Asn311",
       "obs_mis": 239,
@@ -18,7 +18,7 @@
     {
       "chrom": "17",
       "start": 42487276,
-      "stop": 42487328,
+      "stop": 42487326,
       "aa_start": "Asn311",
       "aa_stop": "Thr328",
       "obs_mis": 2,
@@ -31,7 +31,7 @@
     {
       "chrom": "17",
       "start": 42487327,
-      "stop": 42521119,
+      "stop": 42521117,
       "aa_start": "Thr328",
       "aa_stop": "Glu837",
       "obs_mis": 435,
