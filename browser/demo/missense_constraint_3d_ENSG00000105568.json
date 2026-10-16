@@ -1,0 +1,681 @@
+{
+  "data": {
+    "gene": {
+      "missense_constraint_3d": {
+        "transcript_id": "ENST00000322088",
+        "uniprot_id": "P30153",
+        "protein_sequence": "MAAADGDDSLYPIAVLIDELRNEDVQLRLNSIKKLSTIALALGVERTRSELLPFLTDTIYDEDEVLLALAEQLGTFTTLVGGPEYVHCLLPPLESLATVEETVVRDKAVESLRAISHEHSPSDLEAHFVPLVKRLAGGDWFTSRTSACGLFSVCYPRVSSAVKAELRQYFRNLCSDDTPMVRRAAASKLGEFAKVLELDNVKSEIIPMFSNLASDEQDSVRLLAVEACVNIAQLLPQEDLEALVMPTLRQAAEDKSWRVRYMVADKFTELQKAVGPEITKTDLVPAFQNLMKDCEAEVRAAASHKVKEFCENLSADCRENVIMSQILPCIKELVSDANQHVKSALASVIMGLSPILGKDNTIEHLLPLFLAQLKDECPEVRLNIISNLDCVNEVIGIRQLSQSLLPAIVELAEDAKWRVRLAIIEYMPLLAGQLGVEFFDEKLNSLCMAWLVDHVYAIREAATSNLKKLVEKFGKEWAHATIIPKVLAMSGDPNYLHRMTTLFCINVLSEVCGQDITTKHMLPTVLRMAGDPVANVRFNVAKSLQKIGPILDNSTLQSEVKPILEKLTQDQDVDVKYFAQEALTVLSLA",
+        "regions": [
+          {
+            "region_index": 0,
+            "is_catch_all": false,
+            "obs_mis": 3,
+            "exp_mis": 43.41004994925325,
+            "obs_exp": 0.06910842082667557,
+            "oe_upper": 0.17861431942595832,
+            "p_value": 8.607433176903012e-10,
+            "segments": [
+              {
+                "aa_start": 136,
+                "aa_stop": 136
+              },
+              {
+                "aa_start": 140,
+                "aa_stop": 148
+              },
+              {
+                "aa_start": 170,
+                "aa_stop": 170
+              },
+              {
+                "aa_start": 172,
+                "aa_stop": 188
+              },
+              {
+                "aa_start": 220,
+                "aa_stop": 220
+              }
+            ]
+          },
+          {
+            "region_index": 1,
+            "is_catch_all": false,
+            "obs_mis": 19,
+            "exp_mis": 90.1690252996663,
+            "obs_exp": 0.2107153752284191,
+            "oe_upper": 0.30918865482675556,
+            "p_value": 6.637959589491084e-14,
+            "segments": [
+              {
+                "aa_start": 8,
+                "aa_stop": 42
+              },
+              {
+                "aa_start": 47,
+                "aa_stop": 47
+              },
+              {
+                "aa_start": 50,
+                "aa_stop": 76
+              },
+              {
+                "aa_start": 92,
+                "aa_stop": 93
+              },
+              {
+                "aa_start": 96,
+                "aa_stop": 96
+              },
+              {
+                "aa_start": 101,
+                "aa_stop": 101
+              },
+              {
+                "aa_start": 103,
+                "aa_stop": 104
+              },
+              {
+                "aa_start": 107,
+                "aa_stop": 108
+              }
+            ]
+          },
+          {
+            "region_index": 2,
+            "is_catch_all": false,
+            "obs_mis": 1,
+            "exp_mis": 19.415861662649483,
+            "obs_exp": 0.05150428126111506,
+            "oe_upper": 0.24432933241981242,
+            "p_value": 2.9228203684439258e-5,
+            "segments": [
+              {
+                "aa_start": 373,
+                "aa_stop": 375
+              },
+              {
+                "aa_start": 381,
+                "aa_stop": 382
+              },
+              {
+                "aa_start": 385,
+                "aa_stop": 385
+              },
+              {
+                "aa_start": 403,
+                "aa_stop": 412
+              }
+            ]
+          },
+          {
+            "region_index": 3,
+            "is_catch_all": false,
+            "obs_mis": 10,
+            "exp_mis": 47.031758449464135,
+            "obs_exp": 0.2126222860823937,
+            "oe_upper": 0.3606545830929942,
+            "p_value": 6.6710367249724e-8,
+            "segments": [
+              {
+                "aa_start": 213,
+                "aa_stop": 219
+              },
+              {
+                "aa_start": 221,
+                "aa_stop": 223
+              },
+              {
+                "aa_start": 225,
+                "aa_stop": 225
+              },
+              {
+                "aa_start": 250,
+                "aa_stop": 264
+              },
+              {
+                "aa_start": 290,
+                "aa_stop": 290
+              },
+              {
+                "aa_start": 293,
+                "aa_stop": 295
+              },
+              {
+                "aa_start": 297,
+                "aa_stop": 298
+              }
+            ]
+          },
+          {
+            "region_index": 4,
+            "is_catch_all": false,
+            "obs_mis": 3,
+            "exp_mis": 19.6267989558836,
+            "obs_exp": 0.15285223060282474,
+            "oe_upper": 0.39505456520755683,
+            "p_value": 0.0001746986548512566,
+            "segments": [
+              {
+                "aa_start": 462,
+                "aa_stop": 472
+              },
+              {
+                "aa_start": 504,
+                "aa_stop": 504
+              },
+              {
+                "aa_start": 507,
+                "aa_stop": 512
+              }
+            ]
+          },
+          {
+            "region_index": 5,
+            "is_catch_all": false,
+            "obs_mis": 3,
+            "exp_mis": 18.19796293681143,
+            "obs_exp": 0.16485361633150175,
+            "oe_upper": 0.42607277280735517,
+            "p_value": 0.00036712043507038133,
+            "segments": [
+              {
+                "aa_start": 362,
+                "aa_stop": 362
+              },
+              {
+                "aa_start": 366,
+                "aa_stop": 366
+              },
+              {
+                "aa_start": 370,
+                "aa_stop": 370
+              },
+              {
+                "aa_start": 391,
+                "aa_stop": 392
+              },
+              {
+                "aa_start": 394,
+                "aa_stop": 402
+              },
+              {
+                "aa_start": 434,
+                "aa_stop": 434
+              }
+            ]
+          },
+          {
+            "region_index": 6,
+            "is_catch_all": false,
+            "obs_mis": 15,
+            "exp_mis": 40.28349229359766,
+            "obs_exp": 0.3723609634109102,
+            "oe_upper": 0.5733646326341498,
+            "p_value": 6.7884907578418e-5,
+            "segments": [
+              {
+                "aa_start": 333,
+                "aa_stop": 346
+              },
+              {
+                "aa_start": 368,
+                "aa_stop": 369
+              },
+              {
+                "aa_start": 371,
+                "aa_stop": 372
+              },
+              {
+                "aa_start": 376,
+                "aa_stop": 380
+              },
+              {
+                "aa_start": 383,
+                "aa_stop": 384
+              },
+              {
+                "aa_start": 413,
+                "aa_stop": 416
+              },
+              {
+                "aa_start": 419,
+                "aa_stop": 420
+              }
+            ]
+          },
+          {
+            "region_index": 7,
+            "is_catch_all": false,
+            "obs_mis": 9,
+            "exp_mis": 25.417088188777544,
+            "obs_exp": 0.3540924882171903,
+            "oe_upper": 0.61789990676626,
+            "p_value": 0.0011284811827934646,
+            "segments": [
+              {
+                "aa_start": 226,
+                "aa_stop": 226
+              },
+              {
+                "aa_start": 229,
+                "aa_stop": 229
+              },
+              {
+                "aa_start": 265,
+                "aa_stop": 273
+              },
+              {
+                "aa_start": 279,
+                "aa_stop": 279
+              },
+              {
+                "aa_start": 283,
+                "aa_stop": 283
+              },
+              {
+                "aa_start": 286,
+                "aa_stop": 287
+              },
+              {
+                "aa_start": 301,
+                "aa_stop": 302
+              },
+              {
+                "aa_start": 305,
+                "aa_stop": 306
+              },
+              {
+                "aa_start": 308,
+                "aa_stop": 309
+              }
+            ]
+          },
+          {
+            "region_index": 8,
+            "is_catch_all": false,
+            "obs_mis": 5,
+            "exp_mis": 16.883622793750554,
+            "obs_exp": 0.29614497202879597,
+            "oe_upper": 0.6226764857974034,
+            "p_value": 0.0038265396154255546,
+            "segments": [
+              {
+                "aa_start": 97,
+                "aa_stop": 100
+              },
+              {
+                "aa_start": 102,
+                "aa_stop": 102
+              },
+              {
+                "aa_start": 105,
+                "aa_stop": 106
+              },
+              {
+                "aa_start": 135,
+                "aa_stop": 135
+              },
+              {
+                "aa_start": 137,
+                "aa_stop": 139
+              }
+            ]
+          },
+          {
+            "region_index": 9,
+            "is_catch_all": false,
+            "obs_mis": 8,
+            "exp_mis": 20.045309216126682,
+            "obs_exp": 0.3990958639622235,
+            "oe_upper": 0.7201011248847923,
+            "p_value": 0.0071373417791550245,
+            "segments": [
+              {
+                "aa_start": 2,
+                "aa_stop": 7
+              },
+              {
+                "aa_start": 43,
+                "aa_stop": 44
+              },
+              {
+                "aa_start": 46,
+                "aa_stop": 46
+              },
+              {
+                "aa_start": 48,
+                "aa_stop": 49
+              },
+              {
+                "aa_start": 80,
+                "aa_stop": 80
+              }
+            ]
+          },
+          {
+            "region_index": 10,
+            "is_catch_all": false,
+            "obs_mis": 274,
+            "exp_mis": 417.81815339862226,
+            "obs_exp": 0.6557876860333266,
+            "oe_upper": 0.7247970976183822,
+            "p_value": 1.979697539714717e-12,
+            "segments": [
+              {
+                "aa_start": 77,
+                "aa_stop": 79
+              },
+              {
+                "aa_start": 81,
+                "aa_stop": 91
+              },
+              {
+                "aa_start": 94,
+                "aa_stop": 95
+              },
+              {
+                "aa_start": 109,
+                "aa_stop": 134
+              },
+              {
+                "aa_start": 149,
+                "aa_stop": 169
+              },
+              {
+                "aa_start": 171,
+                "aa_stop": 171
+              },
+              {
+                "aa_start": 189,
+                "aa_stop": 212
+              },
+              {
+                "aa_start": 224,
+                "aa_stop": 224
+              },
+              {
+                "aa_start": 227,
+                "aa_stop": 228
+              },
+              {
+                "aa_start": 230,
+                "aa_stop": 249
+              },
+              {
+                "aa_start": 274,
+                "aa_stop": 278
+              },
+              {
+                "aa_start": 280,
+                "aa_stop": 282
+              },
+              {
+                "aa_start": 284,
+                "aa_stop": 285
+              },
+              {
+                "aa_start": 288,
+                "aa_stop": 289
+              },
+              {
+                "aa_start": 291,
+                "aa_stop": 292
+              },
+              {
+                "aa_start": 296,
+                "aa_stop": 296
+              },
+              {
+                "aa_start": 299,
+                "aa_stop": 300
+              },
+              {
+                "aa_start": 303,
+                "aa_stop": 304
+              },
+              {
+                "aa_start": 307,
+                "aa_stop": 307
+              },
+              {
+                "aa_start": 310,
+                "aa_stop": 332
+              },
+              {
+                "aa_start": 347,
+                "aa_stop": 361
+              },
+              {
+                "aa_start": 363,
+                "aa_stop": 365
+              },
+              {
+                "aa_start": 367,
+                "aa_stop": 367
+              },
+              {
+                "aa_start": 386,
+                "aa_stop": 390
+              },
+              {
+                "aa_start": 393,
+                "aa_stop": 393
+              },
+              {
+                "aa_start": 417,
+                "aa_stop": 418
+              },
+              {
+                "aa_start": 421,
+                "aa_stop": 433
+              },
+              {
+                "aa_start": 435,
+                "aa_stop": 461
+              },
+              {
+                "aa_start": 473,
+                "aa_stop": 503
+              },
+              {
+                "aa_start": 505,
+                "aa_stop": 506
+              },
+              {
+                "aa_start": 513,
+                "aa_stop": 553
+              },
+              {
+                "aa_start": 555,
+                "aa_stop": 556
+              },
+              {
+                "aa_start": 559,
+                "aa_stop": 560
+              },
+              {
+                "aa_start": 563,
+                "aa_stop": 564
+              },
+              {
+                "aa_start": 567,
+                "aa_stop": 567
+              },
+              {
+                "aa_start": 570,
+                "aa_stop": 570
+              },
+              {
+                "aa_start": 572,
+                "aa_stop": 586
+              }
+            ]
+          },
+          {
+            "region_index": 11,
+            "is_catch_all": true,
+            "obs_mis": 19,
+            "exp_mis": 16.66759815802937,
+            "obs_exp": 1.139936289551535,
+            "oe_upper": 1.6726608942160692,
+            "p_value": 0.5677939471765017,
+            "segments": [
+              {
+                "aa_start": 1,
+                "aa_stop": 1
+              },
+              {
+                "aa_start": 45,
+                "aa_stop": 45
+              },
+              {
+                "aa_start": 554,
+                "aa_stop": 554
+              },
+              {
+                "aa_start": 557,
+                "aa_stop": 558
+              },
+              {
+                "aa_start": 561,
+                "aa_stop": 562
+              },
+              {
+                "aa_start": 565,
+                "aa_stop": 566
+              },
+              {
+                "aa_start": 568,
+                "aa_stop": 569
+              },
+              {
+                "aa_start": 571,
+                "aa_stop": 571
+              },
+              {
+                "aa_start": 587,
+                "aa_stop": 589
+              }
+            ]
+          }
+        ],
+        "uniprot_features": [
+          {
+            "feature_type": "repeat",
+            "start": 8,
+            "stop": 46,
+            "note": "HEAT 1"
+          },
+          {
+            "feature_type": "repeat",
+            "start": 47,
+            "stop": 84,
+            "note": "HEAT 2"
+          },
+          {
+            "feature_type": "repeat",
+            "start": 85,
+            "stop": 123,
+            "note": "HEAT 3"
+          },
+          {
+            "feature_type": "repeat",
+            "start": 124,
+            "stop": 161,
+            "note": "HEAT 4"
+          },
+          {
+            "feature_type": "repeat",
+            "start": 162,
+            "stop": 200,
+            "note": "HEAT 5"
+          },
+          {
+            "feature_type": "repeat",
+            "start": 201,
+            "stop": 239,
+            "note": "HEAT 6"
+          },
+          {
+            "feature_type": "repeat",
+            "start": 240,
+            "stop": 278,
+            "note": "HEAT 7"
+          },
+          {
+            "feature_type": "repeat",
+            "start": 279,
+            "stop": 321,
+            "note": "HEAT 8"
+          },
+          {
+            "feature_type": "repeat",
+            "start": 322,
+            "stop": 360,
+            "note": "HEAT 9"
+          },
+          {
+            "feature_type": "repeat",
+            "start": 361,
+            "stop": 399,
+            "note": "HEAT 10"
+          },
+          {
+            "feature_type": "repeat",
+            "start": 400,
+            "stop": 438,
+            "note": "HEAT 11"
+          },
+          {
+            "feature_type": "repeat",
+            "start": 439,
+            "stop": 477,
+            "note": "HEAT 12"
+          },
+          {
+            "feature_type": "repeat",
+            "start": 478,
+            "stop": 516,
+            "note": "HEAT 13"
+          },
+          {
+            "feature_type": "repeat",
+            "start": 517,
+            "stop": 555,
+            "note": "HEAT 14"
+          },
+          {
+            "feature_type": "repeat",
+            "start": 556,
+            "stop": 589,
+            "note": "HEAT 15"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 8,
+            "stop": 399,
+            "note": "PP2A subunit B binding"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 47,
+            "stop": 321,
+            "note": "Polyoma small and medium T antigens Binding"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 85,
+            "stop": 239,
+            "note": "SV40 small T antigen binding"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 400,
+            "stop": 589,
+            "note": "PP2A subunit C binding"
+          }
+        ]
+      }
+    }
+  }
+}

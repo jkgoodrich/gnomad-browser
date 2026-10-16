@@ -1,0 +1,32 @@
+{
+  "has_no_rmc_evidence": false,
+  "passed_qc": true,
+  "regions": [
+    {
+      "chrom": "5",
+      "start": 36104049,
+      "stop": 36114444,
+      "aa_start": "Val695",
+      "aa_stop": "Cys541",
+      "obs_mis": 183,
+      "exp_mis": 189.09592159178354,
+      "obs_exp": 0.9677628076773476,
+      "chisq_diff_null": 0.19651539673813562,
+      "p_value": 0.6575483424417736,
+      "obs_exp_upper": 1.0939726558266138
+    },
+    {
+      "chrom": "5",
+      "start": 36114443,
+      "stop": 36143351,
+      "aa_start": "Cys541",
+      "aa_stop": "Met1",
+      "obs_mis": 457,
+      "exp_mis": 642.7847659197613,
+      "obs_exp": 0.7109689342840574,
+      "chisq_diff_null": 53.69756888757554,
+      "p_value": 2.3385245460825274e-13,
+      "obs_exp_upper": 0.7681586608514712
+    }
+  ]
+}

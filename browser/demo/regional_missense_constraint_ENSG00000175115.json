@@ -1,0 +1,84 @@
+{
+  "has_no_rmc_evidence": false,
+  "passed_qc": true,
+  "regions": [
+    {
+      "chrom": "11",
+      "start": 66070487,
+      "stop": 66070558,
+      "aa_start": "Met1",
+      "aa_stop": "Gly24",
+      "obs_mis": 15,
+      "exp_mis": 38.99876932901386,
+      "obs_exp": 0.38462752179311643,
+      "chisq_diff_null": 14.768182155910607,
+      "p_value": 0.00012156956376075335,
+      "obs_exp_upper": 0.5922527853450927
+    },
+    {
+      "chrom": "11",
+      "start": 66070557,
+      "stop": 66070789,
+      "aa_start": "Gly24",
+      "aa_stop": "Met101",
+      "obs_mis": 129,
+      "exp_mis": 109.36516806826621,
+      "obs_exp": 1.179534602090838,
+      "chisq_diff_null": 3.525131737984303,
+      "p_value": 0.060445021514676,
+      "obs_exp_upper": 1.3651996963670392
+    },
+    {
+      "chrom": "11",
+      "start": 66070788,
+      "stop": 66220747,
+      "aa_start": "Met101",
+      "aa_stop": "Met385",
+      "obs_mis": 223,
+      "exp_mis": 353.95772970737613,
+      "obs_exp": 0.6300187318535423,
+      "chisq_diff_null": 48.451906910716055,
+      "p_value": 3.384890134551389e-12,
+      "obs_exp_upper": 0.7039631145730241
+    },
+    {
+      "chrom": "11",
+      "start": 66220746,
+      "stop": 66221169,
+      "aa_start": "Met385",
+      "aa_stop": "Gly405",
+      "obs_mis": 4,
+      "exp_mis": 24.74374118885605,
+      "obs_exp": 0.1616570416522744,
+      "chisq_diff_null": 17.390369355465147,
+      "p_value": 3.0436425301377823e-5,
+      "obs_exp_upper": 0.3699327016385091
+    },
+    {
+      "chrom": "11",
+      "start": 66221168,
+      "stop": 66241451,
+      "aa_start": "Gly405",
+      "aa_stop": "Asp818",
+      "obs_mis": 383,
+      "exp_mis": 537.0479038902996,
+      "obs_exp": 0.7131579831623991,
+      "chisq_diff_null": 44.187411441498455,
+      "p_value": 2.9839406797866976e-11,
+      "obs_exp_upper": 0.7760775841270258
+    },
+    {
+      "chrom": "11",
+      "start": 66241450,
+      "stop": 66243279,
+      "aa_start": "Asp818",
+      "aa_stop": "Thr963",
+      "obs_mis": 84,
+      "exp_mis": 187.09532207371427,
+      "obs_exp": 0.44896900183802874,
+      "chisq_diff_null": 56.80871822810869,
+      "p_value": 4.80332172256436e-14,
+      "obs_exp_upper": 0.5382907830995101
+    }
+  ]
+}

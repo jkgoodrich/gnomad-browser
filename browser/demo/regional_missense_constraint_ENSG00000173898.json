@@ -1,0 +1,84 @@
+{
+  "has_no_rmc_evidence": false,
+  "passed_qc": true,
+  "regions": [
+    {
+      "chrom": "11",
+      "start": 66685874,
+      "stop": 66694307,
+      "aa_start": "Lys2390",
+      "aa_stop": "Ala1446",
+      "obs_mis": 1130,
+      "exp_mis": 1317.316231268011,
+      "obs_exp": 0.8578046585763953,
+      "chisq_diff_null": 26.635495459337733,
+      "p_value": 2.456882866036951e-7,
+      "obs_exp_upper": 0.9009830877344401
+    },
+    {
+      "chrom": "11",
+      "start": 66694306,
+      "stop": 66696446,
+      "aa_start": "Ala1446",
+      "aa_stop": "Thr1371",
+      "obs_mis": 49,
+      "exp_mis": 92.60223876567409,
+      "obs_exp": 0.5291448743911296,
+      "chisq_diff_null": 20.530337610839435,
+      "p_value": 5.8693589647191884e-6,
+      "obs_exp_upper": 0.6713774691703002
+    },
+    {
+      "chrom": "11",
+      "start": 66696445,
+      "stop": 66698664,
+      "aa_start": "Thr1370",
+      "aa_stop": "Asp1331",
+      "obs_mis": 50,
+      "exp_mis": 48.063059791499775,
+      "obs_exp": 1.0402999770905719,
+      "chisq_diff_null": 0.07805864602836649,
+      "p_value": 0.7799457176329416,
+      "obs_exp_upper": 1.3167508346387038
+    },
+    {
+      "chrom": "11",
+      "start": 66698663,
+      "stop": 66698999,
+      "aa_start": "Lys1330",
+      "aa_stop": "His1288",
+      "obs_mis": 24,
+      "exp_mis": 58.12244980792995,
+      "obs_exp": 0.41292134242981543,
+      "chisq_diff_null": 20.032562026245515,
+      "p_value": 7.613462453577518e-6,
+      "obs_exp_upper": 0.5807119862687818
+    },
+    {
+      "chrom": "11",
+      "start": 66698998,
+      "stop": 66708279,
+      "aa_start": "Cys1287",
+      "aa_stop": "Ala405",
+      "obs_mis": 1012,
+      "exp_mis": 1248.899080468452,
+      "obs_exp": 0.8103136721186527,
+      "chisq_diff_null": 44.93651665252847,
+      "p_value": 2.0352680863725028e-11,
+      "obs_exp_upper": 0.8534830234121304
+    },
+    {
+      "chrom": "11",
+      "start": 66708278,
+      "stop": 66721242,
+      "aa_start": "Ala405",
+      "aa_stop": "Met1",
+      "obs_mis": 304,
+      "exp_mis": 522.1265521768694,
+      "obs_exp": 0.5822343237143408,
+      "chisq_diff_null": 91.12578658602898,
+      "p_value": 1.348231834973617e-21,
+      "obs_exp_upper": 0.6402342748870788
+    }
+  ]
+}

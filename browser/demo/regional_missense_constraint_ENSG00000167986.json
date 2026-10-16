@@ -1,0 +1,97 @@
+{
+  "has_no_rmc_evidence": false,
+  "passed_qc": true,
+  "regions": [
+    {
+      "chrom": "11",
+      "start": 61300139,
+      "stop": 61303072,
+      "aa_start": "His1140",
+      "aa_stop": "Asn973",
+      "obs_mis": 116,
+      "exp_mis": 221.62042455287082,
+      "obs_exp": 0.5234174613374882,
+      "chisq_diff_null": 50.33685006801945,
+      "p_value": 1.2949492339949137e-12,
+      "obs_exp_upper": 0.6106925127783694
+    },
+    {
+      "chrom": "11",
+      "start": 61303071,
+      "stop": 61309061,
+      "aa_start": "Asn973",
+      "aa_stop": "Ala862",
+      "obs_mis": 36,
+      "exp_mis": 139.92079510940138,
+      "obs_exp": 0.25728841786420875,
+      "chisq_diff_null": 77.1831781525129,
+      "p_value": 1.558150197725316e-18,
+      "obs_exp_upper": 0.3397688906602514
+    },
+    {
+      "chrom": "11",
+      "start": 61309060,
+      "stop": 61316540,
+      "aa_start": "Ala862",
+      "aa_stop": "Arg419",
+      "obs_mis": 396,
+      "exp_mis": 554.1210643580431,
+      "obs_exp": 0.7146452742394326,
+      "chisq_diff_null": 45.12059295685842,
+      "p_value": 1.8526693280567524e-11,
+      "obs_exp_upper": 0.7766029753647095
+    },
+    {
+      "chrom": "11",
+      "start": 61316539,
+      "stop": 61323045,
+      "aa_start": "Asn418",
+      "aa_stop": "Gly325",
+      "obs_mis": 35,
+      "exp_mis": 123.2944030344552,
+      "obs_exp": 0.28387338872324225,
+      "chisq_diff_null": 63.22997163976868,
+      "p_value": 1.839283473523537e-15,
+      "obs_exp_upper": 0.37636854593136726
+    },
+    {
+      "chrom": "11",
+      "start": 61323044,
+      "stop": 61324068,
+      "aa_start": "Val324",
+      "aa_stop": "Gly278",
+      "obs_mis": 35,
+      "exp_mis": 57.46835200043583,
+      "obs_exp": 0.6090308627561578,
+      "chisq_diff_null": 8.784432196901353,
+      "p_value": 0.0030381211646602095,
+      "obs_exp_upper": 0.8074728711761551
+    },
+    {
+      "chrom": "11",
+      "start": 61324067,
+      "stop": 61324112,
+      "aa_start": "Gly278",
+      "aa_stop": "Val264",
+      "obs_mis": 0,
+      "exp_mis": 17.94244484508457,
+      "obs_exp": 0.0,
+      "chisq_diff_null": 17.94244484508457,
+      "p_value": 2.2768639416604008e-5,
+      "obs_exp_upper": 0.1669634377822645
+    },
+    {
+      "chrom": "11",
+      "start": 61324111,
+      "stop": 61332970,
+      "aa_start": "Arg263",
+      "aa_stop": "Met1",
+      "obs_mis": 210,
+      "exp_mis": 344.8163365394515,
+      "obs_exp": 0.6090198686858713,
+      "chisq_diff_null": 52.710508963484514,
+      "p_value": 3.8651742203701873e-13,
+      "obs_exp_upper": 0.6828207341038649
+    }
+  ]
+}

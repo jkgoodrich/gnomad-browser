@@ -1,0 +1,84 @@
+{
+  "has_no_rmc_evidence": false,
+  "passed_qc": true,
+  "regions": [
+    {
+      "chrom": "3",
+      "start": 70959250,
+      "stop": 70970799,
+      "aa_start": "Glu677",
+      "aa_stop": "Ser554",
+      "obs_mis": 150,
+      "exp_mis": 163.73553654107056,
+      "obs_exp": 0.9161114512387774,
+      "chisq_diff_null": 1.1522542268871538,
+      "p_value": 0.28307775774891997,
+      "obs_exp_upper": 1.0490370840168122
+    },
+    {
+      "chrom": "3",
+      "start": 70970798,
+      "stop": 70972638,
+      "aa_start": "Ser554",
+      "aa_stop": "Val524",
+      "obs_mis": 6,
+      "exp_mis": 36.275409443205795,
+      "obs_exp": 0.16540130330972103,
+      "chisq_diff_null": 25.267817263064124,
+      "p_value": 4.989650379536908e-7,
+      "obs_exp_upper": 0.32645794586994825
+    },
+    {
+      "chrom": "3",
+      "start": 70972637,
+      "stop": 70988021,
+      "aa_start": "Val524",
+      "aa_stop": "Thr374",
+      "obs_mis": 141,
+      "exp_mis": 199.4702838781448,
+      "obs_exp": 0.7068722080234069,
+      "chisq_diff_null": 17.13926520944518,
+      "p_value": 3.4736704305319877e-5,
+      "obs_exp_upper": 0.812915736137876
+    },
+    {
+      "chrom": "3",
+      "start": 70988020,
+      "stop": 71015629,
+      "aa_start": "Thr374",
+      "aa_stop": "Ser299",
+      "obs_mis": 23,
+      "exp_mis": 92.85540956439864,
+      "obs_exp": 0.24769693126008618,
+      "chisq_diff_null": 52.55243898338062,
+      "p_value": 4.1891218329366964e-13,
+      "obs_exp_upper": 0.3509260753320543
+    },
+    {
+      "chrom": "3",
+      "start": 71015628,
+      "stop": 71112635,
+      "aa_start": "Ser299",
+      "aa_stop": "Leu62",
+      "obs_mis": 210,
+      "exp_mis": 270.5785705168785,
+      "obs_exp": 0.7761146775180423,
+      "chisq_diff_null": 13.562652795667352,
+      "p_value": 0.00023073076625145254,
+      "obs_exp_upper": 0.8701640473489994
+    },
+    {
+      "chrom": "3",
+      "start": 71112634,
+      "stop": 71198383,
+      "aa_start": "Leu62",
+      "aa_stop": "Met1",
+      "obs_mis": 103,
+      "exp_mis": 85.53535820694381,
+      "obs_exp": 1.2041803782571685,
+      "chisq_diff_null": 3.565937167432166,
+      "p_value": 0.05897644114390632,
+      "obs_exp_upper": 1.4183990616236986
+    }
+  ]
+}

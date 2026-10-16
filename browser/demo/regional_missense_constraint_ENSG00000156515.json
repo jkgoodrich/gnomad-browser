@@ -1,0 +1,97 @@
+{
+  "has_no_rmc_evidence": false,
+  "passed_qc": true,
+  "regions": [
+    {
+      "chrom": "10",
+      "start": 69318948,
+      "stop": 69382737,
+      "aa_start": "Met1",
+      "aa_stop": "Asn505",
+      "obs_mis": 449,
+      "exp_mis": 665.0953203650452,
+      "obs_exp": 0.6750912030978676,
+      "chisq_diff_null": 70.2112705559877,
+      "p_value": 5.328115023850397e-17,
+      "obs_exp_upper": 0.7298981027595108
+    },
+    {
+      "chrom": "10",
+      "start": 69382736,
+      "stop": 69384880,
+      "aa_start": "Asn505",
+      "aa_stop": "Thr601",
+      "obs_mis": 48,
+      "exp_mis": 128.23202847657964,
+      "obs_exp": 0.3743214590788973,
+      "chisq_diff_null": 50.19945851236671,
+      "p_value": 1.3888613261397145e-12,
+      "obs_exp_upper": 0.4761202644163164
+    },
+    {
+      "chrom": "10",
+      "start": 69384879,
+      "stop": 69395007,
+      "aa_start": "Thr601",
+      "aa_stop": "Ile759",
+      "obs_mis": 152,
+      "exp_mis": 211.09993199894677,
+      "obs_exp": 0.7200381286752776,
+      "chisq_diff_null": 16.545727557588975,
+      "p_value": 4.749086493967656e-5,
+      "obs_exp_upper": 0.8237718096902429
+    },
+    {
+      "chrom": "10",
+      "start": 69395006,
+      "stop": 69398672,
+      "aa_start": "Ile759",
+      "aa_stop": "Ile817",
+      "obs_mis": 25,
+      "exp_mis": 74.06545627708019,
+      "obs_exp": 0.3375392694061663,
+      "chisq_diff_null": 32.50393801223434,
+      "p_value": 1.1895125161537706e-8,
+      "obs_exp_upper": 0.47142192764333235
+    },
+    {
+      "chrom": "10",
+      "start": 69398671,
+      "stop": 69401050,
+      "aa_start": "Leu818",
+      "aa_stop": "Ser889",
+      "obs_mis": 78,
+      "exp_mis": 98.96369605955599,
+      "obs_exp": 0.788167814114985,
+      "chisq_diff_null": 4.4407855605248185,
+      "p_value": 0.03509009795559395,
+      "obs_exp_upper": 0.9515190902227004
+    },
+    {
+      "chrom": "10",
+      "start": 69401049,
+      "stop": 69401096,
+      "aa_start": "Phe890",
+      "aa_stop": "Thr905",
+      "obs_mis": 3,
+      "exp_mis": 20.65337610109857,
+      "obs_exp": 0.14525470244259134,
+      "chisq_diff_null": 15.089140208426343,
+      "p_value": 0.00010255155982430342,
+      "obs_exp_upper": 0.37541835726897466
+    },
+    {
+      "chrom": "10",
+      "start": 69401095,
+      "stop": 69401134,
+      "aa_start": "Thr905",
+      "aa_stop": "Ser917",
+      "obs_mis": 15,
+      "exp_mis": 21.687466012020177,
+      "obs_exp": 0.6916437352195189,
+      "chisq_diff_null": 2.0621220403129614,
+      "p_value": 0.15099976126712117,
+      "obs_exp_upper": 1.0649990066768407
+    }
+  ]
+}

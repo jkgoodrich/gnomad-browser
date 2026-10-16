@@ -1,0 +1,393 @@
+{
+  "data": {
+    "gene": {
+      "missense_constraint_3d": {
+        "transcript_id": "ENST00000376372",
+        "uniprot_id": "Q9Y484",
+        "protein_sequence": "MTQQPLRGVTSLRFNQDQSCFCCAMETGVRIYNVEPLMEKGHLDHEQVGSMGLVEMLHRSNLLALVGGGSSPKFSEISVLIWDDAREGKDSKEKLVLEFTFTKPVLSVRMRHDKIVIVLKNRIYVYSFPDNPRKLFEFDTRDNPKGLCDLCPSLEKQLLVFPGHKCGSLQLVDLASTKPGTSSAPFTINAHQSDIACVSLNQPGTVVASASQKGTLIRLFDTQSKEKLVELRRGTDPATLYCINFSHDSSFLCASSDKGTVHIFALKDTRLNRRSALARVGKVGPMIGQYVDSQWSLASFTVPAESACICAFGRNTSKNVNSVIAICVDGTFHKYVFTPDGNCNREAFDVYLDICDDDDF",
+        "regions": [
+          {
+            "region_index": 0,
+            "is_catch_all": false,
+            "obs_mis": 6,
+            "exp_mis": 36.28789840981121,
+            "obs_exp": 0.16534437823430886,
+            "oe_upper": 0.32634559099235255,
+            "p_value": 4.958324523116333e-7,
+            "segments": [
+              {
+                "aa_start": 190,
+                "aa_stop": 191
+              },
+              {
+                "aa_start": 195,
+                "aa_stop": 199
+              },
+              {
+                "aa_start": 207,
+                "aa_stop": 220
+              },
+              {
+                "aa_start": 227,
+                "aa_stop": 234
+              },
+              {
+                "aa_start": 240,
+                "aa_stop": 240
+              },
+              {
+                "aa_start": 242,
+                "aa_stop": 244
+              },
+              {
+                "aa_start": 252,
+                "aa_stop": 254
+              },
+              {
+                "aa_start": 262,
+                "aa_stop": 264
+              },
+              {
+                "aa_start": 293,
+                "aa_stop": 296
+              }
+            ]
+          },
+          {
+            "region_index": 1,
+            "is_catch_all": false,
+            "obs_mis": 54,
+            "exp_mis": 118.19767256853946,
+            "obs_exp": 0.45686178777071046,
+            "oe_upper": 0.5731084842207801,
+            "p_value": 3.527945595198625e-9,
+            "segments": [
+              {
+                "aa_start": 3,
+                "aa_stop": 39
+              },
+              {
+                "aa_start": 42,
+                "aa_stop": 42
+              },
+              {
+                "aa_start": 50,
+                "aa_stop": 56
+              },
+              {
+                "aa_start": 64,
+                "aa_stop": 71
+              },
+              {
+                "aa_start": 76,
+                "aa_stop": 76
+              },
+              {
+                "aa_start": 104,
+                "aa_stop": 109
+              },
+              {
+                "aa_start": 118,
+                "aa_stop": 120
+              },
+              {
+                "aa_start": 143,
+                "aa_stop": 149
+              },
+              {
+                "aa_start": 161,
+                "aa_stop": 162
+              },
+              {
+                "aa_start": 193,
+                "aa_stop": 194
+              },
+              {
+                "aa_start": 200,
+                "aa_stop": 200
+              },
+              {
+                "aa_start": 235,
+                "aa_stop": 239
+              },
+              {
+                "aa_start": 241,
+                "aa_stop": 241
+              },
+              {
+                "aa_start": 245,
+                "aa_stop": 246
+              },
+              {
+                "aa_start": 251,
+                "aa_stop": 251
+              },
+              {
+                "aa_start": 255,
+                "aa_stop": 261
+              },
+              {
+                "aa_start": 297,
+                "aa_stop": 313
+              },
+              {
+                "aa_start": 322,
+                "aa_stop": 337
+              },
+              {
+                "aa_start": 343,
+                "aa_stop": 354
+              }
+            ]
+          },
+          {
+            "region_index": 2,
+            "is_catch_all": false,
+            "obs_mis": 29,
+            "exp_mis": 57.10563010416718,
+            "obs_exp": 0.5078308381695587,
+            "oe_upper": 0.6924181060921161,
+            "p_value": 0.0001998254327257328,
+            "segments": [
+              {
+                "aa_start": 57,
+                "aa_stop": 60
+              },
+              {
+                "aa_start": 62,
+                "aa_stop": 63
+              },
+              {
+                "aa_start": 110,
+                "aa_stop": 117
+              },
+              {
+                "aa_start": 123,
+                "aa_stop": 129
+              },
+              {
+                "aa_start": 134,
+                "aa_stop": 138
+              },
+              {
+                "aa_start": 150,
+                "aa_stop": 160
+              },
+              {
+                "aa_start": 163,
+                "aa_stop": 163
+              },
+              {
+                "aa_start": 168,
+                "aa_stop": 179
+              },
+              {
+                "aa_start": 183,
+                "aa_stop": 188
+              },
+              {
+                "aa_start": 201,
+                "aa_stop": 206
+              },
+              {
+                "aa_start": 221,
+                "aa_stop": 225
+              },
+              {
+                "aa_start": 247,
+                "aa_stop": 250
+              },
+              {
+                "aa_start": 266,
+                "aa_stop": 266
+              }
+            ]
+          },
+          {
+            "region_index": 3,
+            "is_catch_all": false,
+            "obs_mis": 23,
+            "exp_mis": 34.50931375934207,
+            "obs_exp": 0.6664867392146746,
+            "oe_upper": 0.9442489838837688,
+            "p_value": 0.050088051004619494,
+            "segments": [
+              {
+                "aa_start": 265,
+                "aa_stop": 265
+              },
+              {
+                "aa_start": 267,
+                "aa_stop": 292
+              },
+              {
+                "aa_start": 338,
+                "aa_stop": 342
+              }
+            ]
+          },
+          {
+            "region_index": 4,
+            "is_catch_all": false,
+            "obs_mis": 21,
+            "exp_mis": 31.102180486157543,
+            "obs_exp": 0.6751938183030718,
+            "oe_upper": 0.9722933510924467,
+            "p_value": 0.07007550996547425,
+            "segments": [
+              {
+                "aa_start": 40,
+                "aa_stop": 41
+              },
+              {
+                "aa_start": 43,
+                "aa_stop": 49
+              },
+              {
+                "aa_start": 61,
+                "aa_stop": 61
+              },
+              {
+                "aa_start": 72,
+                "aa_stop": 75
+              },
+              {
+                "aa_start": 77,
+                "aa_stop": 84
+              },
+              {
+                "aa_start": 91,
+                "aa_stop": 103
+              },
+              {
+                "aa_start": 121,
+                "aa_stop": 122
+              },
+              {
+                "aa_start": 140,
+                "aa_stop": 140
+              },
+              {
+                "aa_start": 142,
+                "aa_stop": 142
+              },
+              {
+                "aa_start": 355,
+                "aa_stop": 355
+              }
+            ]
+          },
+          {
+            "region_index": 5,
+            "is_catch_all": true,
+            "obs_mis": 42,
+            "exp_mis": 34.69871191004442,
+            "obs_exp": 1.2104195714493378,
+            "oe_upper": 1.5655897149031723,
+            "p_value": 0.21516432111808026,
+            "segments": [
+              {
+                "aa_start": 1,
+                "aa_stop": 2
+              },
+              {
+                "aa_start": 85,
+                "aa_stop": 90
+              },
+              {
+                "aa_start": 130,
+                "aa_stop": 133
+              },
+              {
+                "aa_start": 139,
+                "aa_stop": 139
+              },
+              {
+                "aa_start": 141,
+                "aa_stop": 141
+              },
+              {
+                "aa_start": 164,
+                "aa_stop": 167
+              },
+              {
+                "aa_start": 180,
+                "aa_stop": 182
+              },
+              {
+                "aa_start": 189,
+                "aa_stop": 189
+              },
+              {
+                "aa_start": 192,
+                "aa_stop": 192
+              },
+              {
+                "aa_start": 226,
+                "aa_stop": 226
+              },
+              {
+                "aa_start": 314,
+                "aa_stop": 321
+              },
+              {
+                "aa_start": 356,
+                "aa_stop": 360
+              }
+            ]
+          }
+        ],
+        "uniprot_features": [
+          {
+            "feature_type": "repeat",
+            "start": 1,
+            "stop": 34,
+            "note": "WD 1"
+          },
+          {
+            "feature_type": "repeat",
+            "start": 40,
+            "stop": 84,
+            "note": "WD 2"
+          },
+          {
+            "feature_type": "repeat",
+            "start": 92,
+            "stop": 128,
+            "note": "WD 3"
+          },
+          {
+            "feature_type": "repeat",
+            "start": 133,
+            "stop": 174,
+            "note": "WD 4"
+          },
+          {
+            "feature_type": "repeat",
+            "start": 183,
+            "stop": 222,
+            "note": "WD 5"
+          },
+          {
+            "feature_type": "repeat",
+            "start": 227,
+            "stop": 266,
+            "note": "WD 6"
+          },
+          {
+            "feature_type": "repeat",
+            "start": 284,
+            "stop": 329,
+            "note": "WD 7"
+          },
+          {
+            "feature_type": "short sequence motif",
+            "start": 231,
+            "stop": 234,
+            "note": "L/FRRG motif"
+          }
+        ]
+      }
+    }
+  }
+}

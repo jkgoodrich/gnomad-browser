@@ -1,0 +1,1779 @@
+{
+  "data": {
+    "gene": {
+      "missense_constraint_3d": {
+        "transcript_id": "ENST00000674923",
+        "uniprot_id": "P35498",
+        "protein_sequence": "MEQTVLVPPGPDSFNFFTRESLAAIERRIAEEKAKNPKPDKKDDDENGPKPNSDLEAGKNLPFIYGDIPPEMVSEPLEDLDPYYINKKTFIVLNKGKAIFRFSATSALYILTPFNPLRKIAIKILVHSLFSMLIMCTILTNCVFMTMSNPPDWTKNVEYTFTGIYTFESLIKIIARGFCLEDFTFLRDPWNWLDFTVITFAYVTEFVDLGNVSALRTFRVLRALKTISVIPGLKTIVGALIQSVKKLSDVMILTVFCLSVFALIGLQLFMGNLRNKCIQWPPTNASLEEHSIEKNITVNYNGTLINETVFEFDWKSYIQDSRYHYFLEGFLDALLCGNSSDAGQCPEGYMCVKAGRNPNYGYTSFDTFSWAFLSLFRLMTQDFWENLYQLTLRAAGKTYMIFFVLVIFLGSFYLINLILAVVAMAYEEQNQATLEEAEQKEAEFQQMIEQLKKQQEAAQQAATATASEHSREPSAAGRLSDSSSEASKLSSKSAKERRNRRKKRKQKEQSGGEEKDEDEFQKSESEDSIRRKGFRFSIEGNRLTYEKRYSSPHQSLLSIRGSLFSPRRNSRTSLFSFRGRAKDVGSENDFADDEHSTFEDNESRRDSLFVPRRHGERRNSNLSQTSRSSRMLAVFPANGKMHSTVDCNGVVSLVGGPSVPTSPVGQLLPEVIIDKPATDDNGTTTETEMRKRRSSSFHVSMDFLEDPSQRQRAMSIASILTNTVEELEESRQKCPPCWYKFSNIFLIWDCSPYWLKVKHVVNLVVMDPFVDLAITICIVLNTLFMAMEHYPMTDHFNNVLTVGNLVFTGIFTAEMFLKIIAMDPYYYFQEGWNIFDGFIVTLSLVELGLANVEGLSVLRSFRLLRVFKLAKSWPTLNMLIKIIGNSVGALGNLTLVLAIIVFIFAVVGMQLFGKSYKDCVCKIASDCQLPRWHMNDFFHSFLIVFRVLCGEWIETMWDCMEVAGQAMCLTVFMMVMVIGNLVVLNLFLALLLSSFSADNLAATDDDNEMNNLQIAVDRMHKGVAYVKRKIYEFIQQSFIRKQKILDEIKPLDDLNNKKDSCMSNHTAEIGKDLDYLKDVNGTTSGIGTGSSVEKYIIDESDYMSFINNPSLTVTVPIAVGESDFENLNTEDFSSESDLEESKEKLNESSSSSEGSTVDIGAPVEEQPVVEPEETLEPEACFTEGCVQRFKCCQINVEEGRGKQWWNLRRTCFRIVEHNWFETFIVFMILLSSGALAFEDIYIDQRKTIKTMLEYADKVFTYIFILEMLLKWVAYGYQTYFTNAWCWLDFLIVDVSLVSLTANALGYSELGAIKSLRTLRALRPLRALSRFEGMRVVVNALLGAIPSIMNVLLVCLIFWLIFSIMGVNLFAGKFYHCINTTTGDRFDIEDVNNHTDCLKLIERNETARWKNVKVNFDNVGFGYLSLLQVATFKGWMDIMYAAVDSRNVELQPKYEESLYMYLYFVIFIIFGSFFTLNLFIGVIIDNFNQQKKKFGGQDIFMTEEQKKYYNAMKKLGSKKPQKPIPRPGNKFQGMVFDFVTRQVFDISIMILICLNMVTMMVETDDQSEYVTTILSRINLVFIVLFTGECVLKLISLRHYYFTIGWNIFDFVVVILSIVGMFLAELIEKYFVSPTLFRVIRLARIGRILRLIKGAKGIRTLLFALMMSLPALFNIGLLLFLVMFIYAIFGMSNFAYVKREVGIDDMFNFETFGNSMICLFQITTSAGWDGLLAPILNSKPPDCDPNKVNPGSSVKGDCGNPSVGIFFFVSYIIISFLVVVNMYIAVILENFSVATEESAEPLSEDDFEMFYEVWEKFDPDATQFMEFEKLSQFAAALEPPLNLPQPNKLQLIAMDLPMVSGDRIHCLDILFAFTKRVLGESGEMDALRIQMEERFMASNPSKVSYQPITTTLKRKQEEVSAVIIQRAYRRHLLKRTVKQASFTYNKNKIKGGANLLIKEDMIIDRINENSITEKTDLTMSTAACPPSYDRVTKPIVEKHEQEGKDEKAKGK",
+        "regions": [
+          {
+            "region_index": 0,
+            "is_catch_all": false,
+            "obs_mis": 547,
+            "exp_mis": 1317.302352166761,
+            "obs_exp": 0.4152425592349916,
+            "oe_upper": 0.445657075428252,
+            "p_value": 5.785654970386674e-100,
+            "segments": [
+              {
+                "aa_start": 47,
+                "aa_stop": 47
+              },
+              {
+                "aa_start": 50,
+                "aa_stop": 62
+              },
+              {
+                "aa_start": 81,
+                "aa_stop": 81
+              },
+              {
+                "aa_start": 83,
+                "aa_stop": 84
+              },
+              {
+                "aa_start": 86,
+                "aa_stop": 89
+              },
+              {
+                "aa_start": 92,
+                "aa_stop": 92
+              },
+              {
+                "aa_start": 94,
+                "aa_stop": 94
+              },
+              {
+                "aa_start": 97,
+                "aa_stop": 101
+              },
+              {
+                "aa_start": 103,
+                "aa_stop": 103
+              },
+              {
+                "aa_start": 105,
+                "aa_stop": 105
+              },
+              {
+                "aa_start": 125,
+                "aa_stop": 125
+              },
+              {
+                "aa_start": 128,
+                "aa_stop": 128
+              },
+              {
+                "aa_start": 131,
+                "aa_stop": 151
+              },
+              {
+                "aa_start": 154,
+                "aa_stop": 154
+              },
+              {
+                "aa_start": 156,
+                "aa_stop": 157
+              },
+              {
+                "aa_start": 161,
+                "aa_stop": 163
+              },
+              {
+                "aa_start": 165,
+                "aa_stop": 165
+              },
+              {
+                "aa_start": 168,
+                "aa_stop": 204
+              },
+              {
+                "aa_start": 206,
+                "aa_stop": 207
+              },
+              {
+                "aa_start": 209,
+                "aa_stop": 281
+              },
+              {
+                "aa_start": 312,
+                "aa_stop": 450
+              },
+              {
+                "aa_start": 782,
+                "aa_stop": 782
+              },
+              {
+                "aa_start": 786,
+                "aa_stop": 786
+              },
+              {
+                "aa_start": 830,
+                "aa_stop": 833
+              },
+              {
+                "aa_start": 835,
+                "aa_stop": 835
+              },
+              {
+                "aa_start": 860,
+                "aa_stop": 860
+              },
+              {
+                "aa_start": 863,
+                "aa_stop": 1005
+              },
+              {
+                "aa_start": 1007,
+                "aa_stop": 1007
+              },
+              {
+                "aa_start": 1009,
+                "aa_stop": 1010
+              },
+              {
+                "aa_start": 1175,
+                "aa_stop": 1176
+              },
+              {
+                "aa_start": 1209,
+                "aa_stop": 1295
+              },
+              {
+                "aa_start": 1298,
+                "aa_stop": 1298
+              },
+              {
+                "aa_start": 1313,
+                "aa_stop": 1369
+              },
+              {
+                "aa_start": 1372,
+                "aa_stop": 1373
+              },
+              {
+                "aa_start": 1381,
+                "aa_stop": 1381
+              },
+              {
+                "aa_start": 1383,
+                "aa_stop": 1383
+              },
+              {
+                "aa_start": 1410,
+                "aa_stop": 1444
+              },
+              {
+                "aa_start": 1454,
+                "aa_stop": 1736
+              },
+              {
+                "aa_start": 1741,
+                "aa_stop": 1741
+              },
+              {
+                "aa_start": 1755,
+                "aa_stop": 1825
+              },
+              {
+                "aa_start": 1827,
+                "aa_stop": 1849
+              },
+              {
+                "aa_start": 1851,
+                "aa_stop": 1852
+              },
+              {
+                "aa_start": 1854,
+                "aa_stop": 1854
+              },
+              {
+                "aa_start": 1856,
+                "aa_stop": 1857
+              },
+              {
+                "aa_start": 1861,
+                "aa_stop": 1877
+              },
+              {
+                "aa_start": 1879,
+                "aa_stop": 1882
+              },
+              {
+                "aa_start": 1884,
+                "aa_stop": 1891
+              },
+              {
+                "aa_start": 1893,
+                "aa_stop": 1893
+              },
+              {
+                "aa_start": 1897,
+                "aa_stop": 1897
+              },
+              {
+                "aa_start": 1901,
+                "aa_stop": 1905
+              },
+              {
+                "aa_start": 1907,
+                "aa_stop": 1907
+              },
+              {
+                "aa_start": 1910,
+                "aa_stop": 1910
+              },
+              {
+                "aa_start": 1913,
+                "aa_stop": 1913
+              }
+            ]
+          },
+          {
+            "region_index": 1,
+            "is_catch_all": false,
+            "obs_mis": 103,
+            "exp_mis": 228.53323085033796,
+            "obs_exp": 0.4507003187971938,
+            "oe_upper": 0.5308780318947512,
+            "p_value": 1.0071736847132525e-16,
+            "segments": [
+              {
+                "aa_start": 14,
+                "aa_stop": 14
+              },
+              {
+                "aa_start": 16,
+                "aa_stop": 19
+              },
+              {
+                "aa_start": 22,
+                "aa_stop": 22
+              },
+              {
+                "aa_start": 63,
+                "aa_stop": 63
+              },
+              {
+                "aa_start": 65,
+                "aa_stop": 77
+              },
+              {
+                "aa_start": 79,
+                "aa_stop": 80
+              },
+              {
+                "aa_start": 90,
+                "aa_stop": 91
+              },
+              {
+                "aa_start": 93,
+                "aa_stop": 93
+              },
+              {
+                "aa_start": 95,
+                "aa_stop": 96
+              },
+              {
+                "aa_start": 102,
+                "aa_stop": 102
+              },
+              {
+                "aa_start": 104,
+                "aa_stop": 104
+              },
+              {
+                "aa_start": 106,
+                "aa_stop": 124
+              },
+              {
+                "aa_start": 126,
+                "aa_stop": 127
+              },
+              {
+                "aa_start": 129,
+                "aa_stop": 130
+              },
+              {
+                "aa_start": 152,
+                "aa_stop": 153
+              },
+              {
+                "aa_start": 155,
+                "aa_stop": 155
+              },
+              {
+                "aa_start": 158,
+                "aa_stop": 160
+              },
+              {
+                "aa_start": 164,
+                "aa_stop": 164
+              },
+              {
+                "aa_start": 166,
+                "aa_stop": 167
+              },
+              {
+                "aa_start": 205,
+                "aa_stop": 205
+              },
+              {
+                "aa_start": 208,
+                "aa_stop": 208
+              },
+              {
+                "aa_start": 729,
+                "aa_stop": 730
+              },
+              {
+                "aa_start": 732,
+                "aa_stop": 733
+              },
+              {
+                "aa_start": 739,
+                "aa_stop": 739
+              },
+              {
+                "aa_start": 742,
+                "aa_stop": 742
+              },
+              {
+                "aa_start": 777,
+                "aa_stop": 781
+              },
+              {
+                "aa_start": 783,
+                "aa_stop": 785
+              },
+              {
+                "aa_start": 787,
+                "aa_stop": 793
+              },
+              {
+                "aa_start": 796,
+                "aa_stop": 816
+              },
+              {
+                "aa_start": 819,
+                "aa_stop": 819
+              },
+              {
+                "aa_start": 824,
+                "aa_stop": 829
+              },
+              {
+                "aa_start": 834,
+                "aa_stop": 834
+              },
+              {
+                "aa_start": 836,
+                "aa_stop": 859
+              },
+              {
+                "aa_start": 861,
+                "aa_stop": 862
+              },
+              {
+                "aa_start": 1370,
+                "aa_stop": 1371
+              },
+              {
+                "aa_start": 1374,
+                "aa_stop": 1380
+              },
+              {
+                "aa_start": 1382,
+                "aa_stop": 1382
+              },
+              {
+                "aa_start": 1384,
+                "aa_stop": 1409
+              },
+              {
+                "aa_start": 1445,
+                "aa_stop": 1453
+              },
+              {
+                "aa_start": 1737,
+                "aa_stop": 1740
+              }
+            ]
+          },
+          {
+            "region_index": 2,
+            "is_catch_all": false,
+            "obs_mis": 5,
+            "exp_mis": 18.695552490687184,
+            "obs_exp": 0.26744328644423054,
+            "oe_upper": 0.5623281212993513,
+            "p_value": 0.0015377969585587312,
+            "segments": [
+              {
+                "aa_start": 761,
+                "aa_stop": 762
+              },
+              {
+                "aa_start": 764,
+                "aa_stop": 766
+              },
+              {
+                "aa_start": 770,
+                "aa_stop": 771
+              },
+              {
+                "aa_start": 774,
+                "aa_stop": 774
+              },
+              {
+                "aa_start": 817,
+                "aa_stop": 818
+              },
+              {
+                "aa_start": 820,
+                "aa_stop": 823
+              }
+            ]
+          },
+          {
+            "region_index": 3,
+            "is_catch_all": false,
+            "obs_mis": 6,
+            "exp_mis": 20.29173924589157,
+            "obs_exp": 0.29568682739774554,
+            "oe_upper": 0.5836067332088352,
+            "p_value": 0.0015104202858614822,
+            "segments": [
+              {
+                "aa_start": 1964,
+                "aa_stop": 1980
+              }
+            ]
+          },
+          {
+            "region_index": 4,
+            "is_catch_all": false,
+            "obs_mis": 12,
+            "exp_mis": 28.41440198421707,
+            "obs_exp": 0.422321047145932,
+            "oe_upper": 0.6842505198847574,
+            "p_value": 0.002074688506698353,
+            "segments": [
+              {
+                "aa_start": 457,
+                "aa_stop": 477
+              },
+              {
+                "aa_start": 706,
+                "aa_stop": 706
+              },
+              {
+                "aa_start": 709,
+                "aa_stop": 709
+              }
+            ]
+          },
+          {
+            "region_index": 5,
+            "is_catch_all": false,
+            "obs_mis": 26,
+            "exp_mis": 16.385537359322303,
+            "obs_exp": 1.586765171616889,
+            "oe_upper": 2.201734816038017,
+            "p_value": 0.017540876455204045,
+            "segments": [
+              {
+                "aa_start": 1951,
+                "aa_stop": 1963
+              }
+            ]
+          },
+          {
+            "region_index": 6,
+            "is_catch_all": false,
+            "obs_mis": 112,
+            "exp_mis": 102.10402059713921,
+            "obs_exp": 1.096920565370352,
+            "oe_upper": 1.28334641236649,
+            "p_value": 0.32740770459853225,
+            "segments": [
+              {
+                "aa_start": 4,
+                "aa_stop": 13
+              },
+              {
+                "aa_start": 15,
+                "aa_stop": 15
+              },
+              {
+                "aa_start": 20,
+                "aa_stop": 21
+              },
+              {
+                "aa_start": 23,
+                "aa_stop": 46
+              },
+              {
+                "aa_start": 48,
+                "aa_stop": 49
+              },
+              {
+                "aa_start": 64,
+                "aa_stop": 64
+              },
+              {
+                "aa_start": 78,
+                "aa_stop": 78
+              },
+              {
+                "aa_start": 82,
+                "aa_stop": 82
+              },
+              {
+                "aa_start": 85,
+                "aa_stop": 85
+              },
+              {
+                "aa_start": 451,
+                "aa_stop": 456
+              },
+              {
+                "aa_start": 719,
+                "aa_stop": 719
+              },
+              {
+                "aa_start": 722,
+                "aa_stop": 728
+              },
+              {
+                "aa_start": 731,
+                "aa_stop": 731
+              },
+              {
+                "aa_start": 734,
+                "aa_stop": 738
+              },
+              {
+                "aa_start": 740,
+                "aa_stop": 741
+              },
+              {
+                "aa_start": 743,
+                "aa_stop": 747
+              },
+              {
+                "aa_start": 749,
+                "aa_stop": 751
+              },
+              {
+                "aa_start": 758,
+                "aa_stop": 758
+              },
+              {
+                "aa_start": 768,
+                "aa_stop": 768
+              },
+              {
+                "aa_start": 775,
+                "aa_stop": 775
+              },
+              {
+                "aa_start": 1006,
+                "aa_stop": 1006
+              },
+              {
+                "aa_start": 1008,
+                "aa_stop": 1008
+              },
+              {
+                "aa_start": 1011,
+                "aa_stop": 1012
+              },
+              {
+                "aa_start": 1878,
+                "aa_stop": 1878
+              },
+              {
+                "aa_start": 1883,
+                "aa_stop": 1883
+              }
+            ]
+          },
+          {
+            "region_index": 7,
+            "is_catch_all": false,
+            "obs_mis": 15,
+            "exp_mis": 29.618988350778523,
+            "obs_exp": 0.5064318815468838,
+            "oe_upper": 0.7798081921839891,
+            "p_value": 0.007227802392228488,
+            "segments": [
+              {
+                "aa_start": 2,
+                "aa_stop": 3
+              },
+              {
+                "aa_start": 694,
+                "aa_stop": 694
+              },
+              {
+                "aa_start": 698,
+                "aa_stop": 699
+              },
+              {
+                "aa_start": 703,
+                "aa_stop": 705
+              },
+              {
+                "aa_start": 710,
+                "aa_stop": 718
+              },
+              {
+                "aa_start": 720,
+                "aa_stop": 721
+              },
+              {
+                "aa_start": 748,
+                "aa_stop": 748
+              },
+              {
+                "aa_start": 759,
+                "aa_stop": 759
+              },
+              {
+                "aa_start": 1013,
+                "aa_stop": 1015
+              }
+            ]
+          },
+          {
+            "region_index": 8,
+            "is_catch_all": false,
+            "obs_mis": 16,
+            "exp_mis": 29.51719324783804,
+            "obs_exp": 0.5420569586565249,
+            "oe_upper": 0.8232891074569568,
+            "p_value": 0.012846659417318492,
+            "segments": [
+              {
+                "aa_start": 282,
+                "aa_stop": 282
+              },
+              {
+                "aa_start": 311,
+                "aa_stop": 311
+              },
+              {
+                "aa_start": 1749,
+                "aa_stop": 1750
+              },
+              {
+                "aa_start": 1826,
+                "aa_stop": 1826
+              },
+              {
+                "aa_start": 1850,
+                "aa_stop": 1850
+              },
+              {
+                "aa_start": 1853,
+                "aa_stop": 1853
+              },
+              {
+                "aa_start": 1855,
+                "aa_stop": 1855
+              },
+              {
+                "aa_start": 1858,
+                "aa_stop": 1860
+              },
+              {
+                "aa_start": 1892,
+                "aa_stop": 1892
+              },
+              {
+                "aa_start": 1894,
+                "aa_stop": 1896
+              },
+              {
+                "aa_start": 1898,
+                "aa_stop": 1900
+              },
+              {
+                "aa_start": 1906,
+                "aa_stop": 1906
+              },
+              {
+                "aa_start": 1908,
+                "aa_stop": 1908
+              },
+              {
+                "aa_start": 1911,
+                "aa_stop": 1911
+              },
+              {
+                "aa_start": 1914,
+                "aa_stop": 1914
+              },
+              {
+                "aa_start": 1916,
+                "aa_stop": 1917
+              }
+            ]
+          },
+          {
+            "region_index": 9,
+            "is_catch_all": false,
+            "obs_mis": 9,
+            "exp_mis": 18.087842379171974,
+            "obs_exp": 0.4975717839272769,
+            "oe_upper": 0.8682747280128836,
+            "p_value": 0.03261284950221683,
+            "segments": [
+              {
+                "aa_start": 651,
+                "aa_stop": 665
+              }
+            ]
+          },
+          {
+            "region_index": 10,
+            "is_catch_all": false,
+            "obs_mis": 9,
+            "exp_mis": 18.07686641928551,
+            "obs_exp": 0.4978739008879464,
+            "oe_upper": 0.8688019293742287,
+            "p_value": 0.03277045148447034,
+            "segments": [
+              {
+                "aa_start": 1140,
+                "aa_stop": 1156
+              }
+            ]
+          },
+          {
+            "region_index": 11,
+            "is_catch_all": false,
+            "obs_mis": 15,
+            "exp_mis": 26.090346001737323,
+            "obs_exp": 0.5749252999174932,
+            "oe_upper": 0.8852749503054202,
+            "p_value": 0.029914037960214516,
+            "segments": [
+              {
+                "aa_start": 667,
+                "aa_stop": 688
+              }
+            ]
+          },
+          {
+            "region_index": 12,
+            "is_catch_all": false,
+            "obs_mis": 8,
+            "exp_mis": 16.076574944281884,
+            "obs_exp": 0.49761843102317266,
+            "oe_upper": 0.8978684679556348,
+            "p_value": 0.04397497526876629,
+            "segments": [
+              {
+                "aa_start": 1060,
+                "aa_stop": 1060
+              },
+              {
+                "aa_start": 1062,
+                "aa_stop": 1073
+              }
+            ]
+          },
+          {
+            "region_index": 13,
+            "is_catch_all": false,
+            "obs_mis": 13,
+            "exp_mis": 22.114815776710504,
+            "obs_exp": 0.5878412070558836,
+            "oe_upper": 0.9346028148911879,
+            "p_value": 0.0525946669017507,
+            "segments": [
+              {
+                "aa_start": 540,
+                "aa_stop": 559
+              }
+            ]
+          },
+          {
+            "region_index": 14,
+            "is_catch_all": false,
+            "obs_mis": 10,
+            "exp_mis": 18.08903747216975,
+            "obs_exp": 0.5528210119186909,
+            "oe_upper": 0.9377071202278462,
+            "p_value": 0.05718340483230377,
+            "segments": [
+              {
+                "aa_start": 578,
+                "aa_stop": 578
+              },
+              {
+                "aa_start": 586,
+                "aa_stop": 597
+              }
+            ]
+          },
+          {
+            "region_index": 15,
+            "is_catch_all": false,
+            "obs_mis": 15,
+            "exp_mis": 23.037607481098835,
+            "obs_exp": 0.6511092791344207,
+            "oe_upper": 1.002583700546562,
+            "p_value": 0.09401499575888062,
+            "segments": [
+              {
+                "aa_start": 286,
+                "aa_stop": 286
+              },
+              {
+                "aa_start": 794,
+                "aa_stop": 795
+              },
+              {
+                "aa_start": 1307,
+                "aa_stop": 1312
+              },
+              {
+                "aa_start": 1742,
+                "aa_stop": 1748
+              },
+              {
+                "aa_start": 1751,
+                "aa_stop": 1754
+              }
+            ]
+          },
+          {
+            "region_index": 16,
+            "is_catch_all": false,
+            "obs_mis": 10,
+            "exp_mis": 16.157031363570425,
+            "obs_exp": 0.6189255795187225,
+            "oe_upper": 1.0498351370392798,
+            "p_value": 0.12558179416015863,
+            "segments": [
+              {
+                "aa_start": 1112,
+                "aa_stop": 1125
+              }
+            ]
+          },
+          {
+            "region_index": 17,
+            "is_catch_all": false,
+            "obs_mis": 19,
+            "exp_mis": 26.511168397412654,
+            "obs_exp": 0.716679088419743,
+            "oe_upper": 1.0516035816122078,
+            "p_value": 0.14462265031135027,
+            "segments": [
+              {
+                "aa_start": 1026,
+                "aa_stop": 1026
+              },
+              {
+                "aa_start": 1028,
+                "aa_stop": 1050
+              }
+            ]
+          },
+          {
+            "region_index": 18,
+            "is_catch_all": false,
+            "obs_mis": 14,
+            "exp_mis": 20.525035100389893,
+            "obs_exp": 0.6820938396219384,
+            "oe_upper": 1.066331229438694,
+            "p_value": 0.14979385488368618,
+            "segments": [
+              {
+                "aa_start": 1909,
+                "aa_stop": 1909
+              },
+              {
+                "aa_start": 1912,
+                "aa_stop": 1912
+              },
+              {
+                "aa_start": 1915,
+                "aa_stop": 1915
+              },
+              {
+                "aa_start": 1918,
+                "aa_stop": 1928
+              },
+              {
+                "aa_start": 1931,
+                "aa_stop": 1931
+              }
+            ]
+          },
+          {
+            "region_index": 19,
+            "is_catch_all": false,
+            "obs_mis": 12,
+            "exp_mis": 17.890995781176695,
+            "obs_exp": 0.6707284573072968,
+            "oe_upper": 1.086723711062005,
+            "p_value": 0.16369706387715802,
+            "segments": [
+              {
+                "aa_start": 1078,
+                "aa_stop": 1091
+              }
+            ]
+          },
+          {
+            "region_index": 20,
+            "is_catch_all": false,
+            "obs_mis": 18,
+            "exp_mis": 24.375129639956214,
+            "obs_exp": 0.7384576109287242,
+            "oe_upper": 1.095041163093178,
+            "p_value": 0.1966116233184795,
+            "segments": [
+              {
+                "aa_start": 485,
+                "aa_stop": 506
+              }
+            ]
+          },
+          {
+            "region_index": 21,
+            "is_catch_all": false,
+            "obs_mis": 14,
+            "exp_mis": 19.065851605568756,
+            "obs_exp": 0.7342971239695834,
+            "oe_upper": 1.1479416899730035,
+            "p_value": 0.2459766317239472,
+            "segments": [
+              {
+                "aa_start": 636,
+                "aa_stop": 647
+              },
+              {
+                "aa_start": 649,
+                "aa_stop": 650
+              }
+            ]
+          },
+          {
+            "region_index": 22,
+            "is_catch_all": false,
+            "obs_mis": 13,
+            "exp_mis": 17.765816736811313,
+            "obs_exp": 0.7317423224941639,
+            "oe_upper": 1.1633897490841378,
+            "p_value": 0.25818427855214265,
+            "segments": [
+              {
+                "aa_start": 519,
+                "aa_stop": 534
+              }
+            ]
+          },
+          {
+            "region_index": 23,
+            "is_catch_all": false,
+            "obs_mis": 22,
+            "exp_mis": 26.68785034758961,
+            "obs_exp": 0.8243451500763902,
+            "oe_upper": 1.177120292438293,
+            "p_value": 0.36417524381050825,
+            "segments": [
+              {
+                "aa_start": 1985,
+                "aa_stop": 2006
+              }
+            ]
+          },
+          {
+            "region_index": 24,
+            "is_catch_all": false,
+            "obs_mis": 16,
+            "exp_mis": 20.36356506747588,
+            "obs_exp": 0.7857170366280685,
+            "oe_upper": 1.1933658769043476,
+            "p_value": 0.3335573061949935,
+            "segments": [
+              {
+                "aa_start": 1160,
+                "aa_stop": 1174
+              }
+            ]
+          },
+          {
+            "region_index": 25,
+            "is_catch_all": false,
+            "obs_mis": 13,
+            "exp_mis": 16.672149649422217,
+            "obs_exp": 0.7797434807964624,
+            "oe_upper": 1.2397063072445473,
+            "p_value": 0.36847085803352503,
+            "segments": [
+              {
+                "aa_start": 615,
+                "aa_stop": 626
+              }
+            ]
+          },
+          {
+            "region_index": 26,
+            "is_catch_all": false,
+            "obs_mis": 13,
+            "exp_mis": 16.648877243438054,
+            "obs_exp": 0.7808334345863345,
+            "oe_upper": 1.2414392137980323,
+            "p_value": 0.37117952271755056,
+            "segments": [
+              {
+                "aa_start": 1096,
+                "aa_stop": 1108
+              }
+            ]
+          },
+          {
+            "region_index": 27,
+            "is_catch_all": false,
+            "obs_mis": 60,
+            "exp_mis": 60.86142565911467,
+            "obs_exp": 0.9858461143526357,
+            "oe_upper": 1.2222788136587446,
+            "p_value": 0.9120764939605945,
+            "segments": [
+              {
+                "aa_start": 772,
+                "aa_stop": 772
+              },
+              {
+                "aa_start": 776,
+                "aa_stop": 776
+              },
+              {
+                "aa_start": 1016,
+                "aa_stop": 1021
+              },
+              {
+                "aa_start": 1023,
+                "aa_stop": 1025
+              },
+              {
+                "aa_start": 1027,
+                "aa_stop": 1027
+              },
+              {
+                "aa_start": 1177,
+                "aa_stop": 1208
+              },
+              {
+                "aa_start": 1296,
+                "aa_stop": 1297
+              },
+              {
+                "aa_start": 1299,
+                "aa_stop": 1306
+              }
+            ]
+          },
+          {
+            "region_index": 28,
+            "is_catch_all": false,
+            "obs_mis": 14,
+            "exp_mis": 17.067864712956702,
+            "obs_exp": 0.8202549197247972,
+            "oe_upper": 1.2823212675371423,
+            "p_value": 0.4577325213757527,
+            "segments": [
+              {
+                "aa_start": 295,
+                "aa_stop": 308
+              }
+            ]
+          },
+          {
+            "region_index": 29,
+            "is_catch_all": true,
+            "obs_mis": 273,
+            "exp_mis": 218.09653505017653,
+            "obs_exp": 1.2517392811270114,
+            "oe_upper": 1.3837162681697437,
+            "p_value": 0.0002010378023518113,
+            "segments": [
+              {
+                "aa_start": 1,
+                "aa_stop": 1
+              },
+              {
+                "aa_start": 283,
+                "aa_stop": 285
+              },
+              {
+                "aa_start": 287,
+                "aa_stop": 294
+              },
+              {
+                "aa_start": 309,
+                "aa_stop": 310
+              },
+              {
+                "aa_start": 478,
+                "aa_stop": 484
+              },
+              {
+                "aa_start": 507,
+                "aa_stop": 518
+              },
+              {
+                "aa_start": 535,
+                "aa_stop": 539
+              },
+              {
+                "aa_start": 560,
+                "aa_stop": 577
+              },
+              {
+                "aa_start": 579,
+                "aa_stop": 585
+              },
+              {
+                "aa_start": 598,
+                "aa_stop": 614
+              },
+              {
+                "aa_start": 627,
+                "aa_stop": 635
+              },
+              {
+                "aa_start": 648,
+                "aa_stop": 648
+              },
+              {
+                "aa_start": 666,
+                "aa_stop": 666
+              },
+              {
+                "aa_start": 689,
+                "aa_stop": 693
+              },
+              {
+                "aa_start": 695,
+                "aa_stop": 697
+              },
+              {
+                "aa_start": 700,
+                "aa_stop": 702
+              },
+              {
+                "aa_start": 707,
+                "aa_stop": 708
+              },
+              {
+                "aa_start": 752,
+                "aa_stop": 757
+              },
+              {
+                "aa_start": 760,
+                "aa_stop": 760
+              },
+              {
+                "aa_start": 763,
+                "aa_stop": 763
+              },
+              {
+                "aa_start": 767,
+                "aa_stop": 767
+              },
+              {
+                "aa_start": 769,
+                "aa_stop": 769
+              },
+              {
+                "aa_start": 773,
+                "aa_stop": 773
+              },
+              {
+                "aa_start": 1022,
+                "aa_stop": 1022
+              },
+              {
+                "aa_start": 1051,
+                "aa_stop": 1059
+              },
+              {
+                "aa_start": 1061,
+                "aa_stop": 1061
+              },
+              {
+                "aa_start": 1074,
+                "aa_stop": 1077
+              },
+              {
+                "aa_start": 1092,
+                "aa_stop": 1095
+              },
+              {
+                "aa_start": 1109,
+                "aa_stop": 1111
+              },
+              {
+                "aa_start": 1126,
+                "aa_stop": 1139
+              },
+              {
+                "aa_start": 1157,
+                "aa_stop": 1159
+              },
+              {
+                "aa_start": 1929,
+                "aa_stop": 1930
+              },
+              {
+                "aa_start": 1932,
+                "aa_stop": 1950
+              },
+              {
+                "aa_start": 1981,
+                "aa_stop": 1984
+              },
+              {
+                "aa_start": 2007,
+                "aa_stop": 2009
+              }
+            ]
+          }
+        ],
+        "uniprot_features": [
+          {
+            "feature_type": "topological domain",
+            "start": 1,
+            "stop": 128,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 129,
+            "stop": 147,
+            "note": "Helical; Name=S1 of repeat I"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 148,
+            "stop": 154,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 155,
+            "stop": 175,
+            "note": "Helical; Name=S2 of repeat I"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 176,
+            "stop": 189,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 190,
+            "stop": 207,
+            "note": "Helical; Name=S3 of repeat I"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 208,
+            "stop": 213,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 214,
+            "stop": 230,
+            "note": "Helical; Name=S4 of repeat I"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 231,
+            "stop": 249,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 250,
+            "stop": 269,
+            "note": "Helical; Name=S5 of repeat I"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 270,
+            "stop": 367,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "intramembrane region",
+            "start": 368,
+            "stop": 392,
+            "note": "Pore-forming"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 393,
+            "stop": 399,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 400,
+            "stop": 420,
+            "note": "Helical; Name=S6 of repeat I"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 421,
+            "stop": 768,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 769,
+            "stop": 787,
+            "note": "Helical; Name=S1 of repeat II"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 788,
+            "stop": 798,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 799,
+            "stop": 818,
+            "note": "Helical; Name=S2 of repeat II"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 819,
+            "stop": 832,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 833,
+            "stop": 852,
+            "note": "Helical; Name=S3 of repeat II"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 853,
+            "stop": 854,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 855,
+            "stop": 872,
+            "note": "Helical; Name=S4 of repeat II"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 873,
+            "stop": 888,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 889,
+            "stop": 907,
+            "note": "Helical; Name=S5 of repeat II"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 908,
+            "stop": 936,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "intramembrane region",
+            "start": 937,
+            "stop": 957,
+            "note": "Pore-forming"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 958,
+            "stop": 970,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 971,
+            "stop": 991,
+            "note": "Helical; Name=S6 of repeat II"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 992,
+            "stop": 1219,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 1220,
+            "stop": 1237,
+            "note": "Helical; Name=S1 of repeat III"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 1238,
+            "stop": 1250,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 1251,
+            "stop": 1269,
+            "note": "Helical; Name=S2 of repeat III"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 1270,
+            "stop": 1283,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 1284,
+            "stop": 1302,
+            "note": "Helical; Name=S3 of repeat III"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 1303,
+            "stop": 1310,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 1311,
+            "stop": 1329,
+            "note": "Helical; Name=S4 of repeat III"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 1330,
+            "stop": 1346,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 1347,
+            "stop": 1366,
+            "note": "Helical; Name=S5 of repeat III"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 1367,
+            "stop": 1418,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "intramembrane region",
+            "start": 1419,
+            "stop": 1440,
+            "note": "Pore-forming"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 1441,
+            "stop": 1457,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 1458,
+            "stop": 1479,
+            "note": "Helical; Name=S6 of repeat III"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 1480,
+            "stop": 1542,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 1543,
+            "stop": 1560,
+            "note": "Helical; Name=S1 of repeat IV"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 1561,
+            "stop": 1571,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 1572,
+            "stop": 1590,
+            "note": "Helical; Name=S2 of repeat IV"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 1591,
+            "stop": 1602,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 1603,
+            "stop": 1620,
+            "note": "Helical; Name=S3 of repeat IV"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 1621,
+            "stop": 1633,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 1634,
+            "stop": 1650,
+            "note": "Helical; Name=S4 of repeat IV"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 1651,
+            "stop": 1669,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 1670,
+            "stop": 1687,
+            "note": "Helical; Name=S5 of repeat IV"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 1688,
+            "stop": 1709,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "intramembrane region",
+            "start": 1710,
+            "stop": 1732,
+            "note": "Pore-forming"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 1733,
+            "stop": 1762,
+            "note": "Extracellular"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 1763,
+            "stop": 1785,
+            "note": "Helical; Name=S6 of repeat IV"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 1786,
+            "stop": 2009,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "repeat",
+            "start": 110,
+            "stop": 454,
+            "note": "I"
+          },
+          {
+            "feature_type": "repeat",
+            "start": 750,
+            "stop": 1022,
+            "note": "II"
+          },
+          {
+            "feature_type": "repeat",
+            "start": 1200,
+            "stop": 1514,
+            "note": "III"
+          },
+          {
+            "feature_type": "repeat",
+            "start": 1523,
+            "stop": 1821,
+            "note": "IV"
+          },
+          {
+            "feature_type": "domain",
+            "start": 1915,
+            "stop": 1944,
+            "note": "IQ"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 28,
+            "stop": 60,
+            "note": "Disordered"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 455,
+            "stop": 529,
+            "note": "Disordered"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 584,
+            "stop": 627,
+            "note": "Disordered"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 1129,
+            "stop": 1163,
+            "note": "Disordered"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 1561,
+            "stop": 1571,
+            "note": "S1-S2 loop of repeat IV"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 1619,
+            "stop": 1636,
+            "note": "S3b-S4 loop of repeat IV"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 1986,
+            "stop": 2009,
+            "note": "Disordered"
+          },
+          {
+            "feature_type": "site",
+            "start": 1574,
+            "stop": 1574,
+            "note": "Key residue that permits the spider beta/delta-theraphotoxin-Pre1a to inhibit fast inactivation of the channel"
+          },
+          {
+            "feature_type": "glycosylation site",
+            "start": 211,
+            "stop": 211,
+            "note": "N-linked (GlcNAc...) asparagine"
+          },
+          {
+            "feature_type": "glycosylation site",
+            "start": 284,
+            "stop": 284,
+            "note": "N-linked (GlcNAc...) asparagine"
+          },
+          {
+            "feature_type": "glycosylation site",
+            "start": 295,
+            "stop": 295,
+            "note": "N-linked (GlcNAc...) asparagine"
+          },
+          {
+            "feature_type": "glycosylation site",
+            "start": 301,
+            "stop": 301,
+            "note": "N-linked (GlcNAc...) asparagine"
+          },
+          {
+            "feature_type": "glycosylation site",
+            "start": 306,
+            "stop": 306,
+            "note": "N-linked (GlcNAc...) asparagine"
+          },
+          {
+            "feature_type": "glycosylation site",
+            "start": 338,
+            "stop": 338,
+            "note": "N-linked (GlcNAc...) asparagine"
+          },
+          {
+            "feature_type": "glycosylation site",
+            "start": 1378,
+            "stop": 1378,
+            "note": "N-linked (GlcNAc...) asparagine"
+          },
+          {
+            "feature_type": "glycosylation site",
+            "start": 1392,
+            "stop": 1392,
+            "note": "N-linked (GlcNAc...) asparagine"
+          },
+          {
+            "feature_type": "glycosylation site",
+            "start": 1403,
+            "stop": 1403,
+            "note": "N-linked (GlcNAc...) asparagine"
+          },
+          {
+            "feature_type": "disulfide bond",
+            "start": 277,
+            "stop": 277,
+            "note": ""
+          },
+          {
+            "feature_type": "disulfide bond",
+            "start": 345,
+            "stop": 345,
+            "note": ""
+          },
+          {
+            "feature_type": "disulfide bond",
+            "start": 919,
+            "stop": 919,
+            "note": "Interchain; with SCN2B or SCN4B"
+          },
+          {
+            "feature_type": "disulfide bond",
+            "start": 919,
+            "stop": 919,
+            "note": "Interchain; with SCN2B or SCN4B"
+          },
+          {
+            "feature_type": "disulfide bond",
+            "start": 919,
+            "stop": 919,
+            "note": "Interchain; with the conotoxin GVIIJ (when the channel is not linked to SCN2B or SCN4B; the bond to SCN2B or SCN4B protects the channel from the inhibition by toxin)"
+          },
+          {
+            "feature_type": "disulfide bond",
+            "start": 919,
+            "stop": 919,
+            "note": "Interchain; with the conotoxin GVIIJ (when the channel is not linked to SCN2B or SCN4B; the bond to SCN2B or SCN4B protects the channel from the inhibition by toxin)"
+          },
+          {
+            "feature_type": "disulfide bond",
+            "start": 959,
+            "stop": 959,
+            "note": ""
+          },
+          {
+            "feature_type": "disulfide bond",
+            "start": 968,
+            "stop": 968,
+            "note": ""
+          }
+        ]
+      }
+    }
+  }
+}

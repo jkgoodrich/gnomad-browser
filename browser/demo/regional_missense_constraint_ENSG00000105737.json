@@ -1,0 +1,71 @@
+{
+  "has_no_rmc_evidence": false,
+  "passed_qc": true,
+  "regions": [
+    {
+      "chrom": "19",
+      "start": 41998874,
+      "stop": 41999093,
+      "aa_start": "Glu980",
+      "aa_stop": "Arg908",
+      "obs_mis": 109,
+      "exp_mis": 100.36966216832528,
+      "obs_exp": 1.0859855223703074,
+      "chisq_diff_null": 0.7420841066887767,
+      "p_value": 0.38899408128114477,
+      "obs_exp_upper": 1.2733021635862725
+    },
+    {
+      "chrom": "19",
+      "start": 41999092,
+      "stop": 42005949,
+      "aa_start": "Arg908",
+      "aa_stop": "Asn680",
+      "obs_mis": 229,
+      "exp_mis": 341.01550582577704,
+      "obs_exp": 0.6715237169215257,
+      "chisq_diff_null": 36.794437000806425,
+      "p_value": 1.3126427220868096e-9,
+      "obs_exp_upper": 0.749235393968225
+    },
+    {
+      "chrom": "19",
+      "start": 42005948,
+      "stop": 42006690,
+      "aa_start": "Asn680",
+      "aa_stop": "Glu665",
+      "obs_mis": 2,
+      "exp_mis": 21.279528878679756,
+      "obs_exp": 0.09398704320018225,
+      "chisq_diff_null": 17.46750296508012,
+      "p_value": 2.9226097104342865e-5,
+      "obs_exp_upper": 0.29586151355915724
+    },
+    {
+      "chrom": "19",
+      "start": 42006689,
+      "stop": 42062511,
+      "aa_start": "Glu665",
+      "aa_stop": "Leu163",
+      "obs_mis": 477,
+      "exp_mis": 701.1158989078581,
+      "obs_exp": 0.6803440069509652,
+      "chisq_diff_null": 71.63999022346847,
+      "p_value": 2.582689391071879e-17,
+      "obs_exp_upper": 0.733860492468821
+    },
+    {
+      "chrom": "19",
+      "start": 42062510,
+      "stop": 42065772,
+      "aa_start": "Ser162",
+      "aa_stop": "Met1",
+      "obs_mis": 198,
+      "exp_mis": 218.18104432099503,
+      "obs_exp": 0.9075032187887779,
+      "chisq_diff_null": 1.8666816411730531,
+      "p_value": 0.17185561963009952,
+      "obs_exp_upper": 1.0209776555991532
+    }
+  ]
+}

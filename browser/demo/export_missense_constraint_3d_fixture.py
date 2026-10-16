@@ -41,6 +41,35 @@ DEMO_GENES = [
     "FOXA1",
     "MNX1",
     "PRRX1",
+    "PACS1:Q6VY07",
+    "DEAF1",
+    "FOXP1:Q9H334",
+    "TRAF7",
+    "CREBBP",
+    "WDR45:Q9Y484",
+    "EBF3",
+    "ATP6V0A1",
+    "SLC2A1",
+    "HECW2",
+    "MECP2",
+    "SCN1A",
+    "PPP2R1A:P30153",
+    "CACNA1D",
+    "PIK3CA",
+    "SPTBN2",
+    "GRIK5",
+    "HK1",
+    "DDB1",
+    "KCNK3",
+    "BRSK2",
+    "CTR9",
+    "AGO1",
+    "USP11",
+    "KCNH1",
+    "ATP2B2",
+    "LMBRD2",
+    "ADCY5:O95622",
+    "SATB1:Q01826",
 ]
 
 
@@ -90,6 +119,8 @@ def export_missense_constraint_3d(residues_path, uniprot_features_path, genes):
         residues.write(filtered_residues_path)
         residues = hl.read_table(filtered_residues_path)
         uniprot_ids = residues.aggregate(hl.agg.collect_as_set(residues.uniprot_id))
+        if not uniprot_ids:
+            raise ValueError("No residues for the genes' transcripts and UniProt entries")
 
         uniprot = hl.read_table(uniprot_features_path)
         uniprot = uniprot.filter(hl.literal(uniprot_ids).contains(uniprot.uniprot_id))

@@ -1,0 +1,425 @@
+{
+  "data": {
+    "gene": {
+      "missense_constraint_3d": {
+        "transcript_id": "ENST00000382409",
+        "uniprot_id": "O75398",
+        "protein_sequence": "MEDSDSAAKQLGLAEAAAVAAAAAVAAAAAAAAGGEAEEPVLSRDEDSEEDADSEAERETPRVTAVAVMAAEPGHMDMGAEALPGPDEAAAAAAFAEVTTVTVANVGAAADNVFTTSVANAASISGHVLSGRTALQIGDSLNTEKATLIVVHTDGSIVETTGLKGPAAPLTPGPQSPPTPLAPGQEKGGTKYNWDPSVYDSELPVRCRNISGTLYKNRLGSGGRGRCIKQGENWYSPTEFEAMAGRASSKDWKRSIRYAGRPLQCLIQDGILNPHAASCTCAACCDDMTLSGPVRLFVPYKRRKKENELPTTPVKKDSPKNITLLPATAATTFTVTPSGQITTSGALTFDRASTVEATAVISESPAQGDVFAGATVQEASVQPPCRASHPEPHYPGYQDSCQIAPFPEAALPTSHPKIVLTSLPALAVPPPTPTKAAPPALVNGLELSEPRSWLYLEEMVNSLLNTAQQLKTLFEQAKHASTYREAATNQAKIHADAERKEQSCVNCGREAMSECTGCHKVNYCSTFCQRKDWKDHQHICGQSAAVTVQADEVHVAESVMEKVTV",
+        "regions": [
+          {
+            "region_index": 0,
+            "is_catch_all": false,
+            "obs_mis": 54,
+            "exp_mis": 125.95242166387061,
+            "obs_exp": 0.4287333207781417,
+            "oe_upper": 0.5378228387299911,
+            "p_value": 1.4433908483094581e-10,
+            "segments": [
+              {
+                "aa_start": 185,
+                "aa_stop": 208
+              },
+              {
+                "aa_start": 210,
+                "aa_stop": 229
+              },
+              {
+                "aa_start": 235,
+                "aa_stop": 242
+              },
+              {
+                "aa_start": 244,
+                "aa_stop": 244
+              },
+              {
+                "aa_start": 246,
+                "aa_stop": 281
+              },
+              {
+                "aa_start": 283,
+                "aa_stop": 285
+              }
+            ]
+          },
+          {
+            "region_index": 1,
+            "is_catch_all": false,
+            "obs_mis": 6,
+            "exp_mis": 18.844145464013227,
+            "obs_exp": 0.3184012780764315,
+            "oe_upper": 0.6284389852028993,
+            "p_value": 0.0030883003731609535,
+            "segments": [
+              {
+                "aa_start": 118,
+                "aa_stop": 130
+              }
+            ]
+          },
+          {
+            "region_index": 2,
+            "is_catch_all": false,
+            "obs_mis": 9,
+            "exp_mis": 23.145564957530304,
+            "obs_exp": 0.3888433925252661,
+            "oe_upper": 0.6785410704354329,
+            "p_value": 0.0032793215030063965,
+            "segments": [
+              {
+                "aa_start": 346,
+                "aa_stop": 362
+              }
+            ]
+          },
+          {
+            "region_index": 3,
+            "is_catch_all": false,
+            "obs_mis": 7,
+            "exp_mis": 19.596076061064082,
+            "obs_exp": 0.3572143718052039,
+            "oe_upper": 0.6709564589084457,
+            "p_value": 0.004434894251818534,
+            "segments": [
+              {
+                "aa_start": 136,
+                "aa_stop": 150
+              }
+            ]
+          },
+          {
+            "region_index": 4,
+            "is_catch_all": false,
+            "obs_mis": 68,
+            "exp_mis": 50.77948232689038,
+            "obs_exp": 1.3391235373817598,
+            "oe_upper": 1.6386076750228948,
+            "p_value": 0.015666869573379538,
+            "segments": [
+              {
+                "aa_start": 7,
+                "aa_stop": 40
+              }
+            ]
+          },
+          {
+            "region_index": 5,
+            "is_catch_all": false,
+            "obs_mis": 11,
+            "exp_mis": 19.83511388193858,
+            "obs_exp": 0.554572061722134,
+            "oe_upper": 0.9179435197235251,
+            "p_value": 0.04727971085331094,
+            "segments": [
+              {
+                "aa_start": 422,
+                "aa_stop": 435
+              }
+            ]
+          },
+          {
+            "region_index": 6,
+            "is_catch_all": false,
+            "obs_mis": 14,
+            "exp_mis": 21.932709550955657,
+            "obs_exp": 0.6383160260009912,
+            "oe_upper": 0.9978924793593256,
+            "p_value": 0.09029344831453628,
+            "segments": [
+              {
+                "aa_start": 293,
+                "aa_stop": 310
+              }
+            ]
+          },
+          {
+            "region_index": 7,
+            "is_catch_all": false,
+            "obs_mis": 12,
+            "exp_mis": 19.214570871846362,
+            "obs_exp": 0.6245260474478085,
+            "oe_upper": 1.011865914653484,
+            "p_value": 0.09979081536254576,
+            "segments": [
+              {
+                "aa_start": 386,
+                "aa_stop": 400
+              }
+            ]
+          },
+          {
+            "region_index": 8,
+            "is_catch_all": false,
+            "obs_mis": 10,
+            "exp_mis": 16.4074424564035,
+            "obs_exp": 0.6094795106898088,
+            "oe_upper": 1.0338125080001044,
+            "p_value": 0.11368467348725134,
+            "segments": [
+              {
+                "aa_start": 93,
+                "aa_stop": 104
+              }
+            ]
+          },
+          {
+            "region_index": 9,
+            "is_catch_all": false,
+            "obs_mis": 93,
+            "exp_mis": 105.90438214735404,
+            "obs_exp": 0.8781506309210223,
+            "oe_upper": 1.0433506958349625,
+            "p_value": 0.20986014770912995,
+            "segments": [
+              {
+                "aa_start": 465,
+                "aa_stop": 465
+              },
+              {
+                "aa_start": 468,
+                "aa_stop": 468
+              },
+              {
+                "aa_start": 471,
+                "aa_stop": 472
+              },
+              {
+                "aa_start": 474,
+                "aa_stop": 546
+              }
+            ]
+          },
+          {
+            "region_index": 10,
+            "is_catch_all": false,
+            "obs_mis": 11,
+            "exp_mis": 17.273326562365895,
+            "obs_exp": 0.6368200103369869,
+            "oe_upper": 1.0540826739519364,
+            "p_value": 0.1311916595194515,
+            "segments": [
+              {
+                "aa_start": 407,
+                "aa_stop": 419
+              }
+            ]
+          },
+          {
+            "region_index": 11,
+            "is_catch_all": false,
+            "obs_mis": 20,
+            "exp_mis": 25.897340084140954,
+            "obs_exp": 0.7722800849438444,
+            "oe_upper": 1.1222009189364996,
+            "p_value": 0.2465158444212619,
+            "segments": [
+              {
+                "aa_start": 322,
+                "aa_stop": 339
+              }
+            ]
+          },
+          {
+            "region_index": 12,
+            "is_catch_all": false,
+            "obs_mis": 15,
+            "exp_mis": 19.938961979113447,
+            "obs_exp": 0.7522959327427812,
+            "oe_upper": 1.1583917851056662,
+            "p_value": 0.26869424144187576,
+            "segments": [
+              {
+                "aa_start": 167,
+                "aa_stop": 182
+              }
+            ]
+          },
+          {
+            "region_index": 13,
+            "is_catch_all": true,
+            "obs_mis": 355,
+            "exp_mis": 306.71602867923264,
+            "obs_exp": 1.15742239337372,
+            "oe_upper": 1.263687028467355,
+            "p_value": 0.005833663811930102,
+            "segments": [
+              {
+                "aa_start": 1,
+                "aa_stop": 6
+              },
+              {
+                "aa_start": 41,
+                "aa_stop": 92
+              },
+              {
+                "aa_start": 105,
+                "aa_stop": 117
+              },
+              {
+                "aa_start": 131,
+                "aa_stop": 135
+              },
+              {
+                "aa_start": 151,
+                "aa_stop": 166
+              },
+              {
+                "aa_start": 183,
+                "aa_stop": 184
+              },
+              {
+                "aa_start": 209,
+                "aa_stop": 209
+              },
+              {
+                "aa_start": 230,
+                "aa_stop": 234
+              },
+              {
+                "aa_start": 243,
+                "aa_stop": 243
+              },
+              {
+                "aa_start": 245,
+                "aa_stop": 245
+              },
+              {
+                "aa_start": 282,
+                "aa_stop": 282
+              },
+              {
+                "aa_start": 286,
+                "aa_stop": 292
+              },
+              {
+                "aa_start": 311,
+                "aa_stop": 321
+              },
+              {
+                "aa_start": 340,
+                "aa_stop": 345
+              },
+              {
+                "aa_start": 363,
+                "aa_stop": 385
+              },
+              {
+                "aa_start": 401,
+                "aa_stop": 406
+              },
+              {
+                "aa_start": 420,
+                "aa_stop": 421
+              },
+              {
+                "aa_start": 436,
+                "aa_stop": 464
+              },
+              {
+                "aa_start": 466,
+                "aa_stop": 467
+              },
+              {
+                "aa_start": 469,
+                "aa_stop": 470
+              },
+              {
+                "aa_start": 473,
+                "aa_stop": 473
+              },
+              {
+                "aa_start": 547,
+                "aa_stop": 565
+              }
+            ]
+          }
+        ],
+        "uniprot_features": [
+          {
+            "feature_type": "domain",
+            "start": 193,
+            "stop": 273,
+            "note": "SAND"
+          },
+          {
+            "feature_type": "zinc finger region",
+            "start": 504,
+            "stop": 540,
+            "note": "MYND-type"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 34,
+            "stop": 62,
+            "note": "Disordered"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 162,
+            "stop": 190,
+            "note": "Disordered"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 403,
+            "stop": 478,
+            "note": "Interaction with LMO4"
+          },
+          {
+            "feature_type": "short sequence motif",
+            "start": 301,
+            "stop": 316,
+            "note": "Nuclear localization signal"
+          },
+          {
+            "feature_type": "metal ion-binding site",
+            "start": 504,
+            "stop": 504,
+            "note": "Zinc 1"
+          },
+          {
+            "feature_type": "metal ion-binding site",
+            "start": 507,
+            "stop": 507,
+            "note": "Zinc 1"
+          },
+          {
+            "feature_type": "metal ion-binding site",
+            "start": 515,
+            "stop": 515,
+            "note": "Zinc 2"
+          },
+          {
+            "feature_type": "metal ion-binding site",
+            "start": 518,
+            "stop": 518,
+            "note": "Zinc 2"
+          },
+          {
+            "feature_type": "metal ion-binding site",
+            "start": 524,
+            "stop": 524,
+            "note": "Zinc 1"
+          },
+          {
+            "feature_type": "metal ion-binding site",
+            "start": 528,
+            "stop": 528,
+            "note": "Zinc 1"
+          },
+          {
+            "feature_type": "metal ion-binding site",
+            "start": 536,
+            "stop": 536,
+            "note": "Zinc 2"
+          },
+          {
+            "feature_type": "metal ion-binding site",
+            "start": 540,
+            "stop": 540,
+            "note": "Zinc 2"
+          }
+        ]
+      }
+    }
+  }
+}

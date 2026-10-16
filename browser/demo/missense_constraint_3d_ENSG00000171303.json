@@ -1,0 +1,207 @@
+{
+  "data": {
+    "gene": {
+      "missense_constraint_3d": {
+        "transcript_id": "ENST00000302909",
+        "uniprot_id": "O14649",
+        "protein_sequence": "MKRQNVRTLALIVCTFTYLLVGAAVFDALESEPELIERQRLELRQQELRARYNLSQGGYEELERVVLRLKPHKAGVQWRFAGSFYFAITVITTIGYGHAAPSTDGGKVFCMFYALLGIPLTLVMFQSLGERINTLVRYLLHRAKKGLGMRRADVSMANMVLIGFFSCISTLCIGAAAFSHYEHWTFFQAYYYCFITLTTIGFGDYVALQKDQALQTQPQYVAFSFVYILTGLTVIGAFLNLVVLRFMTMNAEDEKRDAEHRALLTRNGQAGGGGGGGSAHTTDTASSTAAAGGGGFRNVYAEVLHFQSMCSCLWYKSREKLQYSIPMIIPRDLSTSDTCVEQSHSSPGGGGRYSDTPSRRCLCSGAPRSAISSVSTGLHSLSTFRGLMKRRSSV",
+        "regions": [
+          {
+            "region_index": 0,
+            "is_catch_all": false,
+            "obs_mis": 137,
+            "exp_mis": 309.92162043679025,
+            "obs_exp": 0.4420472499044051,
+            "oe_upper": 0.5094005750465809,
+            "p_value": 9.005462854651188e-23,
+            "segments": [
+              {
+                "aa_start": 1,
+                "aa_stop": 31
+              },
+              {
+                "aa_start": 71,
+                "aa_stop": 71
+              },
+              {
+                "aa_start": 77,
+                "aa_stop": 78
+              },
+              {
+                "aa_start": 80,
+                "aa_stop": 102
+              },
+              {
+                "aa_start": 104,
+                "aa_stop": 106
+              },
+              {
+                "aa_start": 108,
+                "aa_stop": 209
+              },
+              {
+                "aa_start": 213,
+                "aa_stop": 214
+              },
+              {
+                "aa_start": 218,
+                "aa_stop": 265
+              }
+            ]
+          },
+          {
+            "region_index": 1,
+            "is_catch_all": false,
+            "obs_mis": 27,
+            "exp_mis": 20.5634636720896,
+            "obs_exp": 1.313008374004939,
+            "oe_upper": 1.810695059616436,
+            "p_value": 0.15578310881301777,
+            "segments": [
+              {
+                "aa_start": 266,
+                "aa_stop": 277
+              }
+            ]
+          },
+          {
+            "region_index": 2,
+            "is_catch_all": false,
+            "obs_mis": 12,
+            "exp_mis": 18.997805282421922,
+            "obs_exp": 0.6316519103974197,
+            "oe_upper": 1.0234113383562584,
+            "p_value": 0.10838395307893506,
+            "segments": [
+              {
+                "aa_start": 350,
+                "aa_stop": 360
+              }
+            ]
+          },
+          {
+            "region_index": 3,
+            "is_catch_all": true,
+            "obs_mis": 215,
+            "exp_mis": 228.21957873660395,
+            "obs_exp": 0.9420751768547382,
+            "oe_upper": 1.054814575299165,
+            "p_value": 0.3815376050137731,
+            "segments": [
+              {
+                "aa_start": 32,
+                "aa_stop": 70
+              },
+              {
+                "aa_start": 72,
+                "aa_stop": 76
+              },
+              {
+                "aa_start": 79,
+                "aa_stop": 79
+              },
+              {
+                "aa_start": 103,
+                "aa_stop": 103
+              },
+              {
+                "aa_start": 107,
+                "aa_stop": 107
+              },
+              {
+                "aa_start": 210,
+                "aa_stop": 212
+              },
+              {
+                "aa_start": 215,
+                "aa_stop": 217
+              },
+              {
+                "aa_start": 278,
+                "aa_stop": 349
+              },
+              {
+                "aa_start": 361,
+                "aa_stop": 394
+              }
+            ]
+          }
+        ],
+        "uniprot_features": [
+          {
+            "feature_type": "topological domain",
+            "start": 1,
+            "stop": 8,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 9,
+            "stop": 29,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "intramembrane region",
+            "start": 78,
+            "stop": 101,
+            "note": "Pore-forming; Name=Pore-forming 1"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 108,
+            "stop": 128,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 129,
+            "stop": 158,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 159,
+            "stop": 179,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "intramembrane region",
+            "start": 184,
+            "stop": 207,
+            "note": "Pore-forming; Name=Pore-forming 2"
+          },
+          {
+            "feature_type": "transmembrane region",
+            "start": 223,
+            "stop": 243,
+            "note": "Helical"
+          },
+          {
+            "feature_type": "topological domain",
+            "start": 244,
+            "stop": 394,
+            "note": "Cytoplasmic"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 266,
+            "stop": 286,
+            "note": "Disordered"
+          },
+          {
+            "feature_type": "region of interest",
+            "start": 338,
+            "stop": 357,
+            "note": "Disordered"
+          },
+          {
+            "feature_type": "glycosylation site",
+            "start": 53,
+            "stop": 53,
+            "note": "N-linked (GlcNAc...) asparagine"
+          }
+        ]
+      }
+    }
+  }
+}

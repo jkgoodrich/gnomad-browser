@@ -1,0 +1,32 @@
+{
+  "has_no_rmc_evidence": false,
+  "passed_qc": true,
+  "regions": [
+    {
+      "chrom": "19",
+      "start": 52190097,
+      "stop": 52212777,
+      "aa_start": "Met1",
+      "aa_stop": "Leu198",
+      "obs_mis": 93,
+      "exp_mis": 266.5202156009688,
+      "obs_exp": 0.34894163577909826,
+      "chisq_diff_null": 112.97178772842496,
+      "p_value": 2.18867033095841e-26,
+      "obs_exp_upper": 0.4145854773389729
+    },
+    {
+      "chrom": "19",
+      "start": 52212776,
+      "stop": 52225980,
+      "aa_start": "Leu198",
+      "aa_stop": "Ala589",
+      "obs_mis": 276,
+      "exp_mis": 508.4465057016649,
+      "obs_exp": 0.5428299671744529,
+      "chisq_diff_null": 106.26757664181386,
+      "p_value": 6.442193404295723e-25,
+      "obs_exp_upper": 0.5997335683927456
+    }
+  ]
+}

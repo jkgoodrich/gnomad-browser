@@ -1,0 +1,45 @@
+{
+  "has_no_rmc_evidence": false,
+  "passed_qc": true,
+  "regions": [
+    {
+      "chrom": "11",
+      "start": 644553,
+      "stop": 684910,
+      "aa_start": "Val565",
+      "aa_stop": "Asp287",
+      "obs_mis": 343,
+      "exp_mis": 379.78424560050416,
+      "obs_exp": 0.9031443614983503,
+      "chisq_diff_null": 3.5627615944383284,
+      "p_value": 0.05908935662263408,
+      "obs_exp_upper": 0.9875747673597003
+    },
+    {
+      "chrom": "11",
+      "start": 684909,
+      "stop": 691540,
+      "aa_start": "Asp287",
+      "aa_stop": "Ser117",
+      "obs_mis": 132,
+      "exp_mis": 234.33897423504044,
+      "obs_exp": 0.5632865827414815,
+      "chisq_diff_null": 44.69280315691599,
+      "p_value": 2.305030165085572e-11,
+      "obs_exp_upper": 0.650854837798678
+    },
+    {
+      "chrom": "11",
+      "start": 691539,
+      "stop": 695049,
+      "aa_start": "Ser117",
+      "aa_stop": "Met1",
+      "obs_mis": 210,
+      "exp_mis": 177.31434685117557,
+      "obs_exp": 1.1843373293208943,
+      "chisq_diff_null": 6.025186008563375,
+      "p_value": 0.014103145368960268,
+      "obs_exp_upper": 1.3278550113290684
+    }
+  ]
+}

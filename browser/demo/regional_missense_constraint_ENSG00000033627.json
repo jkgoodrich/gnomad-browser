@@ -1,0 +1,45 @@
+{
+  "has_no_rmc_evidence": false,
+  "passed_qc": true,
+  "regions": [
+    {
+      "chrom": "17",
+      "start": 42460895,
+      "stop": 42487277,
+      "aa_start": "Met1",
+      "aa_stop": "Asn311",
+      "obs_mis": 239,
+      "exp_mis": 388.4133547900278,
+      "obs_exp": 0.6153238477837635,
+      "chisq_diff_null": 57.4757544103473,
+      "p_value": 3.42171307148942e-14,
+      "obs_exp_upper": 0.684934448807782
+    },
+    {
+      "chrom": "17",
+      "start": 42487276,
+      "stop": 42487328,
+      "aa_start": "Asn311",
+      "aa_stop": "Thr328",
+      "obs_mis": 2,
+      "exp_mis": 20.462448187397193,
+      "obs_exp": 0.09774001535318724,
+      "chisq_diff_null": 16.657928218103567,
+      "p_value": 4.4762824301689754e-5,
+      "obs_exp_upper": 0.30767548263113326
+    },
+    {
+      "chrom": "17",
+      "start": 42487327,
+      "stop": 42521119,
+      "aa_start": "Thr328",
+      "aa_stop": "Glu837",
+      "obs_mis": 435,
+      "exp_mis": 642.2265311176136,
+      "obs_exp": 0.6773310956852024,
+      "chisq_diff_null": 66.86555774067668,
+      "p_value": 2.9066920306734437e-16,
+      "obs_exp_upper": 0.7332375379390245
+    }
+  ]
+}
